@@ -10,14 +10,14 @@
 </head>
 <body>
 <canvas id="gl"></canvas>
-<div id="floaters"></div>
+<div id="floaters"></div><div id="coins"></div><div id="confetti"></div><div id="banner"></div><div id="goal" hidden></div>
 <div id="fade"></div>
 <section id="title">
   <div class="tcard">
     <img id="tLogo" alt="MoneyBot">
     <div class="eyebrow">A MoneyBot Original</div>
     <h1>Bot<span>Factory</span></h1>
-    <p>You've got a garage, a $3,000 loan and a big idea: <b>MiniBots</b>. Build a production line, keep it fed with steel, crush your bottlenecks and beat Rusty's ScrapCo. You have <b>10 days</b> to turn a garage into a real factory.</p>
+    <p>You've got a garage, a $3,000 loan and a big idea: <b>MiniBots</b>. Build a production line, hire a crew, crush your bottlenecks, invest in upgrades and beat Rusty's ScrapCo. You have <b>10 days</b> to turn a garage into a real factory.</p>
     <div class="chips"><span>Fixed vs variable costs</span><span>Break-even</span><span>Bottlenecks</span><span>Economies of scale</span><span>Quality vs speed</span><span>Inventory</span><span>Pricing</span></div>
     <button class="btn pri big" id="btnStart" disabled>Loading factory…</button>
     <small class="hint">Mouse, touch or keyboard · about 15–20 minutes</small>
@@ -26,15 +26,15 @@
 <header id="hud" hidden>
   <div class="brand"><img id="hLogo" alt=""><b>Bot<span>Factory</span></b></div>
   <div class="daybox"><em id="hDay">Day 1</em><div class="dbar"><i id="hDayBar"></i></div></div>
-  <div class="stat"><em>Cash</em><b id="hCash">$0</b></div>
+  <div class="stat cashbox" id="hCashBox"><em>Cash</em><b id="hCash">$0</b></div>
   <div class="stat"><em>Rep<span class="hs">utation</span></em><b id="hRep">60</b></div>
-  <div class="stat hs"><em>Shipped today</em><b id="hShip">0</b></div>
+  <div class="stat"><em>Crew</em><b id="hMood">🙂 70</b></div><div class="streakchip" id="hStreak" hidden></div>
   <div class="speed" id="speed"><button data-s="0" title="Pause (Space)">❚❚</button><button data-s="1" title="Normal speed">▶</button><button data-s="2" title="2× speed">▶▶</button><button data-s="4" title="4× speed">▶▶▶</button></div>
   <button class="btn ghost sm" id="btnGoals">🎯 <span class="hs">Goals</span></button>
-  <button class="btn ghost sm" id="btnMute" aria-label="Sound">🔊</button>
+  <button class="btn ghost sm" id="btnSet" aria-label="Settings">⚙</button>
 </header>
 <aside id="side" hidden>
-  <div class="tabs"><button data-tab="orders">Orders</button><button data-tab="supply">Supply</button><button data-tab="numbers">Numbers</button><button id="sideMin" aria-label="Collapse">▾</button></div>
+  <div class="tabs"><button data-tab="orders">Orders</button><button data-tab="supply">Supply</button><button data-tab="numbers">Numbers</button><button data-tab="rnd">R&amp;D</button><button id="sideMin" aria-label="Collapse">▾</button></div>
   <div id="sideBody"></div>
 </aside>
 <div id="inspect" hidden></div>

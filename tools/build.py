@@ -7,7 +7,7 @@ import os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'src')
-JS_ORDER = ['data.js', 'world.js', 'sim.js', 'game.js']
+JS_ORDER = ['data.js', 'audio.js', 'world.js', 'sim.js', 'game.js']
 VENDOR = ['vendor/three/three.min.js', 'vendor/three/GLTFLoader.js', 'vendor/three/SkeletonUtils.js', 'moneybot-assets.js']
 
 def read(p):
