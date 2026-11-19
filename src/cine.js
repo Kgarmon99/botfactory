@@ -135,7 +135,7 @@ function shiftShots(done){const c=hallCenter(),B=hallBounds(),pl=()=>[P.pos.x,.8
 /* ---------- per frame ---------- */
 let scrT=0;
 function updateCine(dt,t,run){if(!S)return;stepShots(dt);const f=S.phase==='day'?S.clock/SHIFT_LEN:S.phase==='report'?1:0;if(!MILL.on&&!TWIN.on)applyTime(f);
-  CX.cars.forEach(c=>{c.g.position.x+=c.dir*c.v*dt;if(c.g.position.x>170)c.g.position.x=-170;if(c.g.position.x<-170)c.g.position.x=170;});
+  trafficStep(dt);updateOutside(dt,t);
   const m=run?S.speed:0,B=hallBounds();
   CX.agvs.forEach(a=>{const near=Math.hypot(P.pos.x-a.x,P.pos.z-a.z)<1.5&&Math.sign(P.pos.x-a.x)===a.dir;if(a.wait>0)a.wait-=dt;else if(!near){a.x+=a.dir*2.6*dt*Math.max(.6,m||.6);if(a.x>a.x1||a.x<a.x0){a.dir*=-1;a.wait=1.4;a.x=clamp(a.x,a.x0,a.x1);}}else if(Math.random()<dt*1.5)tone(1200,.06,'square',.015);
     a.g.position.set(a.x,0,a.z);a.g.rotation.y=a.dir>0?0:Math.PI;a.g.userData.lid.rotation.y+=dt*6;a.g.userData.bar.material.emissiveIntensity=near?.5+Math.sin(t*20):2;});

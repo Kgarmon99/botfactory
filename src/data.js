@@ -70,3 +70,5 @@ const TECH=[
   {id:'drones',name:'Parts Drones',icon:'🚁',cost:6000,stage:2,does:'Drones fly spare parts in overhead. The repair crew shows up in <b>8 seconds</b> instead of 24, at <b>half the cost</b>.',lesson:'Less <b>downtime</b> means more output. Real plants track every minute a machine is down.'},
   {id:'dog',name:'Robot Dog Patrol',icon:'🐕',cost:9000,stage:2,does:'A camera-loaded robot dog patrols the floor and <b>catches half of all defects</b> before they ship.',lesson:'Real factories use legged robots to inspect equipment and spot problems people might miss.'}
 ];
+
+const GATE_X=-11.5;

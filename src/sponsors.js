@@ -40,7 +40,7 @@ const SPONSORS={
 const SPONSOR_BEACON='';
 
 /* ---------- the slot inventory (used by ?slots and ?sponsor previews) ---------- */
-const SLOT_INFO={showcase:'Showcase mill',presenting:'Presenting partner', steel:'Steel supplier', shipping:'Shipping partner', banner:'Factory banner', machine:'Station sponsor', career:'Career partner'};
+const SLOT_INFO={showcase:'Showcase mill',presenting:'Presenting partner', steel:'Steel supplier', shipping:'Shipping partner', banner:'Factory banner', machine:'Station sponsor', career:'Career partner', billboard:'Street billboard'};
 const SPONSOR_MODE=(()=>{ const q=new URLSearchParams(location.search), nm=(q.get('sponsor')||'').trim().slice(0,40);
   if(nm) return {kind:'preview', s:{name:nm, tagline:(q.get('tagline')||'').slice(0,50), color:/^#[0-9a-f]{3,8}$/i.test(q.get('color')||'')?q.get('color'):'#0EA5E9'}};
   if(q.has('slots')) return {kind:'slots'}; return {kind:'live'}; })();

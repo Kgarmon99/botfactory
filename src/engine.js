@@ -111,7 +111,7 @@ function updatePlayer(dt){
   if(P.target){const tx=P.target.x-P.pos.x,tz=P.target.z-P.pos.z,L=Math.hypot(tx,tz);if(L<.25)P.target=null;else{dx=tx/L;dz=tz/L;}}
   const L=Math.hypot(dx,dz),moving=L>.05,spd0=(keys.ShiftLeft||keys.ShiftRight?11:7.5)*(P.speedMul||1);
   const tv=V(moving?dx/Math.max(1,L)*spd0:0,0,moving?dz/Math.max(1,L)*spd0:0);P.vel.lerp(tv,1-Math.exp(-12*dt));if(blocked())P.vel.set(0,0,0);
-  P.pos.addScaledVector(P.vel,dt);const B=hallBounds();P.pos.x=clamp(P.pos.x,B.x0+.6,B.x1-.6);P.pos.z=clamp(P.pos.z,B.z0+.6,B.z1-.4);collide(P.pos,.46);
+  P.pos.addScaledVector(P.vel,dt);walkClamp(P.pos);collide(P.pos,.46);
   const spd=P.vel.length();if(spd>.3)P.ry+=angDiff(Math.atan2(P.vel.x,P.vel.z),P.ry)*Math.min(1,dt*12);
   P.bob+=dt*spd*2.1;const r=P.rig.root;r.position.set(P.pos.x,Math.abs(Math.sin(P.bob))*.09*Math.min(1,spd/3),P.pos.z);r.rotation.set(Math.min(.2,spd*.022),P.ry,0,'YXZ');P.rig.mixer.update(dt);
   if(ringM&&ringM.material.opacity>0)ringM.material.opacity-=dt*1.5;}

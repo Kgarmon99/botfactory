@@ -49,7 +49,11 @@ function buildShell(){if(W.shell){scene.remove(W.shell);}COLL.length=0;const g=n
     doors.forEach(dz=>{bx(g,.42,H-3.6,3.4,x,3.6,dz,wallM);bx(g,.5,.25,3.6,x,3.45,dz,yel,false);[dz-1.75,dz+1.75].forEach(zz=>bx(g,.5,3.5,.18,x,0,zz,yel,false));
       const hz=new THREE.Mesh(new THREE.PlaneGeometry(3.4,.6),new THREE.MeshStandardMaterial({map:hazardTex(),roughness:.6}));hz.rotation.x=-Math.PI/2;hz.position.set(x+face*.5,.02,dz);g.add(hz);});};
   side(B.x0-.2,1);side(B.x1+.2,-1);
-  bx(g,Wd+.6,.55,.3,cx,0,B.z1+.15,wallM);bx(g,Wd+.7,.08,.36,cx,.55,B.z1+.15,trim,false);
+  [[B.x0-.3,GATE_X-1.35],[GATE_X+1.35,B.x1+.3]].forEach(([a,b])=>{bx(g,b-a,.55,.3,(a+b)/2,0,B.z1+.15,wallM);bx(g,b-a+.1,.08,.36,(a+b)/2,.55,B.z1+.15,trim,false);});
+  /* yard gate: posts, hazard boom, sign */
+  [GATE_X-1.45,GATE_X+1.45].forEach(x=>{bx(g,.32,2.9,.32,x,0,B.z1+.15,trim);bx(g,.36,.3,.36,x,0,B.z1+.15,yel,false);});bx(g,3.3,.5,.34,GATE_X,2.9,B.z1+.15,trim,false);
+  const gs=signMesh([{t:'YARD GATE',size:96,color:'#FACC15'},{t:'street · bus · test track',size:44,color:'#fff'}],2.9,.62,{w:900,h:192,bg:'#0D1117',glow:.7});gs.position.set(GATE_X,3.15,B.z1+.33);g.add(gs);
+  const gf=new THREE.Mesh(new THREE.PlaneGeometry(2.6,1.2),new THREE.MeshStandardMaterial({map:hazardTex(),roughness:.6}));gf.rotation.x=-Math.PI/2;gf.position.set(GATE_X,.02,B.z1-.3);g.add(gf);
   /* steel columns */
   const colM=mat('#2E7D5B',{roughness:.45,metalness:.5});for(let x=B.x0;x<=B.x1+.1;x+=Wd/Math.round(Wd/8)){[B.z0].forEach(z=>{bx(g,.5,H+.4,.5,x,0,z,colM);bx(g,.62,.5,.62,x,0,z,yel);});}
   for(let z=B.z0;z<=B.z1+.1;z+=D/Math.max(1,Math.round(D/9))){[B.x0,B.x1].forEach(x=>{bx(g,.5,H+.4,.5,x,0,z,colM);bx(g,.62,.5,.62,x,0,z,yel);});}

@@ -38,7 +38,7 @@ function doExpand(){toggleTwin(false);const e=expand();if(e){toast(e,'bad');retu
     setTimeout(()=>{b.remove();camS.mode='play';letterbox(false);advise(S.stage===1?'Welcome to the <b>Workshop</b>! Walk to the glowing pads to <b>build a Paint Booth and QA Scanner</b>. They unlock Drones and E-Scooters.':S.stage===2?'A <b>second line</b>! Set what it makes in <b>Contracts</b>. '+TIPS.scale:TIPS.scale,14000);renderHUD();save();},4200);},700);}
 
 /* ---------- interacting with the floor ---------- */
-function nearestAct(){if(!S||blocked())return null;if(MILL.on)return millAct();const px=P.pos.x,pz=P.pos.z;let best=null,bd=3.1;
+function nearestAct(){if(!S||blocked())return null;if(MILL.on)return millAct();const oa=outAct();if(oa)return oa;if(OUT.out&&!CX.riding)return null;const px=P.pos.x,pz=P.pos.z;let best=null,bd=3.1;
   if(nearFork())return {t:'Hop on the forklift',ic:'🚜',f:toggleRide};
   if(W.kiosk&&Math.hypot(px-W.kiosk.x,pz-W.kiosk.z-.9)<2.2)return {t:'Open the Expansion Office',ic:'🏗',f:()=>openPanel('expand')};
   S.lines.slice(0,lineCount()).forEach((l,li)=>stationsOnAll(li).forEach(k=>{const x=SLOT_X[k],z=LZ(li)+2.3,d=Math.hypot(px-x,pz-z);if(d<bd){bd=d;best={li,k};}}));
@@ -72,7 +72,8 @@ function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const 
     if(S.stage>=1){for(const l of lines)for(const k of ['paint','qa'])if(!l.st[k].built&&S.cash>=STATIONS[k].buildCost)return {t:`Build a ${STATIONS[k].name} on Line ${l.i+1}`,k:STATIONS[k].icon,...fr(l.i,k)};}
     for(const l of lines){const b=capacity(l).by,c=upgradeCost(l,b);if((c!=null&&S.cash>=c)||(l.st[b].tier<2&&(l.st[b].crew||1)<2&&S.cash>=ECON.hireFee))return {t:`Speed up your bottleneck: ${STATIONS[b].name}. Tap 🔧 FIX`,k:'🔧',hot:1,...fr(l.i,b)};}
     for(const T of TECH)if(!S.tech[T.id]&&T.stage<=S.stage&&S.cash>=T.cost+300)return {t:`Unlock new tech: ${T.icon} ${T.name}`,k:'🤖'};
-    if(S.day>=2&&!S.flags.millDone)return {t:'New field trip! Open Tech and take the Steel Mill Tour',k:'🔥'};
+    if(S.day>=2&&!S.flags.millDone)return {t:'Field trip! Walk out the yard gate and catch the bus to the steel mill',k:'🔥',hot:1,x:OUT.stop.x,z:OUT.stop.z};
+    if(S.day>=2&&!S.flags.yard)return {t:'Step outside: walk through the yard gate to see the street',k:'🚗',x:GATE_X,z:8};
     return {t:nx?`Save up ${short(nx.cost)} to build the ${nx.name}`:'Start the next shift',k:'💰'};}
   if(S.phase!=='day')return null;
   for(const l of lines)for(const k of ST_KEYS)if(l.st[k].built&&l.st[k].broken)return {t:`${STATIONS[k].name} broke down! Go fix it`,k:'⚠️',hot:1,...fr(l.i,k)};
@@ -148,7 +149,7 @@ async function boot(){const bar=$('#loadfill');bar.style.width='15%';['#hud','#d
   await loadSponsorLogos();$('#tSpons').innerHTML=spBadge(spPresenting());
   W.logoImg=await new Promise(r=>{const im=new Image();im.onload=()=>r(im);im.onerror=()=>r(null);im.src=MB_ASSETS.logo;});bar.style.width='35%';
   const [h,c]=await Promise.all([parseGLB(MB_ASSETS.hero),parseGLB(MB_ASSETS.crowd)]);const clips=emoteClips();h.animations.push(...clips);c.animations.push(...clips.map(x=>x.clone()));GLTF.hero=h;GLTF.crowd=c;bar.style.width='70%';
-  P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
+  buildOutside();P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
   /* a demo factory behind the title */
   newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
   initInput();bindUI();initFlow();renderer.compile(scene,camera);bar.style.width='100%';
