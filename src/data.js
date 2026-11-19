@@ -8,11 +8,11 @@ const DOCK_IN_X=-16.2, LINE_GAP=11;
 const LZ=l=>-l*LINE_GAP;             /* belt z for line l */
 
 const STATIONS={
-  cut:  {name:'Laser Cutter', short:'Cut',   icon:'⚡', color:'#EF4444', cycle:5,
+  cut:  {name:'Laser Cutter', short:'Cut',   icon:'⚡', color:'#EF4444', cycle:4.5,
          blurb:'A laser hot enough to slice steel cuts sheets into parts.', game:'laser'},
-  weld: {name:'Welding Cell', short:'Weld',  icon:'🔥', color:'#3B82F6', cycle:8,
+  weld: {name:'Welding Cell', short:'Weld',  icon:'🔥', color:'#3B82F6', cycle:9,
          blurb:'Melts metal parts together into one strong frame.', game:'weld'},
-  asm:  {name:'Assembly',     short:'Build', icon:'🔩', color:'#F59E0B', cycle:7,
+  asm:  {name:'Assembly',     short:'Build', icon:'🔩', color:'#F59E0B', cycle:6.5,
          blurb:'Motors, batteries and wiring go in. A frame becomes a machine.', game:'assemble'},
   paint:{name:'Paint Booth',  short:'Paint', icon:'🎨', color:'#10B981', cycle:5, buildCost:1200,
          blurb:'Sprays the finish that keeps metal from rusting and makes it pop.', game:'paint'},
@@ -45,7 +45,7 @@ const STAGES=[
   {name:'Mega Plant',   lines:4, wide:true,  rent:1600, cost:180000, pitch:'Four lines, a robot fleet and your name on the skyline.'}
 ];
 
-const ECON={startCash:1500, beltSpeed:2.6, queueMax:9, contractBonus:1.25, marketCut:.85, returnFee:12,
+const ECON={startCash:1500, beltSpeed:2.6, queueMax:9, contractBonus:1.25, marketCut:.85, returnFee:12,hireFee:120,
   repairCrew:220, repairParts:40, serviceCost:60, crewTime:24, combo:20};
 
 const CLIENTS=['Bot City Toys','Gizmo Hub','Spark Mobility','Volt Ride Co.','Pixel Drones','Bluegrass Outdoor','Robo Rama','Fun Factory','Byte Store','Riverside Rentals','SkyLift Logistics','Kentucky Kart Club'];

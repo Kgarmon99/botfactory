@@ -8,7 +8,7 @@ let S=null;                 /* the saved game */
 const EV=[];                /* events for the view layer: {k, ...} */
 const emit=(ev,o)=>EV.push(Object.assign({},o||{},{ev}));
 
-function newStation(k,built){return {k,built:!!built,tier:0,q:[],cur:null,prog:0,out:null,wear:rand(0,.15),broken:false,crewT:0,boost:0,needsCode:false,util:0,made:0,blocked:false};}
+function newStation(k,built){return {k,built:!!built,tier:0,crew:1,q:[],cur:null,prog:0,out:null,wear:rand(0,.15),broken:false,crewT:0,boost:0,needsCode:false,util:0,made:0,blocked:false};}
 function newLine(i){const st={};ST_KEYS.forEach(k=>st[k]=newStation(k,k==='cut'||k==='weld'||k==='asm'));return {i,st,belt:[],job:{product:i===0?'kart':'toy',cid:null},spawnT:0};}
 function newGame(name){
   S={v:2,name:name||'Boss',cash:ECON.startCash,rep:50,day:1,stage:0,phase:'board',clock:0,speed:1,
@@ -22,7 +22,14 @@ function canMake(l,p){const P=PRODUCTS[p];if(P.stage>S.stage)return 'Unlocks at 
   const miss=P.needs.filter(k=>!l.st[k].built);if(miss.length)return 'Needs '+miss.map(k=>STATIONS[k].name).join(' + ');
   const bots=ST_KEYS.filter(k=>l.st[k].tier===2).length;if((P.robots||0)>bots)return `Needs ${P.robots} robot cell${P.robots>1?'s':''} on this line`;return '';}
 /* units per shift if nothing breaks: the slowest required station sets the pace */
-function capacity(l,p){const P=PRODUCTS[p||l.job.product];let best=1e9,by='';P.needs.forEach(k=>{const s=l.st[k],c=SHIFT_LEN*TIERS[s.tier].speed*techSpeed()/STATIONS[k].cycle;if(c<best){best=c;by=k;}});return {n:Math.floor(best*.93),by};}
+function capacity(l,p){const P=PRODUCTS[p||l.job.product];let best=1e9,by='';P.needs.forEach(k=>{const c=stationCap(l.st[k],k);if(c<best){best=c;by=k;}});return {n:Math.floor(best),by};}
+/* the speed of one station, and how many units it can do in a shift */
+const crewMul=s=>s.tier<2&&(s.crew||1)>=2?1.6:1;
+function stationSpeed(s){return TIERS[s.tier].speed*crewMul(s)*techSpeed();}
+function stationCap(s,k){return SHIFT_LEN*stationSpeed(s)/STATIONS[k].cycle*.93;}
+/* what the line would make if this station changed (for the fix card) */
+function previewCap(l,k,ch){const s=l.st[k],old={tier:s.tier,crew:s.crew};Object.assign(s,ch);const c=capacity(l);Object.assign(s,old);return c;}
+function hireCrew(li,k){const s=S.lines[li].st[k];if(s.tier===2)return 'Robots don\'t need a crew';if((s.crew||1)>=2)return 'Already has 2 workers';if(S.cash<ECON.hireFee)return 'Need '+money(ECON.hireFee);S.cash-=ECON.hireFee;if(S.today)S.today.capex+=ECON.hireFee;s.crew=2;emit('hired',{li,k});return '';}
 function bottleneckOf(l){return capacity(l).by;}
 
 /* ---------- contracts ---------- */
@@ -53,11 +60,11 @@ function boostStation(li,k,secs){const s=S.lines[li].st[k];s.boost=Math.max(s.bo
 
 /* ---------- the shift ---------- */
 function startShift(){S.phase='day';S.clock=0;S.today={rev:0,mat:0,capex:0,repairs:0,returns:0,retN:0,scrap:0,shipped:0,byLine:S.lines.map(()=>0),bonus:0,games:0,best:0};
-  S.today.oee=S.lines.map(()=>({plan:0,down:0,made:0,bad:0,ideal:0}));S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
+  S.today.goal=missionFor();S.today.oee=S.lines.map(()=>({plan:0,down:0,made:0,bad:0,ideal:0}));S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
 function itemsNear(l,x,y0){return l.belt.some(it=>Math.abs(it.x-x)<.86);}
 function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KEYS.filter(k=>need.includes(k)||(k==='qa'&&l.st.qa.built&&STAGES[S.stage].wide)),sx=shipX();
   /* OEE bookkeeping: planned time, downtime, ideal rate */
-  const O=S.today.oee&&S.today.oee[l.i];if(O){O.plan+=dt;if(route.some(k=>l.st[k].broken||l.st[k].needsCode))O.down+=dt;O.ideal=Math.min(...route.map(k=>TIERS[l.st[k].tier].speed*techSpeed()/STATIONS[k].cycle));}
+  const O=S.today.oee&&S.today.oee[l.i];if(O){O.plan+=dt;if(route.some(k=>l.st[k].broken||l.st[k].needsCode))O.down+=dt;O.ideal=Math.min(...route.map(k=>stationSpeed(l.st[k])/STATIONS[k].cycle));}
   /* release raw steel when the first stop has room */
   const first=l.st[route[0]];l.spawnT-=dt;
   if(l.spawnT<=0&&first.q.length+l.belt.filter(it=>it.next===route[0]).length<3&&!itemsNear(l,DOCK_IN_X+.4)){
@@ -76,7 +83,7 @@ function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KE
     if(s.broken){s.crewT-=dt;if(s.crewT<=0){fixStation(l.i,k,false);emit('crew',{li:l.i,k});}}
     else if(!s.needsCode){
       if(!s.cur&&!s.out&&s.q.length){s.cur=s.q.shift();s.prog=0;}
-      if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*T.speed*techSpeed()*(s.boost>0?2:1)/STATIONS[k].cycle;
+      if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*stationSpeed(s)*(s.boost>0?2:1)/STATIONS[k].cycle;
         s.wear+=dt*(s.tier===2?.0016:.0028);
         if(s.prog>=1){const it=s.cur;s.cur=null;s.prog=0;s.made++;
           if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;const O2=S.today.oee&&S.today.oee[l.i];if(O2){O2.made++;O2.bad++;}emit('scrap',{li:l.i});it.dead=true;}}
@@ -103,10 +110,11 @@ function stepShift(dt){if(S.phase!=='day')return;S.clock+=dt;
   if(S.rush){S.rush.t-=dt;if(S.rush.t<=0){emit('rushFail');S.rush=null;}}
   if(S.clock>=SHIFT_LEN)endShift();}
 function endShift(){S.phase='report';const T=S.today,st=S.lines.slice(0,lineCount()).flatMap(l=>stationsOn(l).map(k=>l.st[k]));
-  T.wages=st.reduce((a,s)=>a+TIERS[s.tier].wage,0);T.upkeep=st.reduce((a,s)=>a+TIERS[s.tier].upkeep,0);T.rent=STAGES[S.stage].rent;
+  T.wages=st.reduce((a,s)=>a+TIERS[s.tier].wage*(s.tier<2?(s.crew||1):0),0);T.upkeep=st.reduce((a,s)=>a+TIERS[s.tier].upkeep,0);T.rent=STAGES[S.stage].rent;
   /* anything still out there comes back at the end of the day */
   S.returnsQ.forEach(r=>{const c=r.v+ECON.returnFee;T.returns+=c;T.retN++;S.stats.returns++;S.rep=clamp(S.rep-.6,0,100);});S.returnsQ=[];
   if(!T.retN&&T.shipped)S.rep=clamp(S.rep+2,0,100);
+  const G2=T.goal;T.stars=G2?(T.shipped>=G2[2]?3:T.shipped>=G2[1]?2:T.shipped>=G2[0]?1:0):0;T.starBonus=T.stars*(60+S.stage*90);T.bonus+=T.starBonus;S.cash+=T.starBonus;S.stats.stars=(S.stats.stars||0)+T.stars;
   T.fixed=T.wages+T.rent+T.upkeep;T.variable=T.mat;T.net=T.rev+T.bonus-T.mat-T.fixed-T.repairs-T.returns;
   S.cash-=T.fixed+T.returns;
   T.unit=T.shipped?(T.mat+T.fixed+T.repairs)/T.shipped:null;
@@ -121,6 +129,8 @@ function buyTech(id){const T=TECH.find(x=>x.id===id);if(!T)return 'Unknown';S.te
 /* OEE = Availability x Performance x Quality */
 function oeeOf(o){if(!o||o.plan<1)return null;const run=Math.max(.001,o.plan-o.down),A=run/o.plan,Pf=Math.min(1,o.made/Math.max(.001,o.ideal*run)),Qu=o.made?(o.made-o.bad)/o.made:1;return {A,P:Pf,Q:Qu,v:A*Pf*Qu};}
 function plantOEE(T){T=T||S.today;if(!T||!T.oee)return null;const tot=T.oee.slice(0,lineCount()).reduce((a,o)=>({plan:a.plan+o.plan,down:a.down+o.down,made:a.made+o.made,bad:a.bad+o.bad,ideal:a.ideal+o.ideal*o.plan}),{plan:0,down:0,made:0,bad:0,ideal:0});if(tot.plan<1)return null;tot.ideal/=tot.plan;return oeeOf(tot);}
+/* each shift's mission: ship targets for 1, 2 and 3 stars */
+function missionFor(){const cap=S.lines.slice(0,lineCount()).reduce((a,l)=>a+capacity(l).n,0);return [Math.max(3,Math.round(cap*.72)),Math.max(4,Math.round(cap*.9)),Math.max(5,Math.round(cap*1.06))];}
 function nextDay(){S.day++;S.phase='board';makeOffers();}
 function grade(T){const pts=T.net+T.shipped*6-T.retN*30-T.late.length*200+T.games*40;const base=120+S.stage*260+S.lines.length*80;
   return pts>=base*3?'S':pts>=base*2?'A':pts>=base?'B':pts>=0?'C':'D';}

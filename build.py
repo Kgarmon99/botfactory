@@ -4,7 +4,7 @@
 import json, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 src = lambda n: open(os.path.join(HERE, 'src', n), encoding='utf8').read()
-ORDER = ['data.js', 'sim.js', 'engine.js', 'sponsors.js', 'world.js', 'cine.js', 'games.js', 'twin.js', 'mill.js', 'main.js']
+ORDER = ['data.js', 'sim.js', 'engine.js', 'sponsors.js', 'world.js', 'cine.js', 'games.js', 'twin.js', 'mill.js', 'flow.js', 'main.js']
 assets = json.load(open(os.path.join(HERE, 'vendor', 'fyp_assets.json')))
 assets = {k: assets[k] for k in ('hero', 'crowd', 'logo', 'clips', 'joints', 'coinGold') if k in assets}
 game = ''.join('/* ---- %s ---- */\n%s\n' % (n, src(n)) for n in ORDER)

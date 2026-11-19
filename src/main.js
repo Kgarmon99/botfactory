@@ -34,6 +34,7 @@ function panelUpgrades(){const lines=S.lines.slice(0,lineCount());return `<div c
     return `<div class="up ${bn?'bn':''} ${s.built?'':'unb'}"><div class="up-h"><span class="up-ic" style="--c:${D.color}">${D.icon}</span><div><b>${D.name}</b>${s.built?tierPips(s.tier)+` <small>${T.name}</small>`:'<small>Not built</small>'}</div>${bn?'<em class="bnb">BOTTLENECK</em>':''}</div>
       <p>${D.blurb}</p>${s.built?`<div class="up-st"><span>Speed <b>${T.speed}×</b></span><span>Defects <b>${Math.round(T.defect*100)}%</b></span><span>${T.wage?`Wage <b>${money(T.wage)}</b>`:'No wages'}</span></div>`:''}
       ${c!=null?`<button class="btn ${bn?'pri':''} sm" data-up="${l.i}:${k}" ${S.cash<c?'disabled':''}>${s.built?`⬆ ${N.name}`:'🏗 Build'} · ${money(c)}</button>${N?`<small class="up-n">→ ${N.speed}× speed, ${Math.round(N.defect*100)}% defects${s.tier+1===2?', robot: no wages, $45/shift upkeep':''}</small>`:''}`:'<span class="maxd">MAXED</span>'}
+      ${s.built&&s.tier<2&&(s.crew||1)<2?`<button class="btn ghost sm" data-hire="${l.i}:${k}" ${S.cash<ECON.hireFee?'disabled':''}>👷 Hire 2nd ${WORKER[k]} · ${money(ECON.hireFee)} <small>1.6× speed, +${money(T.wage)}/shift</small></button>`:s.built&&s.tier<2?'<small class="up-n">👷👷 2 workers on this station</small>':''}
       ${s.built&&s.wear>.45?`<button class="btn ghost sm" data-svc="${l.i}:${k}">🧰 Service · ${money(ECON.serviceCost)} <small>wear ${Math.round(s.wear*100)}%</small></button>`:''}</div>`;}).join('')}</div>`).join('');}
 function panelContracts(){const lines=S.lines.slice(0,lineCount());
   return `<div class="eyebrow">Contracts</div><h2>What should your lines make?</h2><p class="sub">Contracts pay <b>more</b> than the open market, but you have to deliver on time. Check your line can make enough per shift before you sign.</p>
@@ -63,6 +64,7 @@ function panelMakers(){const seen=(S.flags.careersShown)||{};return `<div class=
   <div class="mk-grid">${Object.keys(CAREERS).map(k=>{const c=CAREERS[k];return seen[k]?`<div class="mkc"><span>${c.icon}</span><b>${c.role}</b><small>${c.path.split('.')[0]}.</small></div>`:`<div class="mkc lock"><span>🔒</span><b>???</b><small>Keep playing to meet this one</small></div>`;}).join('')}</div>`;}
 function bindPanel(C,k){
   C.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.up.split(':');const e=upgrade(+li,key);if(e){toast(e,'bad');return;}afterUpgrade(+li,key);refreshPanel();});
+  C.querySelectorAll('[data-hire]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.hire.split(':');const before=capacity(S.lines[+li]).n,e=hireCrew(+li,key);if(e){toast(e,'bad');return;}syncStations();celebrateFix(+li,before);refreshPanel();});
   C.querySelectorAll('[data-svc]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.svc.split(':');const e=service(+li,key);if(e)toast(e,'bad');else{toast('🧰 Serviced. Fresh machines break down less.','good');sfx('good');}refreshPanel();});
   C.querySelectorAll('[data-prod]').forEach(b=>b.onclick=()=>{const [li,p]=b.dataset.prod.split(':');const e=setProduct(+li,p);if(e)toast(e,'bad');else sfx('tick');refreshPanel();});
   C.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{const [id,li]=b.dataset.acc.split(':');const e=acceptOffer(+id,+li);if(e)toast(e,'bad');else{sfx('good');tagToday('contract');}refreshPanel();});
@@ -92,7 +94,9 @@ function nearestAct(){if(!S||blocked())return null;if(MILL.on)return millAct();c
   if(!s.built)return {t:`Build ${D.name} · ${money(D.buildCost)}`,ic:'🏗',f:()=>{const e=upgrade(li,k);if(e)toast(e,'bad');else afterUpgrade(li,k);}};
   if(s.broken)return {t:`Fix the ${D.name}`,ic:'🛠️',hot:1,f:()=>startGame('repair',li,k)};
   if(s.needsCode)return {t:`Program the robot`,ic:'💻',hot:1,f:()=>startGame('program',li,k)};
-  if(S.phase!=='day'){const c=upgradeCost(l,k);return c!=null?{t:`Upgrade ${D.name} · ${money(c)}`,ic:'⬆',f:()=>openPanel('upgrades')}:{t:`${D.name} is maxed`,ic:'✓',f:()=>openPanel('upgrades')};}
+  const isBn=capacity(l).by===k&&PRODUCTS[l.job.product].needs.includes(k);
+  if(S.phase!=='day')return {t:isBn?`Fix the bottleneck: ${D.name}`:`Upgrade the ${D.name}`,ic:isBn?'🔧':'⬆',hot:isBn,f:()=>fixCard(li,k)};
+  if(isBn&&s.q.length>=3)return {t:`Fix the bottleneck: ${D.name}`,ic:'🔧',hot:1,f:()=>fixCard(li,k)};
   if(s.tier===2)return {t:`Robot cell running`,ic:'🤖',f:()=>openPanel('upgrades')};
   const cd=(S.gameCD[li+k]||0)-S.clock;if(cd>0)return {t:`Hands-on ready in ${Math.ceil(cd)}s`,ic:'⏳',f:null};
   return {t:`Work the ${D.name}`,ic:D.icon,hot:l.st[k].q.length>=4,f:()=>startGame(D.game,li,k)};}
@@ -114,7 +118,7 @@ function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const 
   if(S.phase==='board'){if(S.day===1&&!S.hist.length)return {t:'Press Start Shift to fire up your line',k:'▶'};
     if(nx&&S.cash>=nx.cost)return {t:`You can afford the ${nx.name}! Head to the Expansion Office`,k:'🏗',hot:1,x:W.kiosk.x,z:W.kiosk.z+1};
     if(S.stage>=1){for(const l of lines)for(const k of ['paint','qa'])if(!l.st[k].built&&S.cash>=STATIONS[k].buildCost)return {t:`Build a ${STATIONS[k].name} on Line ${l.i+1}`,k:STATIONS[k].icon,...fr(l.i,k)};}
-    for(const l of lines){const b=capacity(l).by,c=upgradeCost(l,b);if(c!=null&&S.cash>=c)return {t:`Upgrade your bottleneck: ${STATIONS[b].name}`,k:'⬆',...fr(l.i,b)};}
+    for(const l of lines){const b=capacity(l).by,c=upgradeCost(l,b);if((c!=null&&S.cash>=c)||(l.st[b].tier<2&&(l.st[b].crew||1)<2&&S.cash>=ECON.hireFee))return {t:`Speed up your bottleneck: ${STATIONS[b].name}. Tap 🔧 FIX`,k:'🔧',hot:1,...fr(l.i,b)};}
     for(const T of TECH)if(!S.tech[T.id]&&T.stage<=S.stage&&S.cash>=T.cost+300)return {t:`Unlock new tech: ${T.icon} ${T.name}`,k:'🤖'};
     if(S.day>=2&&!S.flags.millDone)return {t:'New field trip! Open Tech and take the Steel Mill Tour',k:'🔥'};
     return {t:nx?`Save up ${short(nx.cost)} to build the ${nx.name}`:'Start the next shift',k:'💰'};}
@@ -122,7 +126,7 @@ function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const 
   for(const l of lines)for(const k of ST_KEYS)if(l.st[k].built&&l.st[k].broken)return {t:`${STATIONS[k].name} broke down! Go fix it`,k:'⚠️',hot:1,...fr(l.i,k)};
   for(const l of lines)for(const k of ST_KEYS)if(l.st[k].needsCode)return {t:`Program your new robot cell`,k:'💻',hot:1,...fr(l.i,k)};
   if(S.rush)return {t:`Rush truck! Ship ${S.rush.need-S.rush.got} more fast. Boost a station!`,k:'🚚',hot:1,...(()=>{const l=lines[0],b=capacity(l).by;return l.st[b].tier<2?fr(0,b):{};})()};
-  for(const l of lines){let w=null,wq=4;ST_KEYS.forEach(k=>{if(l.st[k].q.length>=wq){wq=l.st[k].q.length;w=k;}});if(w)tagToday('bottleneck');if(w&&l.st[w].tier<2&&(S.gameCD[l.i+w]||0)<=S.clock)return {t:`Crates piling up at ${STATIONS[w].name}! Work it yourself`,k:'📦',hot:1,...fr(l.i,w)};}
+  for(const l of lines){let w=null,wq=4;ST_KEYS.forEach(k=>{if(l.st[k].q.length>=wq){wq=l.st[k].q.length;w=k;}});if(w)tagToday('bottleneck');if(w&&w===capacity(l).by)return {t:`Crates piling up! ${STATIONS[w].name} is your bottleneck. Tap 🔧 FIX`,k:'📦',hot:1,...fr(l.i,w)};}
   let best=null,bd=1e9;for(const l of lines)for(const k of PRODUCTS[l.job.product].needs){const s=l.st[k];if(s.tier<2&&s.built&&(S.gameCD[l.i+k]||0)<=S.clock){const f=fr(l.i,k),d=Math.hypot(P.pos.x-f.x,P.pos.z-f.z);if(d<bd){bd=d;best={k2:k,li:l.i,...f};}}}
   if(best)return {t:`Get hands-on: work the ${STATIONS[best.k2].name} for a speed boost`,k:STATIONS[best.k2].icon,x:best.x,z:best.z};
   return {t:'Line is humming. Watch for jams and breakdowns',k:'👀'};}
@@ -145,7 +149,7 @@ function drainEvents(){while(EV.length){const e=EV.shift();const L=W.lines[e.li]
   if(e.ev==='rush'){sfx('horn');toast(`🚚 <b>Rush truck!</b> Ship ${e.r.need} in ${e.r.t}s for a ${money(e.r.bonus)} bonus`,'gold');sendTruck(0,'ship');}
   if(e.ev==='rushDone'){toast(`🚚 Rush delivered! <b>+${money(e.b)}</b>`,'good');sfx('win');confetti(80);}
   if(e.ev==='rushFail')toast('The rush truck left without a full load.','warn');
-  if(e.ev==='report'){slam('SHIFT COMPLETE',(e.T.net>=0?'+':'')+money(e.T.net),e.T.net>=0?'#39E75F':'#F87171',2000);sfx('win');setTimeout(()=>shiftReport(e.T),1900);}}}
+  if(e.ev==='report'){slam('SHIFT COMPLETE',('★'.repeat(e.T.stars)+'☆'.repeat(3-e.T.stars))+'  '+(e.T.net>=0?'+':'')+money(e.T.net),e.T.net>=0?'#39E75F':'#F87171',2000);sfx('win');setTimeout(()=>shiftReport(e.T),1900);}}}
 
 /* ---------- shift report ---------- */
 function lessonOf(T){const nx=STAGES[S.stage+1];
@@ -157,7 +161,7 @@ function lessonOf(T){const nx=STAGES[S.stage+1];
   return 'Every product past break-even is pure profit. Margin × volume is the whole game.';}
 function shiftReport(T){const gr=grade(T),gc={S:'#FACC15',A:'#39E75F',B:'#38BDF8',C:'#F59E0B',D:'#F87171'}[gr],row=(a,b,c)=>`<div class="pr ${c||''}"><span>${a}</span><b>${b<0?'−':''}${money(Math.abs(b))}</b></div>`;
   if(gr==='S'||gr==='A'){confetti(120);sfx('win');}else sfx('good');
-  const C=openModal(`<div class="rep"><div class="rep-top"><div class="gl" style="--gc:${gc}">${gr}</div><div><div class="eyebrow">Shift ${T.day} report · ${STAGES[T.stage].name}</div><h2 class="${T.net>=0?'g':'r'}">${T.net>=0?'Profit':'Loss'} ${money(T.net)}</h2><p class="sub">${T.shipped} shipped${T.games?` · ${T.games} hands-on job${T.games>1?'s':''}`:''}${T.bonus?` · ${money(T.bonus)} in bonuses`:''}</p></div></div>
+  const C=openModal(`<div class="rep"><div class="rep-top"><div class="gl" style="--gc:${gc}">${gr}</div><div><div class="eyebrow">Shift ${T.day} report · ${STAGES[T.stage].name}</div><h2 class="${T.net>=0?'g':'r'}">${T.net>=0?'Profit':'Loss'} ${money(T.net)}</h2><div class="stars3">${[1,2,3].map(i=>`<span class="${T.stars>=i?'on':''}">★</span>`).join('')}<small>Goal ${T.goal?T.goal.join(' / '):''}${T.starBonus?` · <b>+${money(T.starBonus)}</b> star bonus`:''}</small></div><p class="sub">${T.shipped} shipped${T.games?` · ${T.games} hands-on job${T.games>1?'s':''}`:''}${T.bonus?` · ${money(T.bonus)} in bonuses`:''}</p></div></div>
     <div class="pl">${row('Sales',T.rev)}${T.bonus?row('Contract & rush bonuses',T.bonus):''}
       <div class="ph">Variable costs <small>go up with every product</small></div>${row('Steel & parts',-T.mat)}
       <div class="ph">Fixed costs <small>same if you make 0 or 1,000</small></div>${row('Rent',-T.rent)}${T.wages?row('Wages',-T.wages):''}${T.upkeep?row('Machine upkeep',-T.upkeep):''}${T.repairs?row('Repairs & service',-T.repairs,'bad'):''}${T.returns?row(`Refunds (${T.retN} returned)`,-T.returns,'bad'):''}
@@ -195,7 +199,7 @@ async function boot(){const bar=$('#loadfill');bar.style.width='15%';initThree()
   P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
   /* a demo factory behind the title */
   newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
-  initInput();bindUI();renderer.compile(scene,camera);bar.style.width='100%';
+  initInput();bindUI();initFlow();renderer.compile(scene,camera);bar.style.width='100%';
   $('#btnNew').disabled=false;$('#btnNew').textContent='Build my factory';if(load())$('#btnCont').hidden=false;$('#loadbar').style.visibility='hidden';
   camera.position.set(30,30,60);requestAnimationFrame(frame);}
 let last=performance.now();
@@ -206,7 +210,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
     UI.gT-=dt;if(UI.gT<=0){UI.gT=.15;updateGoal();renderHUD();renderRush();updateAct();}
     $('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';
     if(!blocked()||camS.mode==='cine')updatePlayer(dt);else P.rig.mixer.update(dt);}
-  if(S)updateCine(dt,t,UI.demo||running());updateMill(dt,t);updateTwin(dt);
+  if(S)updateCine(dt,t,UI.demo||running());updateMill(dt,t);updateTwin(dt);if(S&&!UI.demo)tickFlow(dt);
   updateWorld(dt,t,UI.demo||running());stepFX(dt);updateBeacon(dt,t);updateCamera(dt,t);drawConfetti();renderFrame(t);}
 window.BF={get S(){return S;},startShift,stepShift,endShift,upgrade,expand:doExpand,startGame,openPanel,P,camS,W,playGame,setSpeed};
 boot().catch(e=>{console.error(e);$('#btnNew').textContent='Could not load: '+e.message;});

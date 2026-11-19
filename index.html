@@ -64,6 +64,7 @@ body.cine #hud,body.cine #dock,body.cine #nextUp,body.cine #btnStart,body.cine #
 #skip{position:fixed;right:18px;bottom:calc(11vh + 18px);z-index:36;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:8px 14px;font-weight:800;font-size:13px;color:#fff}
 .slam{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:37;text-align:center;pointer-events:none;animation:slamA 2.2s cubic-bezier(.2,1.2,.3,1) forwards}.slam b{display:block;font:700 italic clamp(56px,10vw,120px)/.9 var(--display);color:var(--sc);-webkit-text-stroke:3px #000;text-shadow:5px 6px 0 #000,0 0 50px rgba(0,0,0,.6);letter-spacing:1px;transform:skewX(-6deg)}.slam span{display:inline-block;margin-top:12px;font:700 clamp(16px,2.2vw,22px) var(--display);color:#fff;background:rgba(0,0,0,.72);padding:6px 16px;border-radius:8px;letter-spacing:.5px}
 @keyframes slamA{0%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}12%{opacity:1;transform:translate(-50%,-50%) scale(.94)}18%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%) scale(1)}}
+body.titling #flow,body.titling #mission,body.cine #flow,body.cine #mission,body.cine #fixPins,body.twin #flow,body.twin #fixPins,body.inmill #flow,body.inmill #mission,body.inmill #fixPins{display:none!important}
 body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart,body.titling #act,body.titling #stick,body.titling #advisor,body.titling #rush{display:none!important}
 /* modal */
 #modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(3,6,10,.55);padding:16px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -108,6 +109,28 @@ body.inmill #dock,body.inmill #btnStart,body.inmill #hPlant,body.inmill #clock,b
 .millcard{display:flex;gap:14px;border:1.5px solid #FF8A3D;border-radius:18px;padding:14px;margin:10px 0 14px;background:linear-gradient(135deg,rgba(255,90,0,.2),rgba(250,204,21,.06))}.mc-i{font-size:44px}.millcard b{font:600 20px var(--display);display:block;margin:2px 0}.millcard p{margin:0 0 10px;font-size:13.5px;color:#E5E7EB}
 .mill-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.mill-steps>div{border:1px solid rgba(255,138,61,.4);border-radius:14px;padding:10px;background:rgba(255,90,0,.07)}.mill-steps span{font-size:26px}.mill-steps b{display:block;font:600 14px var(--display);margin:4px 0}.mill-steps small{font-size:11.5px;color:var(--mute);line-height:1.35;display:block}
 @media (max-width:760px){.mill-steps{grid-template-columns:1fr 1fr}.tpin{min-width:118px;font-size:10.5px;padding:5px 7px}body.twin #twinHud{top:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px))}.millcard{flex-direction:column}}
+/* line flow + missions + fix */
+#flow{position:fixed;left:max(12px,env(safe-area-inset-left,0px));top:calc(82px + env(safe-area-inset-top,0px));z-index:5;border-radius:16px;padding:10px 12px;width:min(330px,calc(100vw - 24px));max-height:calc(100vh - 300px);overflow:auto}
+.fl-t{font:800 11px var(--body);letter-spacing:1.5px;color:var(--yel);margin-bottom:6px}.fl-t small{color:var(--mute);letter-spacing:0;font-weight:600;margin-left:4px}.fl+.fl{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.fl-h{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}.fl-h>b{font:600 14px var(--display)}.fl-h span b{font-family:var(--mono);color:var(--neon)}
+.fl{display:flex;flex-direction:column}.fl .fc{display:grid;grid-template-columns:24px 1fr 30px;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:9px;padding:3px 7px;font-size:12px;text-align:left;position:relative}.fl u{display:none}
+.fc+u+.fc{margin-top:3px}.fc i{height:7px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}.fc i s{display:block;height:100%;background:var(--neon);text-decoration:none;transition:width .6s cubic-bezier(.3,1.4,.5,1)}.fc>b{font-family:var(--mono);text-align:right}
+.fc.bn{border-color:#F87171;background:rgba(248,113,113,.12);animation:bnp 1.2s infinite}.fc.bn i s{background:#F87171}.fc.bn em{position:absolute;right:38px;top:-7px;font:900 8.5px var(--body);letter-spacing:1px;background:#F87171;color:#1A0505;border-radius:4px;padding:1px 4px;font-style:normal}.fc.down{opacity:.6}
+@keyframes bnp{50%{box-shadow:0 0 0 3px rgba(248,113,113,.25)}}
+#mission{position:fixed;right:max(12px,env(safe-area-inset-right,0px));top:calc(82px + env(safe-area-inset-top,0px));z-index:5;border-radius:16px;padding:10px 14px 22px;width:min(300px,calc(100vw - 24px))}
+.ms-h{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px}.ms-h span{font:800 11px var(--body);letter-spacing:1.4px;color:var(--yel)}.ms-h b{font-family:var(--mono)}
+.ms-b{position:relative;height:10px;border-radius:6px;background:rgba(255,255,255,.1)}.ms-b>i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--yel),var(--neon));transition:width .4s}
+.ms-b em{position:absolute;top:-4px;transform:translateX(-50%);font-style:normal;text-align:center}.ms-b em s{display:block;text-decoration:none;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:-1px;line-height:18px}.ms-b em small{display:block;font:700 10px var(--mono);color:var(--mute);margin-top:-1px}.ms-b em.on s{color:var(--yel);text-shadow:0 0 8px rgba(250,204,21,.7)}
+#toasts{top:calc(168px + env(safe-area-inset-top,0px))}
+#fixPins{position:fixed;inset:0;pointer-events:none;z-index:5}.fixpin{position:absolute;left:0;top:0;pointer-events:auto;border:2px solid #fff;border-radius:14px;background:linear-gradient(135deg,#EF4444,#B91C1C);color:#fff;font:700 15px var(--display);padding:6px 12px;box-shadow:0 8px 22px rgba(220,38,38,.5);animation:fxb 1s ease-in-out infinite;line-height:1}.fixpin small{display:block;font:800 9px var(--body);letter-spacing:1px;opacity:.85}
+@keyframes fxb{50%{margin-top:-6px;box-shadow:0 14px 28px rgba(220,38,38,.6)}}
+.tut{background:var(--yel);color:#1A1405;font:700 14px var(--body);border-radius:10px;padding:8px 12px;margin:-4px 40px 10px 0}
+.fx-flow{display:flex;align-items:center;gap:6px;margin:10px 0;flex-wrap:wrap}.fx-flow>div{border:1px solid var(--line);border-radius:12px;padding:6px 10px;text-align:center;min-width:64px;background:rgba(255,255,255,.04)}.fx-flow span{font-size:20px;display:block}.fx-flow b{font:700 18px var(--mono)}.fx-flow small{display:block;font-size:10.5px;color:var(--mute)}.fx-flow i{color:var(--mute);font-style:normal}
+.fx-flow .bn{border-color:#F87171;background:rgba(248,113,113,.14)}.fx-flow .bn b{color:#F87171}.fx-flow .me{box-shadow:0 0 0 2px rgba(250,204,21,.6)}.fx-flow .out{border-color:var(--neon)}.fx-flow .out b{color:var(--neon)}
+.fx-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.fx-o{border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,.03)}.fx-o .fx-i{font-size:26px}.fx-o>b{font:600 16px var(--display)}.fx-o p{margin:0;font-size:12.5px;color:#CBD5E1;line-height:1.4}.fx-o .btn{margin-top:auto}
+.fx-g{font-size:13px}.fx-g b{font:700 17px var(--mono);color:var(--neon)}.fx-g em{font-style:normal;font-weight:900;color:#062014;background:var(--neon);border-radius:6px;padding:1px 6px;margin-left:4px;font-size:12px}.fx-o small{color:var(--mute);font-size:11.5px}
+.stars3{display:flex;align-items:center;gap:4px;margin:2px 0 4px}.stars3 span{font-size:26px;color:rgba(255,255,255,.15)}.stars3 span.on{color:var(--yel);text-shadow:0 0 12px rgba(250,204,21,.6)}.stars3 small{margin-left:8px;color:var(--mute);font-size:12.5px}.stars3 small b{color:var(--yel)}
+@media (max-width:760px){#flow{top:auto;bottom:calc(150px + env(safe-area-inset-bottom,0px));width:auto;right:150px;max-height:30vh;padding:8px}.fl-t small{display:none}#mission{top:calc(232px + env(safe-area-inset-top,0px));width:auto;left:12px;padding:8px 12px 20px}.fx-opts{grid-template-columns:1fr}#toasts{top:calc(300px + env(safe-area-inset-top,0px))}}
 .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.mkc{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(56,189,248,.06)}.mkc span{font-size:26px}.mkc b{display:block;font-size:14px;margin:4px 0}.mkc small{color:var(--mute);font-size:11.5px;line-height:1.35;display:block}.mkc.lock{opacity:.45;background:none}
 /* report */
 .rep-top{display:flex;gap:16px;align-items:center}.gl{flex:none;width:86px;height:86px;border-radius:22px;display:grid;place-items:center;font:700 56px/1 var(--display);color:var(--gc);border:3px solid var(--gc);background:rgba(0,0,0,.25);box-shadow:0 0 30px color-mix(in srgb,var(--gc) 45%,transparent);animation:gIn .6s cubic-bezier(.2,1.6,.4,1)}@keyframes gIn{0%{transform:scale(2.2) rotate(-12deg);opacity:0}}
@@ -171,6 +194,7 @@ body.inmill #dock,body.inmill #btnStart,body.inmill #hPlant,body.inmill #clock,b
 </header>
 <div id="nextUp" class="glass" hidden><i></i><div><small>Next up</small><b></b></div></div>
 <div id="rush" hidden></div>
+<div id="flow" class="glass" hidden></div><div id="mission" class="glass" hidden></div><div id="fixPins"></div>
 <div id="twinPins"></div><div id="twinHud" class="glass"></div>
 <div id="millBar" class="glass" hidden><span>🔥 FIELD TRIP</span><b id="millName"></b><button class="btn sm" id="millExit">Exit tour</button></div>
 <button id="btnStart" hidden>▶ Start Shift</button>
@@ -5609,11 +5633,11 @@ const DOCK_IN_X=-16.2, LINE_GAP=11;
 const LZ=l=>-l*LINE_GAP;             /* belt z for line l */
 
 const STATIONS={
-  cut:  {name:'Laser Cutter', short:'Cut',   icon:'⚡', color:'#EF4444', cycle:5,
+  cut:  {name:'Laser Cutter', short:'Cut',   icon:'⚡', color:'#EF4444', cycle:4.5,
          blurb:'A laser hot enough to slice steel cuts sheets into parts.', game:'laser'},
-  weld: {name:'Welding Cell', short:'Weld',  icon:'🔥', color:'#3B82F6', cycle:8,
+  weld: {name:'Welding Cell', short:'Weld',  icon:'🔥', color:'#3B82F6', cycle:9,
          blurb:'Melts metal parts together into one strong frame.', game:'weld'},
-  asm:  {name:'Assembly',     short:'Build', icon:'🔩', color:'#F59E0B', cycle:7,
+  asm:  {name:'Assembly',     short:'Build', icon:'🔩', color:'#F59E0B', cycle:6.5,
          blurb:'Motors, batteries and wiring go in. A frame becomes a machine.', game:'assemble'},
   paint:{name:'Paint Booth',  short:'Paint', icon:'🎨', color:'#10B981', cycle:5, buildCost:1200,
          blurb:'Sprays the finish that keeps metal from rusting and makes it pop.', game:'paint'},
@@ -5646,7 +5670,7 @@ const STAGES=[
   {name:'Mega Plant',   lines:4, wide:true,  rent:1600, cost:180000, pitch:'Four lines, a robot fleet and your name on the skyline.'}
 ];
 
-const ECON={startCash:1500, beltSpeed:2.6, queueMax:9, contractBonus:1.25, marketCut:.85, returnFee:12,
+const ECON={startCash:1500, beltSpeed:2.6, queueMax:9, contractBonus:1.25, marketCut:.85, returnFee:12,hireFee:120,
   repairCrew:220, repairParts:40, serviceCost:60, crewTime:24, combo:20};
 
 const CLIENTS=['Bot City Toys','Gizmo Hub','Spark Mobility','Volt Ride Co.','Pixel Drones','Bluegrass Outdoor','Robo Rama','Fun Factory','Byte Store','Riverside Rentals','SkyLift Logistics','Kentucky Kart Club'];
@@ -5683,7 +5707,7 @@ let S=null;                 /* the saved game */
 const EV=[];                /* events for the view layer: {k, ...} */
 const emit=(ev,o)=>EV.push(Object.assign({},o||{},{ev}));
 
-function newStation(k,built){return {k,built:!!built,tier:0,q:[],cur:null,prog:0,out:null,wear:rand(0,.15),broken:false,crewT:0,boost:0,needsCode:false,util:0,made:0,blocked:false};}
+function newStation(k,built){return {k,built:!!built,tier:0,crew:1,q:[],cur:null,prog:0,out:null,wear:rand(0,.15),broken:false,crewT:0,boost:0,needsCode:false,util:0,made:0,blocked:false};}
 function newLine(i){const st={};ST_KEYS.forEach(k=>st[k]=newStation(k,k==='cut'||k==='weld'||k==='asm'));return {i,st,belt:[],job:{product:i===0?'kart':'toy',cid:null},spawnT:0};}
 function newGame(name){
   S={v:2,name:name||'Boss',cash:ECON.startCash,rep:50,day:1,stage:0,phase:'board',clock:0,speed:1,
@@ -5697,7 +5721,14 @@ function canMake(l,p){const P=PRODUCTS[p];if(P.stage>S.stage)return 'Unlocks at 
   const miss=P.needs.filter(k=>!l.st[k].built);if(miss.length)return 'Needs '+miss.map(k=>STATIONS[k].name).join(' + ');
   const bots=ST_KEYS.filter(k=>l.st[k].tier===2).length;if((P.robots||0)>bots)return `Needs ${P.robots} robot cell${P.robots>1?'s':''} on this line`;return '';}
 /* units per shift if nothing breaks: the slowest required station sets the pace */
-function capacity(l,p){const P=PRODUCTS[p||l.job.product];let best=1e9,by='';P.needs.forEach(k=>{const s=l.st[k],c=SHIFT_LEN*TIERS[s.tier].speed*techSpeed()/STATIONS[k].cycle;if(c<best){best=c;by=k;}});return {n:Math.floor(best*.93),by};}
+function capacity(l,p){const P=PRODUCTS[p||l.job.product];let best=1e9,by='';P.needs.forEach(k=>{const c=stationCap(l.st[k],k);if(c<best){best=c;by=k;}});return {n:Math.floor(best),by};}
+/* the speed of one station, and how many units it can do in a shift */
+const crewMul=s=>s.tier<2&&(s.crew||1)>=2?1.6:1;
+function stationSpeed(s){return TIERS[s.tier].speed*crewMul(s)*techSpeed();}
+function stationCap(s,k){return SHIFT_LEN*stationSpeed(s)/STATIONS[k].cycle*.93;}
+/* what the line would make if this station changed (for the fix card) */
+function previewCap(l,k,ch){const s=l.st[k],old={tier:s.tier,crew:s.crew};Object.assign(s,ch);const c=capacity(l);Object.assign(s,old);return c;}
+function hireCrew(li,k){const s=S.lines[li].st[k];if(s.tier===2)return 'Robots don\'t need a crew';if((s.crew||1)>=2)return 'Already has 2 workers';if(S.cash<ECON.hireFee)return 'Need '+money(ECON.hireFee);S.cash-=ECON.hireFee;if(S.today)S.today.capex+=ECON.hireFee;s.crew=2;emit('hired',{li,k});return '';}
 function bottleneckOf(l){return capacity(l).by;}
 
 /* ---------- contracts ---------- */
@@ -5728,11 +5759,11 @@ function boostStation(li,k,secs){const s=S.lines[li].st[k];s.boost=Math.max(s.bo
 
 /* ---------- the shift ---------- */
 function startShift(){S.phase='day';S.clock=0;S.today={rev:0,mat:0,capex:0,repairs:0,returns:0,retN:0,scrap:0,shipped:0,byLine:S.lines.map(()=>0),bonus:0,games:0,best:0};
-  S.today.oee=S.lines.map(()=>({plan:0,down:0,made:0,bad:0,ideal:0}));S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
+  S.today.goal=missionFor();S.today.oee=S.lines.map(()=>({plan:0,down:0,made:0,bad:0,ideal:0}));S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
 function itemsNear(l,x,y0){return l.belt.some(it=>Math.abs(it.x-x)<.86);}
 function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KEYS.filter(k=>need.includes(k)||(k==='qa'&&l.st.qa.built&&STAGES[S.stage].wide)),sx=shipX();
   /* OEE bookkeeping: planned time, downtime, ideal rate */
-  const O=S.today.oee&&S.today.oee[l.i];if(O){O.plan+=dt;if(route.some(k=>l.st[k].broken||l.st[k].needsCode))O.down+=dt;O.ideal=Math.min(...route.map(k=>TIERS[l.st[k].tier].speed*techSpeed()/STATIONS[k].cycle));}
+  const O=S.today.oee&&S.today.oee[l.i];if(O){O.plan+=dt;if(route.some(k=>l.st[k].broken||l.st[k].needsCode))O.down+=dt;O.ideal=Math.min(...route.map(k=>stationSpeed(l.st[k])/STATIONS[k].cycle));}
   /* release raw steel when the first stop has room */
   const first=l.st[route[0]];l.spawnT-=dt;
   if(l.spawnT<=0&&first.q.length+l.belt.filter(it=>it.next===route[0]).length<3&&!itemsNear(l,DOCK_IN_X+.4)){
@@ -5751,7 +5782,7 @@ function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KE
     if(s.broken){s.crewT-=dt;if(s.crewT<=0){fixStation(l.i,k,false);emit('crew',{li:l.i,k});}}
     else if(!s.needsCode){
       if(!s.cur&&!s.out&&s.q.length){s.cur=s.q.shift();s.prog=0;}
-      if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*T.speed*techSpeed()*(s.boost>0?2:1)/STATIONS[k].cycle;
+      if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*stationSpeed(s)*(s.boost>0?2:1)/STATIONS[k].cycle;
         s.wear+=dt*(s.tier===2?.0016:.0028);
         if(s.prog>=1){const it=s.cur;s.cur=null;s.prog=0;s.made++;
           if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;const O2=S.today.oee&&S.today.oee[l.i];if(O2){O2.made++;O2.bad++;}emit('scrap',{li:l.i});it.dead=true;}}
@@ -5778,10 +5809,11 @@ function stepShift(dt){if(S.phase!=='day')return;S.clock+=dt;
   if(S.rush){S.rush.t-=dt;if(S.rush.t<=0){emit('rushFail');S.rush=null;}}
   if(S.clock>=SHIFT_LEN)endShift();}
 function endShift(){S.phase='report';const T=S.today,st=S.lines.slice(0,lineCount()).flatMap(l=>stationsOn(l).map(k=>l.st[k]));
-  T.wages=st.reduce((a,s)=>a+TIERS[s.tier].wage,0);T.upkeep=st.reduce((a,s)=>a+TIERS[s.tier].upkeep,0);T.rent=STAGES[S.stage].rent;
+  T.wages=st.reduce((a,s)=>a+TIERS[s.tier].wage*(s.tier<2?(s.crew||1):0),0);T.upkeep=st.reduce((a,s)=>a+TIERS[s.tier].upkeep,0);T.rent=STAGES[S.stage].rent;
   /* anything still out there comes back at the end of the day */
   S.returnsQ.forEach(r=>{const c=r.v+ECON.returnFee;T.returns+=c;T.retN++;S.stats.returns++;S.rep=clamp(S.rep-.6,0,100);});S.returnsQ=[];
   if(!T.retN&&T.shipped)S.rep=clamp(S.rep+2,0,100);
+  const G2=T.goal;T.stars=G2?(T.shipped>=G2[2]?3:T.shipped>=G2[1]?2:T.shipped>=G2[0]?1:0):0;T.starBonus=T.stars*(60+S.stage*90);T.bonus+=T.starBonus;S.cash+=T.starBonus;S.stats.stars=(S.stats.stars||0)+T.stars;
   T.fixed=T.wages+T.rent+T.upkeep;T.variable=T.mat;T.net=T.rev+T.bonus-T.mat-T.fixed-T.repairs-T.returns;
   S.cash-=T.fixed+T.returns;
   T.unit=T.shipped?(T.mat+T.fixed+T.repairs)/T.shipped:null;
@@ -5796,6 +5828,8 @@ function buyTech(id){const T=TECH.find(x=>x.id===id);if(!T)return 'Unknown';S.te
 /* OEE = Availability x Performance x Quality */
 function oeeOf(o){if(!o||o.plan<1)return null;const run=Math.max(.001,o.plan-o.down),A=run/o.plan,Pf=Math.min(1,o.made/Math.max(.001,o.ideal*run)),Qu=o.made?(o.made-o.bad)/o.made:1;return {A,P:Pf,Q:Qu,v:A*Pf*Qu};}
 function plantOEE(T){T=T||S.today;if(!T||!T.oee)return null;const tot=T.oee.slice(0,lineCount()).reduce((a,o)=>({plan:a.plan+o.plan,down:a.down+o.down,made:a.made+o.made,bad:a.bad+o.bad,ideal:a.ideal+o.ideal*o.plan}),{plan:0,down:0,made:0,bad:0,ideal:0});if(tot.plan<1)return null;tot.ideal/=tot.plan;return oeeOf(tot);}
+/* each shift's mission: ship targets for 1, 2 and 3 stars */
+function missionFor(){const cap=S.lines.slice(0,lineCount()).reduce((a,l)=>a+capacity(l).n,0);return [Math.max(3,Math.round(cap*.72)),Math.max(4,Math.round(cap*.9)),Math.max(5,Math.round(cap*1.06))];}
 function nextDay(){S.day++;S.phase='board';makeOffers();}
 function grade(T){const pts=T.net+T.shipped*6-T.retN*30-T.late.length*200+T.games*40;const base=120+S.stage*260+S.lines.length*80;
   return pts>=base*3?'S':pts>=base*2?'A':pts>=base?'B':pts>=0?'C':'D';}
@@ -6623,7 +6657,7 @@ function buildPins(){const box=$('#twinPins');box.innerHTML='';TWIN.pins=[];S.li
 function stationState(l,k){const s=l.st[k],need=PRODUCTS[l.job.product].needs.includes(k)||(k==='qa'&&l.st.qa.built);if(s.broken)return ['DOWN','#F87171'];if(s.needsCode)return ['NEEDS PROGRAM','#FACC15'];if(!need)return ['IDLE · not used','#64748B'];if(s.blocked)return ['BLOCKED','#FB923C'];if(s.cur)return ['RUNNING','#39E75F'];return ['STARVED','#94A3B8'];}
 function updateTwin(dt){if(!TWIN.on||!S)return;TWIN.t-=dt;const refresh=TWIN.t<=0;if(refresh)TWIN.t=.3;
   TWIN.pins.forEach(p=>{const l=S.lines[p.li],s=l.st[p.k],pr=project(SLOT_X[p.k],3.2+(ST_KEYS.indexOf(p.k)%2)*1.9,LZ(p.li)-.4);if(!pr.on){p.e.style.display='none';return;}p.e.style.display='';p.e.style.transform=`translate(${pr.x}px,${pr.y}px) translate(-50%,-100%)`;
-    if(!refresh)return;const [st,c]=stationState(l,p.k),bn=capacity(l).by===p.k,cyc=STATIONS[p.k].cycle/(TIERS[s.tier].speed*techSpeed()),health=1-s.wear;
+    if(!refresh)return;const [st,c]=stationState(l,p.k),bn=capacity(l).by===p.k,cyc=STATIONS[p.k].cycle/stationSpeed(s),health=1-s.wear;
     p.e.style.setProperty('--c',c);p.e.classList.toggle('bn',bn&&PRODUCTS[l.job.product].needs.includes(p.k));
     p.e.innerHTML=`<b>${STATIONS[p.k].icon} ${STATIONS[p.k].short.toUpperCase()}<i>L${p.li+1}</i></b><span class="st">${st}</span><div class="kv"><span>Util</span><em>${pct(s.util)}</em><span>Cycle</span><em>${cyc.toFixed(1)}s</em><span>Queue</span><em>${s.q.length}</em><span>Health</span><em style="color:${oeeColor(health)}">${pct(health)}</em></div><i class="hb"><s style="width:${pct(health)};background:${oeeColor(health)}"></s></i>${bn?'<u>BOTTLENECK</u>':''}`;});
   if(refresh){const live=S.phase==='day'?plantOEE():S.hist.length?plantOEE(S.hist[S.hist.length-1]):null;
@@ -6759,6 +6793,56 @@ const MILL_GAMES={
     $('#roBtn').onclick=()=>{initAudio();if(!started){started=true;$('#roBtn').textContent='🔥 ROLL!';x=-w*.2;mgTimer(MG_INFO[kind].secs,dt=>{x+=dir*dt*w*(.55+pass*.12);if(x>w*1.1){dir=-1;}if(x<-w*.1){dir=1;}draw(dt);if(pass>=5)MG.stop=true;$('#mgP').style.width=(pass/5*100)+'%';},()=>mgFinish(kind,pass/5-miss*.06,ctx));return;}
       if(Math.abs(x-w/2)<w*.08){pass=Math.min(5,pass+1);flash=.2;sfx('clang');mgSpark(P2,w/2,h*.6,18,['#FFD27A','#FF5A00','#fff']);}else{miss++;sfx('bad');}};draw(0);}};
 
+/* ---- flow.js ---- */
+/* =====================================================================
+   BOTFACTORY · the bottleneck game
+   Line Flow bar · FIX pins on the floor · fix card with 3 choices and
+   instant feedback · shift missions with stars
+   ===================================================================== */
+const FLOW={t:0,pins:[],lastCap:{}};
+const WORKER={cut:'laser operator',weld:'welder',asm:'assembler',paint:'painter',qa:'inspector'};
+function routeOf(l){const need=PRODUCTS[l.job.product].needs;return ST_KEYS.filter(k=>need.includes(k));}
+function flowHTML(){if(!S)return '';return S.lines.slice(0,lineCount()).map(l=>{const r=routeOf(l),caps=r.map(k=>stationCap(l.st[k],k)),mx=Math.max(...caps),cap=capacity(l);
+  return `<div class="fl"><div class="fl-h"><b>Line ${l.i+1}</b><span>${PRODUCTS[l.job.product].icon} makes <b>${cap.n}</b>/shift</span></div>${r.map((k,i)=>{const bn=k===cap.by,s=l.st[k];return `<button class="fc ${bn?'bn':''} ${s.broken?'down':''}" data-fix="${l.i}:${k}"><span>${STATIONS[k].icon}</span><i><s style="width:${Math.max(8,caps[i]/mx*100)}%"></s></i><b>${Math.floor(caps[i])}</b>${bn?'<em>SLOWEST</em>':''}</button>`;}).join('<u>›</u>')}</div>`;}).join('');}
+function renderFlow(){const el=$('#flow');if(!S||titleOn()||MILL.on||TWIN.on){el.hidden=true;return;}el.hidden=false;const h=flowHTML();if(el.dataset.h!==h){el.innerHTML=`<div class="fl-t">LINE FLOW <small>units per shift</small></div>`+h;el.dataset.h=h;}}
+/* floating FIX button over each line's bottleneck */
+function updateFixPins(){const box=$('#fixPins');if(!S||titleOn()||MILL.on||TWIN.on||modalOpen()||camS.mode==='cine'){box.innerHTML='';FLOW.pins=[];return;}
+  const want=S.lines.slice(0,lineCount()).map(l=>{const b=capacity(l).by,s=l.st[b];const show=S.phase==='board'?upgradeCost(l,b)!=null||s.tier<2:s.q.length>=3||s.broken;return show?{li:l.i,k:b}:null;}).filter(Boolean);
+  const key=want.map(w=>w.li+w.k).join();if(key!==box.dataset.k){box.dataset.k=key;box.innerHTML=want.map(w=>`<button class="fixpin" data-fix="${w.li}:${w.k}">🔧 FIX<small>bottleneck</small></button>`).join('');FLOW.pins=want.map((w,i)=>Object.assign(w,{e:box.children[i]}));}
+  FLOW.pins.forEach(p=>{const pr=project(SLOT_X[p.k],5.1,LZ(p.li)-.6);p.e.style.display=pr.on?'':'none';p.e.style.transform=`translate(${pr.x}px,${pr.y}px) translate(-50%,-100%)`;});}
+/* the fix card: three ways to beat a bottleneck */
+function fixCard(li,k,tut){const l=S.lines[li],s=l.st[k],D=STATIONS[k],cap=capacity(l),r=routeOf(l),cost=upgradeCost(l,k),nt=s.tier<2?TIERS[s.tier+1]:null;
+  const upP=nt?previewCap(l,k,{tier:s.tier+1}):null,hrP=s.tier<2&&(s.crew||1)<2?previewCap(l,k,{crew:2}):null,day=S.phase==='day',isBn=cap.by===k;
+  const gain=p=>p?`<div class="fx-g"><b>${cap.n} → ${p.n}</b>/shift ${p.n>cap.n?`<em>+${p.n-cap.n}</em>`:''}</div><small>${p.by!==k?`Next slowest: ${STATIONS[p.by].icon} ${STATIONS[p.by].name}`:'Still the slowest, but faster'}</small>`:'';
+  const C=openModal(`${tut?'<div class="tut">⏸ Paused · You found your first bottleneck!</div>':''}<button class="x" id="fxX">×</button><div class="eyebrow">${isBn?'Bottleneck':'Station'} · Line ${li+1}</div><h2>${D.icon} ${isBn?`The ${D.name} is slowing your whole line`:D.name}</h2>
+    <div class="fx-flow">${r.map(x=>`<div class="${x===cap.by?'bn':''} ${x===k?'me':''}"><span>${STATIONS[x].icon}</span><b>${Math.floor(stationCap(l.st[x],x))}</b><small>${STATIONS[x].short}</small></div>`).join('<i>›</i>')}<div class="out"><span>🚚</span><b>${cap.n}</b><small>shipped</small></div></div>
+    <p class="sub">${isBn?`Your line can only ship as many as its <b>slowest</b> station. The other stations end up waiting, and crates pile up in front of this one. <b>Speed this station up and the whole line speeds up.</b>`:`This station isn't your bottleneck right now. Upgrading it won't speed up the line until it is.`}</p>
+    <div class="fx-opts">
+      <div class="fx-o"><div class="fx-i">⬆</div><b>${nt?'Upgrade to '+nt.name:'Fully upgraded'}</b><p>${nt?`${nt.speed}× speed, fewer defects${s.tier+1===2?', no wages (robot)':''}. <b>One-time cost.</b>`:'This station is a robot cell already.'}</p>${gain(upP)}${nt?`<button class="btn pri" data-opt="up" ${S.cash<cost?'disabled':''}>Upgrade · ${money(cost)}</button>`:''}</div>
+      <div class="fx-o"><div class="fx-i">👷</div><b>${hrP?'Hire a 2nd '+WORKER[k]:s.tier===2?'Robots need no crew':'2 workers already'}</b><p>${hrP?`1.6× speed right away. <b>Costs ${money(TIERS[s.tier].wage)} every shift</b> in wages (a fixed cost).`:'Upgrade instead to go faster.'}</p>${gain(hrP)}${hrP?`<button class="btn" data-opt="hire" ${S.cash<ECON.hireFee?'disabled':''}>Hire · ${money(ECON.hireFee)}</button>`:''}</div>
+      <div class="fx-o"><div class="fx-i">${D.icon}</div><b>Work it yourself</b><p>Nail the hands-on job for <b>2× speed</b> for about 25 seconds. <b>Free</b>, but it doesn't last.</p>${day&&s.tier<2&&!s.broken?`<button class="btn" data-opt="play">Do it now ▶</button>`:`<small class="muted">${s.tier===2?'Robot cells run themselves.':'Available during a shift.'}</small>`}</div></div>
+    <p class="muted small">💡 Pay once (upgrade), pay every shift (workers), or put in the effort yourself. Real plant managers make this call every day.</p>`,{cls:'dark panel wide fixcard'});
+  const close=()=>{closeModal();if(tut&&S.phase==='day'&&!S.speed){S.speed=1;renderHUD();}};C.querySelector('#fxX').onclick=close;
+  C.querySelectorAll('[data-opt]').forEach(b=>b.onclick=()=>{const o=b.dataset.opt,before=cap.n;
+    if(o==='play'){close();startGame(D.game,li,k);return;}
+    const e=o==='up'?upgrade(li,k):hireCrew(li,k);if(e){toast(e,'bad');return;}close();if(o==='up')afterUpgrade(li,k);else{syncStations();sfx('good');}
+    celebrateFix(li,before);});}
+function celebrateFix(li,before){const l=S.lines[li],now=capacity(l),z=LZ(li);renderFlow();
+  if(now.n>before){floatAt(SLOT_X[l.st[now.by]?now.by:'asm'],4,z,`LINE ${li+1}: ${before} → ${now.n}/shift`,'#39E75F',true);sfx('win');confetti(70);
+    toast(`📈 <b>Line ${li+1} now ships ${now.n}/shift</b> (+${now.n-before})<br>New slowest station: ${STATIONS[now.by].icon} <b>${STATIONS[now.by].name}</b>`,'good');
+    if(!S.flags.bnNext){S.flags.bnNext=1;setTimeout(()=>advise(`See that? Once you fixed it, the <b>${STATIONS[now.by].name}</b> became the new bottleneck. There's <b>always</b> a slowest station. Great managers keep hunting it.`,12000),1200);}}
+  else toast('Faster station, but the line is still limited by another station. Look for the red SLOWEST tag.','warn');}
+/* first bottleneck: pause and teach */
+function bottleneckTutor(){if(!S||S.phase!=='day'||S.flags.bnTut||modalOpen()||camS.mode==='cine'||MG.on||MILL.on)return;
+  for(const l of S.lines.slice(0,lineCount())){const b=capacity(l).by;if(l.st[b].q.length>=4){S.flags.bnTut=1;S.speed=0;renderHUD();sfx('alarm');fixCard(l.i,b,true);return;}}}
+/* mission bar */
+function renderMission(){const el=$('#mission');if(!S||titleOn()||MILL.on){el.hidden=true;return;}const g=S.phase==='day'&&S.today&&S.today.goal?S.today.goal:missionFor(),got=S.phase==='day'&&S.today?S.today.shipped:0,mx=g[2]*1.08;el.hidden=false;
+  const st=got>=g[2]?3:got>=g[1]?2:got>=g[0]?1:0;const h=`<div class="ms-h"><span>🎯 ${S.phase==='day'?'SHIFT GOAL':'NEXT SHIFT GOAL'}</span><b>${got} shipped</b></div><div class="ms-b"><i style="width:${Math.min(100,got/mx*100)}%"></i>${g.map((v,i)=>`<em class="${got>=v?'on':''}" style="left:${v/mx*100}%"><s>${'★'.repeat(i+1)}</s><small>${v}</small></em>`).join('')}</div>`;
+  if(el.dataset.h!==h){if(el.dataset.st&&+el.dataset.st<st){sfx('win');floatAt(P.pos.x,2.6,P.pos.z,'★'.repeat(st)+' GOAL HIT!','#FACC15',true);}el.dataset.st=st;el.innerHTML=h;el.dataset.h=h;}}
+function initFlow(){$('#flow').addEventListener('click',e=>{const b=e.target.closest('[data-fix]');if(b&&!blocked()){const [li,k]=b.dataset.fix.split(':');fixCard(+li,k);}});
+  $('#fixPins').addEventListener('click',e=>{const b=e.target.closest('[data-fix]');if(b&&!blocked()){const [li,k]=b.dataset.fix.split(':');fixCard(+li,k);}});}
+function tickFlow(dt){FLOW.t-=dt;if(FLOW.t<=0){FLOW.t=.4;renderFlow();renderMission();bottleneckTutor();}updateFixPins();}
+
 /* ---- main.js ---- */
 /* =====================================================================
    BOTFACTORY · game glue: HUD, panels, interactions, Next Up, shift loop
@@ -6796,6 +6880,7 @@ function panelUpgrades(){const lines=S.lines.slice(0,lineCount());return `<div c
     return `<div class="up ${bn?'bn':''} ${s.built?'':'unb'}"><div class="up-h"><span class="up-ic" style="--c:${D.color}">${D.icon}</span><div><b>${D.name}</b>${s.built?tierPips(s.tier)+` <small>${T.name}</small>`:'<small>Not built</small>'}</div>${bn?'<em class="bnb">BOTTLENECK</em>':''}</div>
       <p>${D.blurb}</p>${s.built?`<div class="up-st"><span>Speed <b>${T.speed}×</b></span><span>Defects <b>${Math.round(T.defect*100)}%</b></span><span>${T.wage?`Wage <b>${money(T.wage)}</b>`:'No wages'}</span></div>`:''}
       ${c!=null?`<button class="btn ${bn?'pri':''} sm" data-up="${l.i}:${k}" ${S.cash<c?'disabled':''}>${s.built?`⬆ ${N.name}`:'🏗 Build'} · ${money(c)}</button>${N?`<small class="up-n">→ ${N.speed}× speed, ${Math.round(N.defect*100)}% defects${s.tier+1===2?', robot: no wages, $45/shift upkeep':''}</small>`:''}`:'<span class="maxd">MAXED</span>'}
+      ${s.built&&s.tier<2&&(s.crew||1)<2?`<button class="btn ghost sm" data-hire="${l.i}:${k}" ${S.cash<ECON.hireFee?'disabled':''}>👷 Hire 2nd ${WORKER[k]} · ${money(ECON.hireFee)} <small>1.6× speed, +${money(T.wage)}/shift</small></button>`:s.built&&s.tier<2?'<small class="up-n">👷👷 2 workers on this station</small>':''}
       ${s.built&&s.wear>.45?`<button class="btn ghost sm" data-svc="${l.i}:${k}">🧰 Service · ${money(ECON.serviceCost)} <small>wear ${Math.round(s.wear*100)}%</small></button>`:''}</div>`;}).join('')}</div>`).join('');}
 function panelContracts(){const lines=S.lines.slice(0,lineCount());
   return `<div class="eyebrow">Contracts</div><h2>What should your lines make?</h2><p class="sub">Contracts pay <b>more</b> than the open market, but you have to deliver on time. Check your line can make enough per shift before you sign.</p>
@@ -6825,6 +6910,7 @@ function panelMakers(){const seen=(S.flags.careersShown)||{};return `<div class=
   <div class="mk-grid">${Object.keys(CAREERS).map(k=>{const c=CAREERS[k];return seen[k]?`<div class="mkc"><span>${c.icon}</span><b>${c.role}</b><small>${c.path.split('.')[0]}.</small></div>`:`<div class="mkc lock"><span>🔒</span><b>???</b><small>Keep playing to meet this one</small></div>`;}).join('')}</div>`;}
 function bindPanel(C,k){
   C.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.up.split(':');const e=upgrade(+li,key);if(e){toast(e,'bad');return;}afterUpgrade(+li,key);refreshPanel();});
+  C.querySelectorAll('[data-hire]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.hire.split(':');const before=capacity(S.lines[+li]).n,e=hireCrew(+li,key);if(e){toast(e,'bad');return;}syncStations();celebrateFix(+li,before);refreshPanel();});
   C.querySelectorAll('[data-svc]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.svc.split(':');const e=service(+li,key);if(e)toast(e,'bad');else{toast('🧰 Serviced. Fresh machines break down less.','good');sfx('good');}refreshPanel();});
   C.querySelectorAll('[data-prod]').forEach(b=>b.onclick=()=>{const [li,p]=b.dataset.prod.split(':');const e=setProduct(+li,p);if(e)toast(e,'bad');else sfx('tick');refreshPanel();});
   C.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{const [id,li]=b.dataset.acc.split(':');const e=acceptOffer(+id,+li);if(e)toast(e,'bad');else{sfx('good');tagToday('contract');}refreshPanel();});
@@ -6854,7 +6940,9 @@ function nearestAct(){if(!S||blocked())return null;if(MILL.on)return millAct();c
   if(!s.built)return {t:`Build ${D.name} · ${money(D.buildCost)}`,ic:'🏗',f:()=>{const e=upgrade(li,k);if(e)toast(e,'bad');else afterUpgrade(li,k);}};
   if(s.broken)return {t:`Fix the ${D.name}`,ic:'🛠️',hot:1,f:()=>startGame('repair',li,k)};
   if(s.needsCode)return {t:`Program the robot`,ic:'💻',hot:1,f:()=>startGame('program',li,k)};
-  if(S.phase!=='day'){const c=upgradeCost(l,k);return c!=null?{t:`Upgrade ${D.name} · ${money(c)}`,ic:'⬆',f:()=>openPanel('upgrades')}:{t:`${D.name} is maxed`,ic:'✓',f:()=>openPanel('upgrades')};}
+  const isBn=capacity(l).by===k&&PRODUCTS[l.job.product].needs.includes(k);
+  if(S.phase!=='day')return {t:isBn?`Fix the bottleneck: ${D.name}`:`Upgrade the ${D.name}`,ic:isBn?'🔧':'⬆',hot:isBn,f:()=>fixCard(li,k)};
+  if(isBn&&s.q.length>=3)return {t:`Fix the bottleneck: ${D.name}`,ic:'🔧',hot:1,f:()=>fixCard(li,k)};
   if(s.tier===2)return {t:`Robot cell running`,ic:'🤖',f:()=>openPanel('upgrades')};
   const cd=(S.gameCD[li+k]||0)-S.clock;if(cd>0)return {t:`Hands-on ready in ${Math.ceil(cd)}s`,ic:'⏳',f:null};
   return {t:`Work the ${D.name}`,ic:D.icon,hot:l.st[k].q.length>=4,f:()=>startGame(D.game,li,k)};}
@@ -6876,7 +6964,7 @@ function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const 
   if(S.phase==='board'){if(S.day===1&&!S.hist.length)return {t:'Press Start Shift to fire up your line',k:'▶'};
     if(nx&&S.cash>=nx.cost)return {t:`You can afford the ${nx.name}! Head to the Expansion Office`,k:'🏗',hot:1,x:W.kiosk.x,z:W.kiosk.z+1};
     if(S.stage>=1){for(const l of lines)for(const k of ['paint','qa'])if(!l.st[k].built&&S.cash>=STATIONS[k].buildCost)return {t:`Build a ${STATIONS[k].name} on Line ${l.i+1}`,k:STATIONS[k].icon,...fr(l.i,k)};}
-    for(const l of lines){const b=capacity(l).by,c=upgradeCost(l,b);if(c!=null&&S.cash>=c)return {t:`Upgrade your bottleneck: ${STATIONS[b].name}`,k:'⬆',...fr(l.i,b)};}
+    for(const l of lines){const b=capacity(l).by,c=upgradeCost(l,b);if((c!=null&&S.cash>=c)||(l.st[b].tier<2&&(l.st[b].crew||1)<2&&S.cash>=ECON.hireFee))return {t:`Speed up your bottleneck: ${STATIONS[b].name}. Tap 🔧 FIX`,k:'🔧',hot:1,...fr(l.i,b)};}
     for(const T of TECH)if(!S.tech[T.id]&&T.stage<=S.stage&&S.cash>=T.cost+300)return {t:`Unlock new tech: ${T.icon} ${T.name}`,k:'🤖'};
     if(S.day>=2&&!S.flags.millDone)return {t:'New field trip! Open Tech and take the Steel Mill Tour',k:'🔥'};
     return {t:nx?`Save up ${short(nx.cost)} to build the ${nx.name}`:'Start the next shift',k:'💰'};}
@@ -6884,7 +6972,7 @@ function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const 
   for(const l of lines)for(const k of ST_KEYS)if(l.st[k].built&&l.st[k].broken)return {t:`${STATIONS[k].name} broke down! Go fix it`,k:'⚠️',hot:1,...fr(l.i,k)};
   for(const l of lines)for(const k of ST_KEYS)if(l.st[k].needsCode)return {t:`Program your new robot cell`,k:'💻',hot:1,...fr(l.i,k)};
   if(S.rush)return {t:`Rush truck! Ship ${S.rush.need-S.rush.got} more fast. Boost a station!`,k:'🚚',hot:1,...(()=>{const l=lines[0],b=capacity(l).by;return l.st[b].tier<2?fr(0,b):{};})()};
-  for(const l of lines){let w=null,wq=4;ST_KEYS.forEach(k=>{if(l.st[k].q.length>=wq){wq=l.st[k].q.length;w=k;}});if(w)tagToday('bottleneck');if(w&&l.st[w].tier<2&&(S.gameCD[l.i+w]||0)<=S.clock)return {t:`Crates piling up at ${STATIONS[w].name}! Work it yourself`,k:'📦',hot:1,...fr(l.i,w)};}
+  for(const l of lines){let w=null,wq=4;ST_KEYS.forEach(k=>{if(l.st[k].q.length>=wq){wq=l.st[k].q.length;w=k;}});if(w)tagToday('bottleneck');if(w&&w===capacity(l).by)return {t:`Crates piling up! ${STATIONS[w].name} is your bottleneck. Tap 🔧 FIX`,k:'📦',hot:1,...fr(l.i,w)};}
   let best=null,bd=1e9;for(const l of lines)for(const k of PRODUCTS[l.job.product].needs){const s=l.st[k];if(s.tier<2&&s.built&&(S.gameCD[l.i+k]||0)<=S.clock){const f=fr(l.i,k),d=Math.hypot(P.pos.x-f.x,P.pos.z-f.z);if(d<bd){bd=d;best={k2:k,li:l.i,...f};}}}
   if(best)return {t:`Get hands-on: work the ${STATIONS[best.k2].name} for a speed boost`,k:STATIONS[best.k2].icon,x:best.x,z:best.z};
   return {t:'Line is humming. Watch for jams and breakdowns',k:'👀'};}
@@ -6907,7 +6995,7 @@ function drainEvents(){while(EV.length){const e=EV.shift();const L=W.lines[e.li]
   if(e.ev==='rush'){sfx('horn');toast(`🚚 <b>Rush truck!</b> Ship ${e.r.need} in ${e.r.t}s for a ${money(e.r.bonus)} bonus`,'gold');sendTruck(0,'ship');}
   if(e.ev==='rushDone'){toast(`🚚 Rush delivered! <b>+${money(e.b)}</b>`,'good');sfx('win');confetti(80);}
   if(e.ev==='rushFail')toast('The rush truck left without a full load.','warn');
-  if(e.ev==='report'){slam('SHIFT COMPLETE',(e.T.net>=0?'+':'')+money(e.T.net),e.T.net>=0?'#39E75F':'#F87171',2000);sfx('win');setTimeout(()=>shiftReport(e.T),1900);}}}
+  if(e.ev==='report'){slam('SHIFT COMPLETE',('★'.repeat(e.T.stars)+'☆'.repeat(3-e.T.stars))+'  '+(e.T.net>=0?'+':'')+money(e.T.net),e.T.net>=0?'#39E75F':'#F87171',2000);sfx('win');setTimeout(()=>shiftReport(e.T),1900);}}}
 
 /* ---------- shift report ---------- */
 function lessonOf(T){const nx=STAGES[S.stage+1];
@@ -6919,7 +7007,7 @@ function lessonOf(T){const nx=STAGES[S.stage+1];
   return 'Every product past break-even is pure profit. Margin × volume is the whole game.';}
 function shiftReport(T){const gr=grade(T),gc={S:'#FACC15',A:'#39E75F',B:'#38BDF8',C:'#F59E0B',D:'#F87171'}[gr],row=(a,b,c)=>`<div class="pr ${c||''}"><span>${a}</span><b>${b<0?'−':''}${money(Math.abs(b))}</b></div>`;
   if(gr==='S'||gr==='A'){confetti(120);sfx('win');}else sfx('good');
-  const C=openModal(`<div class="rep"><div class="rep-top"><div class="gl" style="--gc:${gc}">${gr}</div><div><div class="eyebrow">Shift ${T.day} report · ${STAGES[T.stage].name}</div><h2 class="${T.net>=0?'g':'r'}">${T.net>=0?'Profit':'Loss'} ${money(T.net)}</h2><p class="sub">${T.shipped} shipped${T.games?` · ${T.games} hands-on job${T.games>1?'s':''}`:''}${T.bonus?` · ${money(T.bonus)} in bonuses`:''}</p></div></div>
+  const C=openModal(`<div class="rep"><div class="rep-top"><div class="gl" style="--gc:${gc}">${gr}</div><div><div class="eyebrow">Shift ${T.day} report · ${STAGES[T.stage].name}</div><h2 class="${T.net>=0?'g':'r'}">${T.net>=0?'Profit':'Loss'} ${money(T.net)}</h2><div class="stars3">${[1,2,3].map(i=>`<span class="${T.stars>=i?'on':''}">★</span>`).join('')}<small>Goal ${T.goal?T.goal.join(' / '):''}${T.starBonus?` · <b>+${money(T.starBonus)}</b> star bonus`:''}</small></div><p class="sub">${T.shipped} shipped${T.games?` · ${T.games} hands-on job${T.games>1?'s':''}`:''}${T.bonus?` · ${money(T.bonus)} in bonuses`:''}</p></div></div>
     <div class="pl">${row('Sales',T.rev)}${T.bonus?row('Contract & rush bonuses',T.bonus):''}
       <div class="ph">Variable costs <small>go up with every product</small></div>${row('Steel & parts',-T.mat)}
       <div class="ph">Fixed costs <small>same if you make 0 or 1,000</small></div>${row('Rent',-T.rent)}${T.wages?row('Wages',-T.wages):''}${T.upkeep?row('Machine upkeep',-T.upkeep):''}${T.repairs?row('Repairs & service',-T.repairs,'bad'):''}${T.returns?row(`Refunds (${T.retN} returned)`,-T.returns,'bad'):''}
@@ -6957,7 +7045,7 @@ async function boot(){const bar=$('#loadfill');bar.style.width='15%';initThree()
   P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
   /* a demo factory behind the title */
   newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
-  initInput();bindUI();renderer.compile(scene,camera);bar.style.width='100%';
+  initInput();bindUI();initFlow();renderer.compile(scene,camera);bar.style.width='100%';
   $('#btnNew').disabled=false;$('#btnNew').textContent='Build my factory';if(load())$('#btnCont').hidden=false;$('#loadbar').style.visibility='hidden';
   camera.position.set(30,30,60);requestAnimationFrame(frame);}
 let last=performance.now();
@@ -6968,7 +7056,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
     UI.gT-=dt;if(UI.gT<=0){UI.gT=.15;updateGoal();renderHUD();renderRush();updateAct();}
     $('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';
     if(!blocked()||camS.mode==='cine')updatePlayer(dt);else P.rig.mixer.update(dt);}
-  if(S)updateCine(dt,t,UI.demo||running());updateMill(dt,t);updateTwin(dt);
+  if(S)updateCine(dt,t,UI.demo||running());updateMill(dt,t);updateTwin(dt);if(S&&!UI.demo)tickFlow(dt);
   updateWorld(dt,t,UI.demo||running());stepFX(dt);updateBeacon(dt,t);updateCamera(dt,t);drawConfetti();renderFrame(t);}
 window.BF={get S(){return S;},startShift,stepShift,endShift,upgrade,expand:doExpand,startGame,openPanel,P,camS,W,playGame,setSpeed};
 boot().catch(e=>{console.error(e);$('#btnNew').textContent='Could not load: '+e.message;});
