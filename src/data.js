@@ -1,67 +1,64 @@
-/* ===================== BotFactory · data & tuning ===================== */
-const fmt=(n,d=0)=>(n<0?'-':'')+'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
-const fmt2=n=>fmt(n,2);
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), rand=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.length)], lerp=(a,b,t)=>a+(b-a)*t;
-const randi=(a,b)=>Math.floor(rand(a,b+1));
+/* =====================================================================
+   BOTFACTORY · data: stations, upgrades, products, plant stages, tuning
+   ===================================================================== */
+const SHIFT_LEN=150;                 /* seconds of sim time in one shift */
+const ST_KEYS=['cut','weld','asm','paint','qa'];
+const SLOT_X={cut:-11,weld:-5.5,asm:0,paint:5.5,qa:11};
+const DOCK_IN_X=-16.2, LINE_GAP=11;
+const LZ=l=>-l*LINE_GAP;             /* belt z for line l */
 
-/* grid: 18 x 12 cells of 2m. The garage is the top-left 10 x 6 corner. */
-const CELL=2, COLS=18, ROWS=12, OX=-COLS*CELL/2, OZ=-ROWS*CELL/2;
-const GARAGE={c0:0,r0:0,c1:9,r1:5}, BIG={c0:0,r0:0,c1:17,r1:11};
-const DX=[1,0,-1,0], DZ=[0,1,0,-1];
-const DAY_LEN=75, DAYS=10;
-
-/* stages: 0 steel sheet → 1 parts → 2 bare bot → 3 painted bot */
-const MACH={
-  stamper:  {name:'Stamper',        short:'Stamp',   key:'2', cost:500, cycle:1.6, from:0, to:1, defect:.03, color:'#3B82F6', icon:'⬇', desc:'Presses steel sheets into robot parts.'},
-  assembler:{name:'Assembler',      short:'Assemble',key:'3', cost:700, cycle:3.2, from:1, to:2, defect:.03, color:'#F97316', icon:'⚙', desc:'Bolts parts into a MiniBot body. Slowest job on the line.'},
-  painter:  {name:'Painter',        short:'Paint',   key:'4', cost:600, cycle:2.2, from:2, to:3, defect:.03, color:'#10B981', icon:'🎨', desc:'Sprays the MoneyBot green finish. Paint costs $2 a bot.', vc:2},
-  qa:       {name:'QA Scanner',     short:'QA',      key:'5', cost:400, cycle:1.2, kind:'qa',   color:'#A855F7', icon:'🔍', desc:'Scans painted bots and scraps defects before a customer finds them.'},
-  packer:   {name:'Packer',         short:'Pack',    key:'6', cost:450, cycle:1.5, kind:'pack', color:'#EAB308', icon:'📦', desc:'Boxes painted bots. Boxed bots sell for +$6; a box costs $1.50.', vc:1.5},
-  chip:     {name:'Chip Installer', short:'Chip',    key:'7', cost:900, cycle:2.6, kind:'chip', color:'#EC4899', icon:'💾', desc:'Adds a smart chip ($9). Deluxe bots sell for +$25.', vc:9, big:true}
+const STATIONS={
+  cut:  {name:'Laser Cutter', short:'Cut',   icon:'⚡', color:'#EF4444', cycle:5,
+         blurb:'A laser hot enough to slice steel cuts sheets into parts.', game:'laser'},
+  weld: {name:'Welding Cell', short:'Weld',  icon:'🔥', color:'#3B82F6', cycle:8,
+         blurb:'Melts metal parts together into one strong frame.', game:'weld'},
+  asm:  {name:'Assembly',     short:'Build', icon:'🔩', color:'#F59E0B', cycle:7,
+         blurb:'Motors, batteries and wiring go in. A frame becomes a machine.', game:'assemble'},
+  paint:{name:'Paint Booth',  short:'Paint', icon:'🎨', color:'#10B981', cycle:5, buildCost:1200,
+         blurb:'Sprays the finish that keeps metal from rusting and makes it pop.', game:'paint'},
+  qa:   {name:'QA Scanner',   short:'QA',    icon:'🔍', color:'#A855F7', cycle:3, buildCost:900,
+         blurb:'Scans every unit and pulls defects before a customer ever sees them.', game:'qa'}
 };
-const CORE=['stamper','assembler','painter'];
+/* each station climbs: Manual → Power Tools → Robot Cell */
+const TIERS=[
+  {name:'Manual',      speed:1,   defect:.10, wage:60, upkeep:0,  tag:'1 worker'},
+  {name:'Power Tools', speed:2,   defect:.05, wage:70, upkeep:10, tag:'1 worker + machine'},
+  {name:'Robot Cell',  speed:4.2, defect:.015,wage:0,  upkeep:45, tag:'robot, no wages'}
+];
+const UP_COST={cut:[0,700,2600], weld:[0,900,3200], asm:[0,800,3000], paint:[0,900,2800], qa:[0,700,2400]};
 
-const ECON={
-  startCash:4000, loan:3000, loanInt:25, rentGarage:120, rentBig:260, wage:75,
-  autoCost:900, autoUpkeep:20, upkeepPct:.02, belt:5, startStock:30, maxStock:150,
-  release:1.0, beltSpeed:1.5, deliveryTime:12, holdSheet:.25, holdBot:.5,
-  returnFee:5, boxBonus:6, deluxeBonus:25, expandCost:2000, expandNeed:60,
-  crew2:1.7, auto:2.1, rush:1.35, rushDefect:2.5, autoDefect:.35, emergency:1500, emergencyInt:20
+const PRODUCTS={
+  toy:    {name:'MiniBot Toy',   icon:'🤖', needs:['cut','asm'],                      price:34,  mat:11,  stage:0},
+  kart:   {name:'Go-Kart Frame', icon:'🏎️', needs:['cut','weld','asm'],               price:62,  mat:18,  stage:0},
+  drone:  {name:'Drone',         icon:'🛸', needs:['cut','weld','asm','paint'],       price:118, mat:34,  stage:1},
+  scooter:{name:'E-Scooter',     icon:'🛴', needs:['cut','weld','asm','paint','qa'],  price:175, mat:52,  stage:1},
+  dog:    {name:'Robot Dog',     icon:'🐕', needs:['cut','weld','asm','paint','qa'],  price:290, mat:88,  stage:2, robots:1},
+  ev:     {name:'MoneyBot Mini EV', icon:'🚗', needs:['cut','weld','asm','paint','qa'], price:640, mat:210, stage:3, robots:3}
 };
-const BULK=[{n:20,each:7},{n:50,each:6},{n:100,each:5.2}];
-const CLIENTS=['Toy Mart','Gizmo Hub','Pixel Toys','Bolt Bros','Kidz Galaxy','Byte Store','Robo Rama','Fun Factory','Spark Shop'];
 
-/* demand curve: how many bots the open market buys per day at a given price */
-function marketDemand(price, rep, expanded, rival){
-  let d=(expanded?105:62)*clamp(1-(price-15)/52,0,1.25)*(.55+rep/100*.9);
-  if(rival && price>rival.price+2) d*=.5;
-  return Math.max(0,d);
-}
-
-const MILESTONES=[
-  {id:'first',  t:'Ship your first MiniBot'},
-  {id:'order',  t:'Finish a customer order on time'},
-  {id:'profit', t:'Have a profitable day'},
-  {id:'ship60', t:'Ship 60 MiniBots (unlocks the big floor)'},
-  {id:'expand', t:'Move into the big factory'},
-  {id:'deluxe', t:'Ship a Deluxe MiniBot'},
-  {id:'ship300',t:'Ship 300 MiniBots'}
+/* the factory grows. Each stage physically builds out. */
+const STAGES=[
+  {name:'Garage Shop',  lines:1, wide:false, rent:120,  cost:0,      pitch:'A dusty garage, three stations and a dream.'},
+  {name:'Workshop',     lines:1, wide:true,  rent:220,  cost:4500,   pitch:'Knock out the east wall: Paint Booth, QA Scanner, bigger products.'},
+  {name:'Factory',      lines:2, wide:true,  rent:480,  cost:16000,  pitch:'A whole second production line. Double the output.'},
+  {name:'Big Factory',  lines:3, wide:true,  rent:900,  cost:60000,  pitch:'Line three. Now you are a real manufacturer.'},
+  {name:'Mega Plant',   lines:4, wide:true,  rent:1600, cost:180000, pitch:'Four lines, a robot fleet and your name on the skyline.'}
 ];
 
+const ECON={startCash:1500, beltSpeed:2.6, queueMax:9, contractBonus:1.25, marketCut:.85, returnFee:12,
+  repairCrew:220, repairParts:40, serviceCost:60, crewTime:24, combo:20};
+
+const CLIENTS=['Bot City Toys','Gizmo Hub','Spark Mobility','Volt Ride Co.','Pixel Drones','Bluegrass Outdoor','Robo Rama','Fun Factory','Byte Store','Riverside Rentals','SkyLift Logistics','Kentucky Kart Club'];
+
+/* advisor lines, keyed */
 const TIPS={
-  intro:'Welcome to your garage! Steel comes in on the left, finished MiniBots leave on the right. Pick the <b>Stamper</b> below and tap the belt to drop it on the line.',
-  needAsm:'Nice. Stamped parts still need an <b>Assembler</b>, then a <b>Painter</b>. Put them further down the belt, in that order.',
-  ready:'Your line is ready. Hit <b>Open the factory</b> and watch the bots roll.',
-  firstShip:'First MiniBot shipped! Check <b>Numbers</b>: every extra bot spreads your fixed costs thinner, so each one gets cheaper to make.',
-  bottleneck:'See the red ring? That station is your <b>bottleneck</b>: parts pile up in front of it. Tap it and add a second worker, and the whole line speeds up.',
-  orders:'An order came in. Orders pay more than the open market, but miss the deadline and your reputation drops.',
-  lowStock:'Steel is running low. Bigger orders cost less per sheet, but stock sitting around costs storage fees.',
-  breakdown:'A machine broke down! <b>Tap it a few times</b> to fix it. Everything behind it backs up while it\'s down.',
-  rush:'Huge rush order on the board. Can your line make that many in time? Check your capacity in <b>Numbers</b> before you say yes.',
-  spike:'Steel costs 60% more today and tomorrow. That pushes up your <b>variable cost</b> on every bot. Hope you stocked up!',
-  rival:'Rusty\'s ScrapCo is undercutting you. You can match his price, or sell value: boxed and Deluxe bots, and orders, aren\'t hurt.',
-  expand:'You\'ve shipped 60 bots! You can move into the <b>big factory</b>: more space, a second line and Deluxe bots. Rent goes up, so you\'ll need the volume.',
-  returns:'Some bots came back broken. A <b>QA Scanner</b> catches defects in the factory, which is way cheaper than refunds and a bad reputation.',
-  rushMode:'Rush mode makes everything faster but sloppier. Quality vs speed: it\'s always a trade-off.',
-  autoIdea:'Wages are a fixed cost: you pay them even when the line is idle. A robot costs more up front but less every day.'
+  start:'Welcome to your garage! Steel comes in on the left, finished products roll out on the right. Press <b>Start Shift</b> and watch your line work.',
+  bottleneck:'See the crates piling up? That station is your <b>bottleneck</b>. Your whole line can only go as fast as its slowest station. Upgrade <i>that</i> one first.',
+  breakdown:'A machine broke down! Run over and press <b>E</b> to fix it yourself for $40 in parts. Or wait, and the repair crew charges $220.',
+  weld:'Want to go faster? Walk up to any manual station and press <b>E</b> to work it yourself. Nail it and that station runs at double speed for a while.',
+  returns:'Some products came back broken. A <b>QA Scanner</b> catches defects before they ship. Way cheaper than refunds.',
+  contract:'Contracts pay more than the open market. Check <b>Contracts</b> to pick your line\'s next job.',
+  expand:'You can afford to <b>expand</b>! Walk to the glowing EXPAND sign, or open <b>Expand</b> below.',
+  robot:'Your first robot cell! Robots need to be <b>programmed</b> before they can work. Walk over and press <b>E</b>.',
+  scale:'Bigger plant, bigger rent. But every product now carries a smaller slice of that rent. That\'s called <b>economies of scale</b>.'
 };
