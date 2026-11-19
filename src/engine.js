@@ -107,7 +107,7 @@ function updatePlayer(dt){
   let ix=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+joy.x,iz=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+joy.y;
   const c=Math.cos(camS.yaw),s=Math.sin(camS.yaw);let dx=ix*c+iz*s,dz=-ix*s+iz*c;if(Math.hypot(ix,iz)>.05)P.target=null;
   if(P.target){const tx=P.target.x-P.pos.x,tz=P.target.z-P.pos.z,L=Math.hypot(tx,tz);if(L<.25)P.target=null;else{dx=tx/L;dz=tz/L;}}
-  const L=Math.hypot(dx,dz),moving=L>.05,spd0=keys.ShiftLeft||keys.ShiftRight?11:7.5;
+  const L=Math.hypot(dx,dz),moving=L>.05,spd0=(keys.ShiftLeft||keys.ShiftRight?11:7.5)*(P.speedMul||1);
   const tv=V(moving?dx/Math.max(1,L)*spd0:0,0,moving?dz/Math.max(1,L)*spd0:0);P.vel.lerp(tv,1-Math.exp(-12*dt));if(blocked())P.vel.set(0,0,0);
   P.pos.addScaledVector(P.vel,dt);const B=hallBounds();P.pos.x=clamp(P.pos.x,B.x0+.6,B.x1-.6);P.pos.z=clamp(P.pos.z,B.z0+.6,B.z1-.4);collide(P.pos,.46);
   const spd=P.vel.length();if(spd>.3)P.ry+=angDiff(Math.atan2(P.vel.x,P.vel.z),P.ry)*Math.min(1,dt*12);
@@ -115,6 +115,7 @@ function updatePlayer(dt){
   if(ringM&&ringM.material.opacity>0)ringM.material.opacity-=dt*1.5;}
 function updateCamera(dt,t){
   if(camS.mode==='title'){const a=Math.sin(t*.07)*.35,c=hallCenter();const p=V(c.x+Math.sin(a)*34+6,15+Math.sin(t*.11)*1.5,c.z+22+Math.cos(a)*12);camera.position.lerp(p,1-Math.exp(-1.2*dt));camS.look.lerp(V(c.x,1.5,c.z-2),1-Math.exp(-2*dt));camera.lookAt(camS.look);return;}
+  if(camS.mode==='cine'&&camS.cineHard){camera.position.copy(camS.cinePos);camS.look.copy(camS.cineLook);camera.lookAt(camS.look);return;}
   if(camS.mode==='cine'){camera.position.lerp(camS.cinePos,1-Math.exp(-1.6*dt));camS.look.lerp(camS.cineLook,1-Math.exp(-2.2*dt));camera.lookAt(camS.look);return;}
   let d=camS.dist,lx=P.pos.x,lz=P.pos.z-1.5;if(camS.over){const c=hallCenter(),B=hallBounds();d=Math.max(40,(B.x1-B.x0)*1.25,(B.z1-B.z0)*1.5);lx=c.x;lz=c.z;}
   const cp=Math.cos(camS.pitch),sp2=Math.sin(camS.pitch),want=V(lx+Math.sin(camS.yaw)*cp*d,sp2*d+1,lz+Math.cos(camS.yaw)*cp*d);
@@ -124,7 +125,7 @@ function updateCamera(dt,t){
 function initInput(){
   addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.code]=true;if(blocked())return;
     if(e.code==='KeyE'||e.code==='Enter')doAction();if(e.code==='Space'){e.preventDefault();togglePause();}
-    if(e.code==='Digit1')setSpeed(1);if(e.code==='Digit2')setSpeed(2);if(e.code==='Digit3')setSpeed(3);if(e.code==='KeyQ')camS.yaw-=.35;if(e.code==='KeyR')camS.yaw+=.35;if(e.code==='KeyV')toggleOverview();});
+    if(e.code==='Digit1')setSpeed(1);if(e.code==='Digit2')setSpeed(2);if(e.code==='Digit3')setSpeed(3);if(e.code==='KeyQ')camS.yaw-=.35;if(e.code==='KeyR')camS.yaw+=.35;if(e.code==='KeyV')toggleOverview();if(e.code==='KeyF'&&(CX.riding||nearFork()))toggleRide();if(e.code==='KeyH'&&CX.riding)sfx('horn');});
   addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
   const cv=$('#gl');let down=null;
   cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,yaw:camS.yaw,t:performance.now()};});

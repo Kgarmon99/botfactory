@@ -58,6 +58,12 @@ body:has(#btnStart:not([hidden])) #act{bottom:calc(166px + env(safe-area-inset-b
 #fade{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:35;transition:opacity .6s}#fade.on{opacity:1}
 .bigban{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:36;text-align:center;pointer-events:none;animation:bb 4.2s ease-out forwards}.bigban small{font:800 14px var(--body);letter-spacing:4px;text-transform:uppercase;color:var(--yel)}.bigban b{display:block;font:700 clamp(44px,8vw,92px)/1 var(--display);color:#fff;-webkit-text-stroke:2px #062014;text-shadow:0 6px 0 #062014,0 0 40px rgba(57,231,95,.7)}.bigban span{display:block;margin-top:10px;font-size:17px;color:#E5E7EB;text-shadow:0 2px 6px #000}
 @keyframes bb{0%{opacity:0;transform:translateX(-50%) scale(.6)}12%{opacity:1;transform:translateX(-50%) scale(1.06)}20%{transform:translateX(-50%) scale(1)}85%{opacity:1}100%{opacity:0}}
+body.cine::before,body.cine::after{content:'';position:fixed;left:0;right:0;height:11vh;background:#000;z-index:33;animation:lbin .6s ease-out both}body.cine::before{top:0}body.cine::after{bottom:0}@keyframes lbin{from{height:0}}
+body.cine #hud,body.cine #dock,body.cine #nextUp,body.cine #btnStart,body.cine #act,body.cine #stick,body.cine #advisor,body.cine #rush{opacity:0;pointer-events:none}
+#cineCap{position:fixed;left:0;right:0;bottom:calc(11vh + 26px);z-index:34;text-align:center;padding:0 20px;font:600 clamp(18px,2.6vw,26px)/1.35 var(--display);color:#fff;text-shadow:0 2px 10px #000,0 0 2px #000;opacity:0;transition:opacity .5s;pointer-events:none}#cineCap.on{opacity:1}#cineCap small{display:block;font:800 13px var(--body);letter-spacing:5px;color:var(--yel);margin-bottom:4px}
+#skip{position:fixed;right:18px;bottom:calc(11vh + 18px);z-index:36;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:8px 14px;font-weight:800;font-size:13px;color:#fff}
+.slam{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:37;text-align:center;pointer-events:none;animation:slamA 2.2s cubic-bezier(.2,1.2,.3,1) forwards}.slam b{display:block;font:700 italic clamp(56px,10vw,120px)/.9 var(--display);color:var(--sc);-webkit-text-stroke:3px #000;text-shadow:5px 6px 0 #000,0 0 50px rgba(0,0,0,.6);letter-spacing:1px;transform:skewX(-6deg)}.slam span{display:inline-block;margin-top:12px;font:700 clamp(16px,2.2vw,22px) var(--display);color:#fff;background:rgba(0,0,0,.72);padding:6px 16px;border-radius:8px;letter-spacing:.5px}
+@keyframes slamA{0%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}12%{opacity:1;transform:translate(-50%,-50%) scale(.94)}18%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%) scale(1)}}
 body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart,body.titling #act,body.titling #stick,body.titling #advisor,body.titling #rush{display:none!important}
 /* modal */
 #modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(3,6,10,.55);padding:16px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -81,6 +87,7 @@ body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart
 .ladder{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.rung{border:1px solid var(--line);border-radius:12px;padding:8px;font-size:13px;opacity:.6}.rung b{display:block;font-family:var(--display);font-weight:600}.rung small{color:var(--mute);font-size:11px}.rung.done{opacity:1;border-color:rgba(57,231,95,.4)}.rung.cur{opacity:1;border-color:var(--yel);background:rgba(250,204,21,.08)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0}.kpis>div{border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:rgba(255,255,255,.03)}.kpis em{display:block;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--mute)}.kpis b{font:700 18px var(--mono)}.kpis b.st{color:var(--yel);font-size:15px}.kpis b.st i{color:rgba(255,255,255,.18);font-style:normal}
 .bars{display:flex;align-items:flex-end;gap:5px;height:120px;border-bottom:1px solid var(--line);padding-top:6px}.bars.thin{height:80px}.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:3px}.bar i{width:100%;border-radius:6px 6px 0 0;min-height:3px}.bar i.p{background:var(--neon)}.bar i.n{background:var(--red)}.bar i.u{background:var(--blue)}.bar span{font-size:10.5px;color:var(--mute)}
+.techs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}.tc{border:1px solid var(--line);border-radius:16px;padding:14px;background:linear-gradient(160deg,rgba(14,165,233,.12),rgba(255,255,255,.02));display:flex;flex-direction:column;gap:6px}.tc-i{font-size:38px}.tc b{font:600 18px var(--display)}.tc p{margin:0;font-size:13px;color:#CBD5E1;line-height:1.4}.tc p b{font:inherit;font-weight:800;color:#fff}.tc .tc-l{color:#BAE6FD;font-size:12.5px}.tc.own{border-color:var(--neon)}.tc.lock{opacity:.55}.tc .btn{margin-top:auto}
 .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.mkc{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(56,189,248,.06)}.mkc span{font-size:26px}.mkc b{display:block;font-size:14px;margin:4px 0}.mkc small{color:var(--mute);font-size:11.5px;line-height:1.35;display:block}.mkc.lock{opacity:.45;background:none}
 /* report */
 .rep-top{display:flex;gap:16px;align-items:center}.gl{flex:none;width:86px;height:86px;border-radius:22px;display:grid;place-items:center;font:700 56px/1 var(--display);color:var(--gc);border:3px solid var(--gc);background:rgba(0,0,0,.25);box-shadow:0 0 30px color-mix(in srgb,var(--gc) 45%,transparent);animation:gIn .6s cubic-bezier(.2,1.6,.4,1)}@keyframes gIn{0%{transform:scale(2.2) rotate(-12deg);opacity:0}}
@@ -149,6 +156,7 @@ body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart
   <button data-p="contracts"><span class="di" style="--c:#2563EB">📄</span>Contracts</button>
   <button data-p="upgrades"><span class="di" style="--c:#EA580C">⬆</span>Upgrades</button>
   <button data-p="expand" id="dkExpand"><span class="di" style="--c:#16A34A">🏗</span>Expand</button>
+  <button data-p="tech"><span class="di" style="--c:#0EA5E9">🤖</span>Tech</button>
   <button data-p="numbers"><span class="di" style="--c:#7C3AED">📊</span>Numbers</button>
   <button data-p="makers"><span class="di" style="--c:#0891B2">🧑‍🏭</span>Makers</button>
 </nav>
@@ -158,6 +166,8 @@ body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart
 <div id="modal" hidden><div id="card"></div></div>
 <canvas id="confetti"></canvas>
 <div id="fade"></div>
+<div id="cineCap"></div>
+<button id="skip" hidden>Skip ▸▸</button>
 <section id="title"><div class="wrap">
   <img class="logo" id="tLogo" alt="MoneyBot">
   <div class="eyebrow">A MoneyBot Original · Factory Tycoon</div>

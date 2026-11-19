@@ -43,7 +43,7 @@ function buildShell(){if(W.shell){scene.remove(W.shell);}COLL.length=0;const g=n
   const sid=sidingTex(),wallM=new THREE.MeshStandardMaterial({map:sid,roughness:.55,metalness:.35}),trim=mat('#1E242B',{roughness:.5,metalness:.3}),yel=mat('#FACC15',{roughness:.45});
   const back=new THREE.Mesh(BOX,wallM);back.scale.set(Wd+.6,H,.4);back.position.set(cx,H/2,B.z0-.2);back.castShadow=back.receiveShadow=true;g.add(back);
   /* window band on the back wall */
-  const wm=mat('#CFE8F7',{emissive:'#BFE3FF',emissiveIntensity:.55,roughness:.1,metalness:.3});for(let x=B.x0+2.5;x<B.x1-2;x+=4.2){bx(g,3.4,1.6,.08,x,4.6,B.z0+.02,wm,false);bx(g,3.6,.12,.14,x,4.5,B.z0+.04,trim,false);bx(g,3.6,.12,.14,x,6.25,B.z0+.04,trim,false);}
+  const wm=mat('#CFE8F7',{emissive:'#BFE3FF',emissiveIntensity:.55,roughness:.1,metalness:.3});W.winMat=wm;for(let x=B.x0+2.5;x<B.x1-2;x+=4.2){bx(g,3.4,1.6,.08,x,4.6,B.z0+.02,wm,false);bx(g,3.6,.12,.14,x,4.5,B.z0+.04,trim,false);bx(g,3.6,.12,.14,x,6.25,B.z0+.04,trim,false);}
   const side=(x,face)=>{const doors=[];for(let l=0;l<n;l++)doors.push(LZ(l));let z=B.z0;const segs=[];doors.sort((a,b)=>a-b).forEach(dz=>{segs.push([z,dz-1.7]);z=dz+1.7;});segs.push([z,B.z1]);
     segs.forEach(([a,b])=>{if(b-a<.1)return;const m=new THREE.Mesh(BOX,wallM);m.scale.set(.4,H,b-a);m.position.set(x,H/2,(a+b)/2);m.castShadow=m.receiveShadow=true;g.add(m);});
     doors.forEach(dz=>{bx(g,.42,H-3.6,3.4,x,3.6,dz,wallM);bx(g,.5,.25,3.6,x,3.45,dz,yel,false);[dz-1.75,dz+1.75].forEach(zz=>bx(g,.5,3.5,.18,x,0,zz,yel,false));
@@ -174,10 +174,10 @@ function initItems(){const N=Q.t>=1?900:500;IT={base:new THREE.InstancedMesh(BOX
   [IT.base,IT.top].forEach(m=>{m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);m.setColorAt(0,new THREE.Color());m.castShadow=Q.t>=2;m.frustumCulled=false;scene.add(m);});}
 const _col=new THREE.Color(),_q=new THREE.Quaternion(),_s=V(),_p=V();
 function itemLook(it,b,t){const c=PCOL[it.p]||'#fff';switch(it.lvl){case 0:_s.set(.78,.06,.62);_col.set('#CBD5E1');break;case 1:_s.set(.62,.14,.5);_col.set('#E2E8F0');break;case 2:_s.set(.6,.36,.48);_col.set('#64748B');break;case 3:_s.set(.56,.46,.48);_col.set(c).multiplyScalar(.55);break;default:_s.set(.58,.48,.5);_col.set(c);}}
-function drawItems(t){if(!IT||!S)return;let n=0,m=0;const put=(it,x,y,z)=>{if(n>=IT.N)return;itemLook(it);_p.set(x,y+_s.y/2,z);_q.identity();const M=_m4.compose(_p,_q,_s);IT.base.setMatrixAt(n,M);IT.base.setColorAt(n,_col);n++;
+function drawItems(t){if(!IT||!S)return;let n=0,m=0;prodFrame();const put=(it,x,y,z)=>{if(it.lvl>=3){const P2=PRODUCTS[it.p];prodAt(it.p,it.lvl>=4||!P2.needs.includes('paint'),x,y,z,t);return;}if(n>=IT.N)return;itemLook(it);_p.set(x,y+_s.y/2,z);_q.identity();const M=_m4.compose(_p,_q,_s);IT.base.setMatrixAt(n,M);IT.base.setColorAt(n,_col);n++;
     if(it.lvl>=3&&m<IT.N){_p.set(x,y+_s.y+.12,z);const k=.2;_m4.compose(_p,_q,V(k,k*.8,k));IT.top.setMatrixAt(m,_m4);_col.set(it.lvl>=4?'#F8FAFC':'#94A3B8');IT.top.setColorAt(m,_col);m++;}};
   S.lines.slice(0,linesNow()).forEach((l,i)=>{const z=LZ(i);l.belt.forEach(it=>put(it,it.x,.76,z));ST_KEYS.forEach(k=>{const s=l.st[k];if(s.cur)put(s.cur,SLOT_X[k],.76,z);if(s.out)put(s.out,SLOT_X[k]+.7,.76,z);});});
-  IT.base.count=n;IT.top.count=m;[IT.base,IT.top].forEach(x=>{x.instanceMatrix.needsUpdate=true;x.instanceColor&&(x.instanceColor.needsUpdate=true);});}
+  prodHide();IT.base.count=n;IT.top.count=m;[IT.base,IT.top].forEach(x=>{x.instanceMatrix.needsUpdate=true;x.instanceColor&&(x.instanceColor.needsUpdate=true);});}
 
 /* ---------- trucks ---------- */
 function makeTruck(color,label){const g=new THREE.Group(),b=new THREE.Group();g.add(b);bx(b,5.2,.35,1.9,0,.5,0,mat('#1F2937'));bx(b,1.5,1.5,1.9,2.0,.85,0,mat(color,{roughness:.35,metalness:.3}));bx(b,.06,.6,1.6,2.76,1.5,0,mat('#0B1220',{metalness:.6,roughness:.1}));bx(b,3.5,2.0,2.0,-.65,.85,0,mat('#F8FAFC',{roughness:.6}));
@@ -226,4 +226,4 @@ function updateWorld(dt,t,running){W.t=t;if(!S)return;
     const shown=Math.min(12,L.ship%13);L.boxes.count=shown;for(let j=0;j<shown;j++){_p.set(-.4+(j%3)*.4,.4+Math.floor(j/9)*.36,-.4+Math.floor(j/3)%3*.4);_q.identity();_m4.compose(_p,_q,V(.36,.34,.36));L.boxes.setMatrixAt(j,_m4);}L.boxes.instanceMatrix.needsUpdate=true;
   });
   drawItems(t);stepTrucks(dt);}
-function rebuildWorld(){buildShell();buildLines();syncStations();}
+function rebuildWorld(){buildShell();buildLines();syncStations();buildProps();}

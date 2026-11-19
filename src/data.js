@@ -62,3 +62,11 @@ const TIPS={
   robot:'Your first robot cell! Robots need to be <b>programmed</b> before they can work. Walk over and press <b>E</b>.',
   scale:'Bigger plant, bigger rent. But every product now carries a smaller slice of that rent. That\'s called <b>economies of scale</b>.'
 };
+
+/* plant tech: unlockable robots + systems, each with a real effect */
+const TECH=[
+  {id:'screens',name:'Control Room Screens',icon:'🖥️',cost:600,stage:0,does:'Live dashboards light up the back wall. Your crew spots trouble early: <b>30% fewer breakdowns</b>.',lesson:'Watching machine data to fix things <i>before</i> they break is called <b>predictive maintenance</b>.'},
+  {id:'agv',name:'AGV Delivery Robots',icon:'🛻',cost:2500,stage:1,does:'Self-driving robots zip parts down every aisle. <b>Every station runs 10% faster</b>.',lesson:'AGVs (automated guided vehicles) handle <b>material handling</b>, so machines never sit waiting on parts.'},
+  {id:'drones',name:'Parts Drones',icon:'🚁',cost:6000,stage:2,does:'Drones fly spare parts in overhead. The repair crew shows up in <b>8 seconds</b> instead of 24, at <b>half the cost</b>.',lesson:'Less <b>downtime</b> means more output. Real plants track every minute a machine is down.'},
+  {id:'dog',name:'Robot Dog Patrol',icon:'🐕',cost:9000,stage:2,does:'A camera-loaded robot dog patrols the floor and <b>catches half of all defects</b> before they ship.',lesson:'Real factories use legged robots to inspect equipment and spot problems people might miss.'}
+];
