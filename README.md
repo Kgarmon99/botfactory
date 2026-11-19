@@ -16,3 +16,5 @@ Factory tycoon: grow a garage into a Mega Plant. Built on the BotBank engine.
 ## Sponsors
 Edit `SPONSORS` in `src/sponsors.js`. Preview links: `?slots` (show every open slot), `?sponsor=Company%20Name&color=%23C8102E`.
 Quality: `?q=1` Chromebook mode, `?q=0` very low.
+
+Play it: https://kgarmon99.github.io/botfactory/
