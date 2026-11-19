@@ -138,7 +138,7 @@ function howTo(){const C=openModal(`<div class="howto-w"><img src="${MB_ASSETS.l
   C.querySelector('#ok').onclick=()=>{closeModal();advise(TIPS.start,12000);};}
 function bindUI(){$('#btnNew').onclick=startNew;$('#pname').addEventListener('keydown',e=>{if(e.key==='Enter')startNew();});$('#btnCont').onclick=()=>{S=load();if(S){S.tech=S.tech||{};S.phase=S.phase==='day'?'board':S.phase==='report'?'board':S.phase;enterGame(false);}};
   $('#btnStart').onclick=()=>{if(!S||S.phase!=='board'||MILL.on)return;toggleTwin(false);initAudio();startShift();sfx('horn');S.lines.slice(0,lineCount()).forEach((l,i)=>setTimeout(()=>sendTruck(i,'in'),i*400));renderHUD();if(!PARAMS.has('test'))shiftShots(()=>{});if(S.day===2&&!S.flags.wTold){S.flags.wTold=1;setTimeout(()=>advise(TIPS.weld,12000),4000);}};
-  $$('#speed button').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.s));$('#btnMute').onclick=()=>{muted=!muted;try{localStorage.setItem('botfactory-mute',muted?'1':'0');}catch(e){}$('#btnMute').textContent=muted?'🔇':'🔊';};$('#btnMute').textContent=muted?'🔇':'🔊';
+  $$('#speed button').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.s));$('#btnMute').onclick=()=>{initAudio();cycleSound();};soundBtn();addEventListener('pointerdown',()=>initAudio(),{once:true});addEventListener('keydown',()=>initAudio(),{once:true});
   $('#btnView').onclick=toggleOverview;$('#skip').onclick=endShots;$('#btnTwin').onclick=()=>toggleTwin();$('#millExit').onclick=exitMill;$('#act').onclick=doAction;$('#advisor').onclick=()=>$('#advisor').classList.add('hide');
   $$('#dock [data-p]').forEach(b=>b.onclick=()=>{if(!blocked())openPanel(b.dataset.p);});$('#hPlant').onclick=()=>{if(!blocked())openPanel('expand');};
   $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&UI.panel){UI.panel=null;closeModal();}});
@@ -153,12 +153,12 @@ async function boot(){const bar=$('#loadfill');bar.style.width='15%';['#hud','#d
   /* a demo factory behind the title */
   newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
   initInput();bindUI();initFlow();renderer.compile(scene,camera);bar.style.width='100%';
-  $('#btnNew').disabled=false;$('#btnNew').textContent='Build my factory';if(load())$('#btnCont').hidden=false;$('#loadbar').style.visibility='hidden';
+  $('#btnNew').disabled=false;$('#btnNew').textContent='Build my factory';if(load())$('#btnCont').hidden=false;$('#loadbar').style.visibility='hidden';initPitch();
   camera.position.set(30,30,60);requestAnimationFrame(frame);}
 let last=performance.now();
-function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;
-  if(UI.demo&&titleOn()){stepShift(dt);EV.length=0;if(S.phase!=='day')startShift();}
-  else if(UI.demo&&!titleOn()){UI.demo=false;}
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;try{updateAudio(dt);}catch(e){}
+  try{pitchStep();}catch(e){}if(UI.demo&&(titleOn()||UI.pitch)){stepShift(dt);EV.length=0;if(S.phase!=='day')startShift();}
+  else if(UI.demo&&!titleOn()&&!UI.pitch){UI.demo=false;}
   if(S&&!UI.demo){if(running()){const sub=S.speed;for(let i=0;i<sub;i++)stepShift(dt);}drainEvents();syncStations();
     UI.gT-=dt;if(UI.gT<=0){UI.gT=.15;updateGoal();renderHUD();renderRush();updateAct();}
     $('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';

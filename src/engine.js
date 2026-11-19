@@ -150,9 +150,9 @@ function stepFX(dt){[FX.add,FX.norm].forEach(L=>{let n=0;L.p=L.p.filter(p=>(p.li
 
 /* ----- sound ----- */
 let AC=null,muted=false;try{muted=localStorage.getItem('botfactory-mute')==='1';}catch(e){}
-function initAudio(){if(AC)return;try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
-function tone(f,d,type,vol,when,slide){if(!AC||muted)return;const t=AC.currentTime+(when||0),o=AC.createOscillator(),g=AC.createGain();o.type=type||'triangle';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);g.gain.setValueAtTime(vol||.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.02);}
-function noise(d,vol,hp){if(!AC||muted)return;const len=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,len,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<len;i++)a[i]=(Math.random()*2-1)*(1-i/len);const s=AC.createBufferSource();s.buffer=b;const f=AC.createBiquadFilter();f.type='highpass';f.frequency.value=hp||1200;const g=AC.createGain();g.gain.value=vol||.03;s.connect(f);f.connect(g);g.connect(AC.destination);s.start();}
+function initAudio(){if(AC){if(AC.state==='suspended')AC.resume();return;}try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}if(AC&&typeof startAudio==='function')startAudio();}
+function tone(f,d,type,vol,when,slide){if(!AC||muted)return;const t=AC.currentTime+(when||0),o=AC.createOscillator(),g=AC.createGain();o.type=type||'triangle';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);g.gain.setValueAtTime(vol||.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(aOut());o.start(t);o.stop(t+d+.02);}
+function noise(d,vol,hp){if(!AC||muted)return;const len=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,len,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<len;i++)a[i]=(Math.random()*2-1)*(1-i/len);const s=AC.createBufferSource();s.buffer=b;const f=AC.createBiquadFilter();f.type='highpass';f.frequency.value=hp||1200;const g=AC.createGain();g.gain.value=vol||.03;s.connect(f);f.connect(g);g.connect(aOut());s.start();}
 function sfx(k){if(!AC)return;
   if(k==='tick')tone(900,.05,'square',.02);if(k==='open')tone(520,.08,'sine',.03);
   if(k==='good'){tone(660,.1,'triangle',.05);tone(990,.14,'triangle',.05,.09);}

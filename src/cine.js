@@ -34,7 +34,9 @@ function prodHide(){for(const k in PPOOL){const u=ppUsed[k]||0;PPOOL[k].forEach(
 /* ---------- Bot City: road, traffic, streetlights, neighbors ---------- */
 function makeCar(color){const g=new THREE.Group(),b=mat(color,{roughness:.25,metalness:.55}),gl=mat('#0F172A',{roughness:.05,metalness:.7}),tr=mat('#111318',{roughness:.85});
   bx(g,4.2,.8,1.9,0,.35,0,b);bx(g,2.2,.7,1.7,-.3,1.15,0,gl);bx(g,2.1,.08,1.72,-.3,1.85,0,b);[[1.35,.85],[1.35,-.85],[-1.35,.85],[-1.35,-.85]].forEach(([x,z])=>wheel(g,.42,.3,x,.42,z,tr));
-  bx(g,.05,.18,.4,2.1,.75,.6,pmat('ev',1).light);bx(g,.05,.18,.4,2.1,.75,-.6,pmat('ev',1).light);bx(g,.05,.14,1.5,-2.1,.75,0,mat('#EF4444',{emissive:'#EF4444',emissiveIntensity:1}));g.traverse(o=>{if(o.isMesh)o.castShadow=Q.t>0;});scene.add(g);return g;}
+  bx(g,.05,.18,.4,2.1,.75,.6,pmat('ev',1).light);bx(g,.05,.18,.4,2.1,.75,-.6,pmat('ev',1).light);bx(g,.05,.14,1.5,-2.1,.75,0,mat('#EF4444',{emissive:'#EF4444',emissiveIntensity:1}));g.traverse(o=>{if(o.isMesh)o.castShadow=Q.t>0;});
+  if(!CX.beamMat){CX.beamMat=new THREE.MeshBasicMaterial({color:'#FFE9B0',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false});CX.headMat=mat('#FFF6DD',{emissive:'#FFE7A8',emissiveIntensity:.2});}
+  [.6,-.6].forEach(z=>{bx(g,.06,.16,.34,2.12,.75,z,CX.headMat,false);const c=new THREE.Mesh(new THREE.ConeGeometry(1.1,6,16,1,true),CX.beamMat);c.rotation.z=Math.PI/2;c.position.set(5.1,.45,z);g.add(c);});scene.add(g);return g;}
 function initCity(){const g=new THREE.Group();scene.add(g);CX.city=g;const asphalt=mat('#2B2F35',{roughness:.9}),side=mat('#9CA3AF',{roughness:.9}),white=mat('#F8FAFC',{emissive:'#ffffff',emissiveIntensity:.15}),yel=mat('#FACC15');
   const road=new THREE.Mesh(new THREE.PlaneGeometry(340,8.4),asphalt);road.rotation.x=-Math.PI/2;road.position.set(0,.01,21);road.receiveShadow=true;g.add(road);
   for(let x=-168;x<170;x+=6)bx(g,3,.02,.16,x,.012,21,yel,false);[16.6,25.4].forEach(z=>bx(g,340,.16,1.4,0,0,z,side,false));
@@ -42,7 +44,7 @@ function initCity(){const g=new THREE.Group();scene.add(g);CX.city=g;const aspha
   for(let x=-90;x<=90;x+=15){const s=new THREE.Group();cy(s,.08,6,0,0,0,mat('#374151',{metalness:.6}),false);bx(s,1.6,.08,.08,.75,6,0,mat('#374151'),false);const lamp=new THREE.Mesh(BOX,mat('#FFF1C9',{emissive:'#FFD27A',emissiveIntensity:0}));lamp.scale.set(.6,.12,.3);lamp.position.set(1.45,5.94,0);s.add(lamp);CX.lamps.push(lamp);s.position.set(x,0,16.2);g.add(s);}
   /* neighbors across the road */
   const nb=[['BOT CITY STEEL','#64748B'],['VOLT MOTORS','#1E3A8A'],['ROBO PARTS CO.','#7C2D12'],['CHIP WORKS','#134E4A'],['KY LOGISTICS','#4C1D95']];
-  nb.forEach(([n,c],i)=>{const b=new THREE.Group(),w=rand(16,24),h=rand(7,12),x=-70+i*34;bx(b,w,h,12,0,0,0,mat(c,{roughness:.6,metalness:.2}));for(let k=0;k<4;k++)bx(b,w*.18,1.2,.1,-w*.33+k*w*.22,h*.6,-6.05,mat('#CFE8F7',{emissive:'#BFE3FF',emissiveIntensity:.4}),false);
+  CX.nbWin=mat('#CFE8F7',{emissive:'#BFE3FF',emissiveIntensity:.4});nb.forEach(([n,c],i)=>{const b=new THREE.Group(),w=rand(16,24),h=rand(7,12),x=-70+i*34;bx(b,w,h,12,0,0,0,mat(c,{roughness:.6,metalness:.2}));for(let r=0;r<2;r++)for(let k=0;k<4;k++){bx(b,w*.18,1.2,.1,-w*.33+k*w*.22,h*(.35+r*.3),-6.05,CX.nbWin,false);bx(b,w*.18,1.2,.1,-w*.33+k*w*.22,h*(.35+r*.3),6.05,CX.nbWin,false);}
     const s=signMesh([{t:n,size:90,color:'#fff'}],w*.7,1.4,{w:1024,h:200,bg:'#0D1117',glow:.6});s.position.set(0,h+.9,-6.06);s.rotation.y=Math.PI;b.add(s);bx(b,.3,1.6,.3,-w*.3,h,-6,mat('#374151'),false);bx(b,.3,1.6,.3,w*.3,h,-6,mat('#374151'),false);
     for(let k=0;k<3;k++)cy(b,.6,4,w*.3-k*1.6,h,2,mat('#6B7280',{metalness:.6}),false);b.position.set(x,0,38);g.add(b);});
   /* traffic */
@@ -110,7 +112,7 @@ const SKY={day:new THREE.Color('#6F9CC4'),morn:new THREE.Color('#9CC2DE'),eve:ne
 function applyTime(f){/* f: 0 = 8am, 1 = 8pm */const a=lerp(-.9,.9,f);sun.position.set(Math.sin(a)*40,Math.cos(a)*38+6,26);
   if(f<.2)_sc.copy(SKY.morn).lerp(SKY.day,f/.2);else if(f<.72)_sc.copy(SKY.day);else if(f<.88)_sc.copy(SKY.day).lerp(SKY.eve,(f-.72)/.16);else _sc.copy(SKY.eve).lerp(SKY.dusk,(f-.88)/.12);
   scene.background.copy(_sc);scene.fog.color.copy(_sc);const late=clamp((f-.7)/.3,0,1);sun.color.setHSL(.1,.6+late*.3,.9-late*.25);sun.intensity=1.6-late*.9;hemi.intensity=.5-late*.18;
-  CX.lamps.forEach(l=>l.material.emissiveIntensity=late*2.5);if(W.winMat){W.winMat.emissive.set(late>.5?'#F59E0B':'#BFE3FF');W.winMat.emissiveIntensity=.55+late*.4;}CX.shafts.forEach(s=>s.material.opacity=.5*(1-late));}
+  CX.lamps.forEach(l=>l.material.emissiveIntensity=late*2.5);if(CX.beamMat){CX.beamMat.opacity=late*.16;CX.headMat.emissiveIntensity=.2+late*2.2;}if(CX.nbWin){CX.nbWin.emissive.set(late>.4?'#FBBF24':'#BFE3FF');CX.nbWin.emissiveIntensity=.4+late*1.2;}if(OUT.nightMats)OUT.nightMats.forEach(m=>m.emissiveIntensity=late*2.4);if(W.winMat){W.winMat.emissive.set(late>.5?'#F59E0B':'#BFE3FF');W.winMat.emissiveIntensity=.55+late*.4;}CX.shafts.forEach(s=>s.material.opacity=.5*(1-late));}
 function timeStr(f){const m=Math.floor(8*60+f*12*60),h=Math.floor(m/60),mm=m%60;return `${(h+11)%12+1}:${String(mm).padStart(2,'0')} ${h<12?'AM':'PM'}`;}
 
 /* ---------- cinematics ---------- */
@@ -134,7 +136,7 @@ function shiftShots(done){const c=hallCenter(),B=hallBounds(),pl=()=>[P.pos.x,.8
 
 /* ---------- per frame ---------- */
 let scrT=0;
-function updateCine(dt,t,run){if(!S)return;stepShots(dt);const f=S.phase==='day'?S.clock/SHIFT_LEN:S.phase==='report'?1:0;if(!MILL.on&&!TWIN.on)applyTime(f);
+function updateCine(dt,t,run){if(!S)return;stepShots(dt);const f=S.phase==='day'?S.clock/SHIFT_LEN:S.phase==='report'?1:0;if(!MILL.on&&!TWIN.on&&!CX.holdSky)applyTime(f);
   trafficStep(dt);updateOutside(dt,t);
   const m=run?S.speed:0,B=hallBounds();
   CX.agvs.forEach(a=>{const near=Math.hypot(P.pos.x-a.x,P.pos.z-a.z)<1.5&&Math.sign(P.pos.x-a.x)===a.dir;if(a.wait>0)a.wait-=dt;else if(!near){a.x+=a.dir*2.6*dt*Math.max(.6,m||.6);if(a.x>a.x1||a.x<a.x0){a.dir*=-1;a.wait=1.4;a.x=clamp(a.x,a.x0,a.x1);}}else if(Math.random()<dt*1.5)tone(1200,.06,'square',.015);

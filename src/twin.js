@@ -13,7 +13,7 @@ function oeeLesson(o){if(!o)return '';const w=[['A',o.A,'Breakdowns stopped your
   return `<b>OEE ${pct(o.v)}</b> = Availability × Performance × Quality. Your weakest: <b>${{A:'Availability',P:'Performance',Q:'Quality'}[w[0]]}</b>. ${w[2]}`;}
 
 /* ---------- digital twin ---------- */
-function toggleTwin(force){if(!S||titleOn()||camS.mode==='cine')return;const on=force!=null?force:!TWIN.on;if(on===TWIN.on)return;TWIN.on=on;document.body.classList.toggle('twin',on);$('#btnTwin').classList.toggle('on',on);
+function toggleTwin(force){if(!S||((titleOn()||camS.mode==='cine')&&!UI.pitch))return;const on=force!=null?force:!TWIN.on;if(on===TWIN.on)return;TWIN.on=on;document.body.classList.toggle('twin',on);$('#btnTwin').classList.toggle('on',on);
   if(on){TWIN.mat=TWIN.mat||new THREE.MeshBasicMaterial({color:'#22D3EE',wireframe:true,transparent:true,opacity:.2,depthWrite:false});scene.overrideMaterial=TWIN.mat;if(composer)composer.passes[0].overrideMaterial=TWIN.mat;TWIN.bg.copy(scene.background);scene.background.set('#020812');scene.fog.near=400;
     if(!TWIN.grid){TWIN.grid=new THREE.GridHelper(120,60,0x0EA5E9,0x0B3A57);TWIN.grid.position.y=.03;}scene.add(TWIN.grid);
     TWIN.hidden=[];scene.traverse(o=>{if(o.isSprite&&o.visible){o.visible=false;TWIN.hidden.push(o);}});camS.overPrev=camS.over;camS.over=true;buildPins();sfx('zap');tone(220,.4,'sine',.04,0,880);}

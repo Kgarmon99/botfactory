@@ -51,7 +51,22 @@ function buildOutside(){const g=new THREE.Group();OUT.g=g;scene.add(g);const con
   OUT.bb=signMesh(billboardFill(),12.4,4.2,{w:1600,h:540,bg:'#0D1117',glow:.9});OUT.bb.position.set(0,8.2,.25);bb.add(OUT.bb);bx(bb,12.8,4.6,.3,0,5.9,0,trim,false);
   for(let i=-1;i<=1;i++){const l=new THREE.Group();bx(l,.5,.2,.3,0,0,0,trim,false);l.position.set(i*4,10.6,.6);l.rotation.x=.8;bb.add(l);}
   const sp2=slotFill('billboard',SPONSORS.billboard);if(sp2&&!sp2.placeholder)spTrack&&spTrack('view',sp2,{slot:'billboard'});
-  /* benches + planters (low, so they never block the camera) */
+  /* grass yard, curbs, flower beds, staff parking */
+  const grassT=canvasTex(256,256,(c,w,h)=>{c.fillStyle='#4E8A3F';c.fillRect(0,0,w,h);for(let i=0;i<2600;i++){c.fillStyle=pick(['#5B9A49','#457D38','#62A250','#3F7433']);c.fillRect(Math.random()*w,Math.random()*h,2,3+Math.random()*4);}});grassT.wrapS=grassT.wrapT=THREE.RepeatWrapping;grassT.repeat.set(30,2.4);
+  const gr=new THREE.Mesh(new THREE.PlaneGeometry(124,8.3),new THREE.MeshStandardMaterial({map:grassT,roughness:1}));gr.rotation.x=-Math.PI/2;gr.position.set(0,.004,11.75);gr.receiveShadow=true;g.add(gr);
+  const curb=mat('#C7CCD1',{roughness:.85});bx(g,124,.14,.22,0,0,15.85,curb,false);bx(g,124,.12,.2,0,0,7.62,curb,false);
+  const asph=mat('#2F3439',{roughness:.95});const pad=(x0,x1,z0,z1)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,z1-z0),asph);m.rotation.x=-Math.PI/2;m.position.set((x0+x1)/2,.012,(z0+z1)/2);m.receiveShadow=true;g.add(m);};
+  pad(-8.6,18.6,8.6,16);pad(13.5,18.6,15.6,17.3);pad(22,52,8.4,15.6);pad(36,41,15.6,17.3);pad(-26,-18,9.6,16.6);
+  for(let x=22.6;x<=52;x+=3.4){bx(g,.1,.02,2.6,x,.02,9.9,white,false);bx(g,.1,.02,2.6,x,.02,14.1,white,false);}
+  const spCols=['#DC2626','#1D4ED8','#F8FAFC','#111827','#059669','#7C3AED','#9CA3AF'];for(let i=0;i<6;i++){if(Math.random()<.25)continue;const c=makeCar(pick(spCols));scene.remove(c);g.add(c);c.position.set(24.3+i*3.4,0,i%2?9.9:14.1);c.rotation.y=Math.PI/2*(i%2?1:-1);}
+  const ps=signMesh([{t:'STAFF PARKING',size:80,color:'#fff'}],2.4,.5,{w:600,h:124,bg:'#1D4ED8'});ps.position.set(37,1.9,15.9);g.add(ps);cy(g,.05,1.7,37,0,15.9,trim,false);
+  const soil=mat('#4A3426',{roughness:1}),fl=['#F43F5E','#FACC15','#F97316','#E879F9','#F8FAFC'];const bed=(x,z,w)=>{bx(g,w,.16,.9,x,0,z,soil,false);bx(g,w+.1,.2,.1,x,0,z-.47,curb,false);bx(g,w+.1,.2,.1,x,0,z+.47,curb,false);
+    const n=Math.round(w*5),im=new THREE.InstancedMesh(new THREE.SphereGeometry(.13,6,4),new THREE.MeshStandardMaterial({roughness:.7}),n),m4=new THREE.Matrix4(),col=new THREE.Color();
+    for(let i=0;i<n;i++){m4.makeTranslation(x+rand(-w/2+.1,w/2-.1),.24+rand(0,.08),z+rand(-.32,.32));im.setMatrixAt(i,m4);im.setColorAt(i,col.set(i%3?'#2F6A33':pick(fl)));}g.add(im);};
+  [[-3.5,8.3,5],[-30,15.2,3],[-48,15.2,6],[58,15.2,6],[-56,8.3,6]].forEach(([x,z,w])=>bed(x,z,w));
+  /* yard lamp posts that switch on at dusk */
+  OUT.nightMats=[];for(const x of [-40,-26,-14,24,34,46]){const lm=mat('#FFF1C9',{emissive:'#FFD27A',emissiveIntensity:0});OUT.nightMats.push(lm);cy(g,.06,4.2,x,0,8.1,trim,false);bx(g,.5,.12,.5,x,4.2,8.1,trim,false);bx(g,.4,.06,.4,x,4.14,8.1,lm,false);}
+  /* benches */
   [[-6,8.4],[-28,15.2],[24,15.2],[40,15.2]].forEach(([x,z])=>{bx(g,1.8,.42,.5,x,0,z,mat('#6B7280',{roughness:.7}),false);bx(g,1.8,.08,.6,x,.42,z,mat('#8B5E3C',{roughness:.8}),false);});
   /* pedestrians on the sidewalk */
   const n=Q.t>=2?7:4;for(let i=0;i<n;i++){const r=makeRig(GLTF.crowd,MB.crew[i%MB.crew.length],1.3);if(i%3===0)hardHat(r);g.add(r.root);const dir=i%2?1:-1;OUT.peds.push({r,x:rand(-55,55),z:16.4+(i%2?.35:-.35),dir,v:rand(1.3,1.9),wave:0,bob:rand(0,6)});}
