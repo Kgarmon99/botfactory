@@ -113,6 +113,16 @@ function buildShell(b, docks, expanded){
   const sx=(x0+x1)/2, sg=new THREE.Group(); sg.position.set(sx,0,z0-.6); g.add(sg);
   [-3.6,3.6].forEach(x=>cy(sg,.09,4.4,x,0,0,mat('#475569',{metalness:.6})));
   bx(sg,8.4,1.9,.25,0,3.0,-.02,SH.trim); sign(sg,[{t:expanded?'MINIBOT WORKS':'MINIBOT GARAGE',color:'#00E676'},{t:'a MoneyBot company',size:34,weight:600,color:'#FBBF24'}],8,1.7,0,3.95,.12,{bg:'#0B1220',glow:.7,w:1024,h:220,size:96});
+  /* wall banners: sponsor inventory (2 in the garage, 4 on the big floor) */
+  const FALLBACK=[{name:'SAFETY FIRST',tagline:'Eyes and ears protected on the floor',color:'#FBBF24'},{name:'QUALITY IS EVERYONE\'S JOB',tagline:'Catch it here, not at the customer',color:'#00C853'},{name:'MADE IN BOT CITY',tagline:'MiniBots built with pride',color:'#3B82F6'},{name:'THINK LEAN',tagline:'Less waste, more bots',color:'#A855F7'}];
+  const bans=spBanners(), spots=expanded?[-7.4,7.4,-13.2,13.2]:[-7.3,7.3];
+  spots.forEach((dx,i)=>{ const s=bans[i]||FALLBACK[i]; if(bans[i]) spTrack('view',bans[i],{slot:'banner'}); const bg=new THREE.Group(); bg.position.set(sx+dx,0,z0-.55); g.add(bg);
+    [-1.85,1.85].forEach(x=>cy(bg,.07,3.6,x,0,0,mat('#475569',{metalness:.6})));
+    bx(bg,4.2,1.2,.16,0,2.55,-.04,SH.trim);
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(4,1),new THREE.MeshStandardMaterial({map:sponsorTex(s,{w:1024,h:256,bg:bans[i]?'#F8FAFC':'#0B1220',ink:bans[i]?'#0B1220':'#fff'}),roughness:.55,emissive:'#fff',emissiveIntensity:.12}));
+    m.material.emissiveMap=m.material.map; m.position.set(0,3.15,.06); bg.add(m); });
+  /* steel supplier board over the steel door */
+  const ssp=spSteel(); if(ssp) docks.filter(d=>d.c===b.c0).forEach(d=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(2.6,.75),new THREE.MeshStandardMaterial({map:sponsorTex(ssp,{w:1024,h:296,kicker:ssp.placeholder?'':'Steel by',noTag:true}),roughness:.55})); m.position.set(x0-T-.05,3.25,OZ+d.r*CELL+CELL/2); m.rotation.y=Math.PI/2; g.add(m); });
   /* the empty lot you can expand into */
   if(!expanded){ const lot=new THREE.Group(); g.add(lot); const xa=OX+(GARAGE.c1+1)*CELL, xb=OX+COLS*CELL, za=OZ, zb=OZ+ROWS*CELL;
     const line=(x,z,w,d)=>{ const m=new THREE.Mesh(BOX,SH.stripe); m.scale.set(w,.03,d); m.position.set(x,.02,z); lot.add(m); };
@@ -174,7 +184,7 @@ function machineMesh(type){
   return {g, P};
 }
 /* labels live outside the rotated machine group so they stay upright and centered */
-function machineLabel(type){ const d=MACH[type]; const s=sprite([{t:d.name,size:52}],{sw:2.0,bg:'rgba(11,18,32,.82)'}); return s; }
+function machineLabel(type){ const d=MACH[type], sp=spMachine(type); if(sp){ spTrack('view',sp,{slot:'machine',type}); return sprite([{t:d.name,size:50},{t:(sp.placeholder?'sponsor slot':'powered by '+sp.name),size:32,weight:700,color:sp.placeholder?'#FBBF24':'#93C5FD'}],{sw:2.3,h:176,bg:'rgba(11,18,32,.86)'}); } return sprite([{t:d.name,size:52}],{sw:2.0,bg:'rgba(11,18,32,.82)'}); }
 function alertSprite(){ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:MM.alerts.bottleneck, transparent:true, depthWrite:false, depthTest:false})); s.scale.set(2.1,.52,1); s.renderOrder=9; s.visible=false; return s; }
 
 /* ---------- instanced belts + items ---------- */
@@ -208,10 +218,11 @@ function drawItems(list){ const n={sheet:0,part:0,body:0,head:0,eye:0,crate:0};
   for(const k in n){ const im=ITEM[k]; im.count=n[k]; im.instanceMatrix.needsUpdate=true; if(im.instanceColor) im.instanceColor.needsUpdate=true; } }
 
 /* ---------- trucks ---------- */
-function makeTruck(color,label,sub){ const g=new THREE.Group(), body=new THREE.Group(); g.add(body);
+function makeTruck(color,label,sub,sp){ const g=new THREE.Group(), body=new THREE.Group(); g.add(body);
   bx(body,5.2,.35,1.9,0,.5,0,MM.dark); bx(body,1.5,1.5,1.9,2.0,.85,0,mat(color,{roughness:.35, metalness:.3})); bx(body,.06,.6,1.6,2.76,1.5,0,new THREE.MeshStandardMaterial({color:'#0B1220', metalness:.6, roughness:.1}));
   bx(body,3.5,2.0,2.0,-.65,.85,0,mat('#F8FAFC',{roughness:.6}));
-  [1.01,-1.01].forEach(s=>sign(body,[{t:label,color:'#0B1220'},{t:sub,size:34,weight:700,color:'#475569'}],3.2,1.1,-.65,1.95,s,{bg:'#F8FAFC',size:64,w:768,h:256,ry:s>0?0:Math.PI}));
+  if(sp){ const tex=sponsorTex(sp,{w:1024,h:340,kicker:sp.placeholder?'':(label==='STEEL CO.'?'Steel supplied by':'Shipping by')}); [1.01,-1.01].forEach(s=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(3.3,1.1),new THREE.MeshStandardMaterial({map:tex,roughness:.5})); m.position.set(-.65,1.95,s); if(s<0) m.rotation.y=Math.PI; body.add(m); }); }
+  else [1.01,-1.01].forEach(s=>sign(body,[{t:label,color:'#0B1220'},{t:sub,size:34,weight:700,color:'#475569'}],3.2,1.1,-.65,1.95,s,{bg:'#F8FAFC',size:64,w:768,h:256,ry:s>0?0:Math.PI}));
   const tire=mat('#111318',{roughness:.85}); [[1.9,1],[1.9,-1],[-1.4,1],[-1.4,-1],[-.5,1],[-.5,-1]].forEach(([x,s])=>{ const w=new THREE.Mesh(CYL,tire); w.scale.set(.42,.3,.42); w.rotation.x=Math.PI/2; w.position.set(x,.42,s*.88); w.castShadow=true; body.add(w); });
   const sh=blob(1); sh.scale.set(6,2.6,1); g.add(sh); g.traverse(o=>{ if(o.isMesh&&o!==sh) o.castShadow=true; }); return g; }
 

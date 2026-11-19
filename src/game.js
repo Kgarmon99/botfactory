@@ -99,7 +99,7 @@ function inspSig(m){ return m?[m.c,m.r,m.crew,m.auto,!!m.broken,G.cash>=ECON.aut
 function renderInspect(){ const m=G.sel, el=$('#inspect'); UI.insSig=inspSig(m); if(!m){ el.hidden=true; selRing.visible=false; return; } el.hidden=false; const d=MACH[m.type];
   selRing.visible=true; selRing.position.set(cellX(m.c),.06,cellZ(m.r));
   const crewTxt=m.auto?'🦾 Robot arm · no wages':m.crew===0?'Nobody working here':`${'🤖'.repeat(m.crew)} ${m.crew} worker${m.crew>1?'s':''} · ${fmt(m.crew*ECON.wage)}/day`;
-  el.innerHTML=`<button class="x" data-i="close">×</button><div class="ihead"><span class="sw" style="background:${d.color}"></span><div><b>${d.name}</b><small>${d.desc}</small></div></div>
+  el.innerHTML=`<button class="x" data-i="close">×</button><div class="ihead"><span class="sw" style="background:${d.color}"></span><div><b>${d.name}</b><small>${d.desc}</small></div></div>${spMachine(m.type)?spBadge(spMachine(m.type),'Station sponsor'):''}
     <div class="status" data-iv="state"></div>
     <div class="istats"><div><em>Time per bot</em><b data-iv="cyc"></b></div><div><em>Can make</em><b data-iv="cap"></b></div><div><em>Busy</em><b data-iv="util"></b></div></div>
     <div class="ubar"><i data-iv="ubar"></i></div>
@@ -161,14 +161,17 @@ function showDayEnd(r){ const last=r.day>=DAYS, rev=r.rev-r.returns, vcost=r.mat
       ${plRow('Net profit',r.net,'tot '+(r.net>=0?'good':'bad'))}</div>
     <div class="kpis"><div><em>Bots shipped</em><b>${r.made}</b></div><div><em>Cost per bot</em><b>${r.unit?fmt2(r.unit):'—'}</b></div><div><em>Break-even</em><b>${isFinite(r.be)?r.be+'/day':'—'}</b></div><div><em>Cash</em><b class="${r.cash<0?'r':''}">${fmt(r.cash)}</b></div></div>
     <div class="lesson">💡 ${dayLesson(r)}</div>
+    ${careerCard(r)}
     ${r.emergency?'<div class="note bad">You ran out of cash, so the bank gave you an emergency loan of '+fmt(ECON.emergency)+' (+'+fmt(ECON.emergencyInt)+'/day interest). Ouch.</div>':''}
     ${G.news.map(n=>`<div class="note">${n}</div>`).join('')}
     <small class="muted">Not in profit: ${fmt(r.buy)} spent on new steel (it's inventory until you use it) and ${fmt(r.capex)} on equipment (an investment).</small>
-    <div class="mact"><button class="btn pri big" id="btnNext">${last?'See your report card':'Start Day '+(r.day+1)+' ▶'}</button></div>`,'wide');
+    <div class="mact">${spBadge(spPresenting(),'Today\'s shift presented by')}<button class="btn pri big" id="btnNext">${last?'See your report card':'Start Day '+(r.day+1)+' ▶'}</button></div>`,'wide'); spTrack('view',spPresenting(),{slot:'presenting',where:'dayend'});
   sfx[r.net>=0?'cash':'bad'](); $('#btnNext').onclick=()=>{ closeModal(); if(last) report(); else { nextDay(); renderSide(); } }; }
 function grade(){ const profit=G.hist.reduce((a,h)=>a+h.net,0), done=G.tot.ordersDone, late=G.tot.ordersLate;
   const p=clamp((profit+1500)/7500,0,1)*40, rp=G.rep/100*20, op=(done+late?done/(done+late):.4)*15, q=(1-G.tot.returns/Math.max(1,G.tot.sold))*10, ms=Object.keys(G.ms).length/MILESTONES.length*15;
   const s=p+rp+op+q+ms; const L=s>=90?'A+':s>=80?'A':s>=70?'B':s>=58?'C':s>=45?'D':'F'; return {s:Math.round(s), L, profit, parts:{p,rp,op,q,ms}}; }
+function partnerStrip(){ const all=[spPresenting(),spSteel(),spShip(),...spBanners(),...Object.keys(MACH).map(spMachine),...Object.keys(CAREERS).map(k=>(SPONSORS.careers||{})[k]?spCareer(k):null)].filter(Boolean), seen={}, u=all.filter(s=>!seen[s.name]&&(seen[s.name]=1));
+  if(!u.length) return ''; return `<h4>Thanks to our partners</h4><div class="partners">${u.map(s=>spBadge(s,'')).join('')}</div><p class="muted">These companies build real things in real factories, and they're hiring people who understand what you just learned.</p>`; }
 function report(){ G.over=true; G.paused=true; const g=grade(), H=G.hist, first=H.find(h=>h.unit), maxAbs=Math.max(100,...H.map(h=>Math.abs(h.net)));
   const learned=[];
   if(first&&G.tot.bestUnit&&G.tot.bestUnit<first.unit) learned.push(`Your cost per bot went from <b>${fmt2(first.unit)}</b> on Day ${first.day} to as low as <b>${fmt2(G.tot.bestUnit)}</b>. More volume spread the same fixed costs thinner: <b>economies of scale</b>.`);
@@ -182,6 +185,7 @@ function report(){ G.over=true; G.paused=true; const g=grade(), H=G.hist, first=
     <h4>Profit by day</h4><div class="bars">${H.map(h=>`<div class="bar"><i class="${h.net>=0?'p':'n'}" style="height:${Math.abs(h.net)/maxAbs*100}%"></i><span>${h.day}</span></div>`).join('')}</div>
     <h4>Milestones</h4><div class="badges">${MILESTONES.map(m=>`<span class="${G.ms[m.id]?'':'no'}">${G.ms[m.id]?'✓':'○'} ${m.t}</span>`).join('')}</div>
     <h4>What you learned</h4><ul class="learn">${learned.map(l=>'<li>'+l+'</li>').join('')}</ul>
+    ${partnerStrip()}
     <div class="mact"><button class="btn ghost" id="btnKeep">Keep looking around</button><button class="btn pri big" onclick="location.reload()">Play again</button></div></div>`,'wide');
   $('#btnKeep').onclick=closeModal; sfx.fanfare(); }
 $('#btnGoals').onclick=()=>{ audio(); modal(`<button class="x" onclick="closeModal()">×</button><div class="eyebrow">Your goals</div><h2>Garage to factory in ${DAYS} days</h2><p>Make MiniBots, fill orders, and keep costs under control. Your grade comes from <b>total profit</b>, <b>reputation</b>, <b>on-time orders</b>, <b>quality</b> and <b>milestones</b>.</p>
@@ -265,7 +269,7 @@ function collectItems(){ LIST.length=0;
     if(m.cur){ const k=lerp(-.3,.3,m.prog); LIST.push({it:m.cur,x:cx+fx*k,y:.41,z:cz+fz*k,ry}); }
     if(m.out) LIST.push({it:m.out,x:cx+fx*.7,y:.41,z:cz+fz*.7,ry}); } }
 const LIGHT={work:'#22C55E', starved:'#FBBF24', blocked:'#EF4444', nocrew:'#64748B', broken:'#EF4444'};
-function animMachines(t,rdt,running){ const bn=bottleneck(); if(bn&&running&&G.day>=1&&UI.t>4) tip('bottleneck');
+function animMachines(t,rdt,running){ const bn=bottleneck(); if(bn&&running&&G.day>=1&&UI.t>4){ tip('bottleneck'); G.flags.bnSeen=1; }
   for(const m of G.machines){ const P=m.P, work=running&&m.state==='work'&&!m.pass;
     const lc=LIGHT[m.state]||'#22C55E'; if(m.lc!==lc){ m.lc=lc; P.lightMat.color.set(lc); P.lightMat.emissive.set(lc); } P.lightMat.emissiveIntensity=m.state==='broken'?(Math.sin(t*10)>0?1.6:.1):1.2;
     if(P.head&&m.type==='stamper') P.head.position.y=work?1.55-Math.pow(Math.max(0,Math.sin(m.prog*Math.PI)),3)*.95:1.55;
@@ -308,6 +312,7 @@ function loop(){ requestAnimationFrame(loop); const raw=clock.getDelta(), rdt=Ma
 
 /* ---------- boot ---------- */
 async function boot(){
+  await loadSponsorLogos(); $('#tSpons').innerHTML=spBadge(spPresenting()); spTrack('view',spPresenting(),{slot:'presenting',where:'title'});
   initThree(); setupMaterials(); machineMats(); ['tLogo','hLogo','aLogo'].forEach(id=>$('#'+id).src=MB_ASSETS.logo);
   buildEnvironment(); initInstancing(); makeGhost();
   GLTF.crowd=await parseGLB(MB_ASSETS.crowd); GLTF.hero=await parseGLB(MB_ASSETS.hero);
