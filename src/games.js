@@ -28,10 +28,10 @@ function mgDrawSparks(g,P,dt){g.save();g.globalCompositeOperation='lighter';for(
 
 /* ---------- entry ---------- */
 function playGame(kind,ctx,done){MG.on=true;MG.ctx=ctx;MG.done=done;
-  ({laser:gameTrace,weld:gameTrace,assemble:gameAssemble,paint:gamePaint,qa:gameQA,repair:gameRepair,program:gameProgram})[kind](kind,ctx);}
+  (({laser:gameTrace,weld:gameTrace,assemble:gameAssemble,paint:gamePaint,qa:gameQA,repair:gameRepair,program:gameProgram})[kind]||MILL_GAMES[kind])(kind,ctx);}
 function mgFinish(kind,score,ctx){cancelAnimationFrame(MG.raf);MG.on=false;score=clamp(score,0,1);
   const g=score>=.9?['PERFECT','#FACC15']:score>=.7?['GREAT','#39E75F']:score>=.45?['GOOD','#38BDF8']:['MISSED IT','#F87171'];const I=MG_INFO[kind];
-  const reward=kind==='repair'?(score>=.45?'Machine back online. Parts cost $40 instead of $220 for the crew.':'The crew had to finish the job.'):kind==='program'?'Robot online. It runs this program on every unit now.':kind==='qa'?(score>=.45?'Defects pulled before shipping. Reputation up.':'Some defects slipped through.'):score>=.45?`Station boosted: <b>2× speed</b> and fewer defects for ${Math.round(12+score*18)} seconds.`:'No boost this time. Try again in a bit!';
+  const reward=I.reward&&score>=.45?I.reward:I.reward?'You got through it. The mill crew finished the job!':kind==='repair'?(score>=.45?'Machine back online. Parts cost $40 instead of $220 for the crew.':'The crew had to finish the job.'):kind==='program'?'Robot online. It runs this program on every unit now.':kind==='qa'?(score>=.45?'Defects pulled before shipping. Reputation up.':'Some defects slipped through.'):score>=.45?`Station boosted: <b>2× speed</b> and fewer defects for ${Math.round(12+score*18)} seconds.`:'No boost this time. Try again in a bit!';
   if(score>=.45&&kind!=='program'){sfx('win');if(score>=.9)confetti(90);}else if(kind!=='program')sfx('bad');else{sfx('big');confetti(120);}
   const C=openModal(`<div class="mg mg-res"><div class="mg-grade" style="--gc:${g[1]}">${g[0]}</div><div class="eyebrow">${I.icon} ${I.name}</div><p class="mg-rw">${reward}</p><p class="mg-fact">💡 ${I.fact}</p><div class="mact"><button class="btn pri" id="mgOk" data-focus>Back to the floor</button></div></div>`,{cls:'dark mgcard'});
   C.querySelector('#mgOk').onclick=()=>{closeModal();MG.done&&MG.done(score);};}

@@ -32,14 +32,15 @@ const SPONSORS={
   shipping:null,
   banners:[],
   machines:{},
-  careers:{}
+  careers:{},
+  showcase:null      /* the Mill Tour field trip: the whole mill wears this partner's name */
 };
 /* Optional: send anonymous placement events (views, career clicks) to your
    own endpoint so you can report numbers to sponsors. Off when empty. */
 const SPONSOR_BEACON='';
 
 /* ---------- the slot inventory (used by ?slots and ?sponsor previews) ---------- */
-const SLOT_INFO={presenting:'Presenting partner', steel:'Steel supplier', shipping:'Shipping partner', banner:'Factory banner', machine:'Station sponsor', career:'Career partner'};
+const SLOT_INFO={showcase:'Showcase mill',presenting:'Presenting partner', steel:'Steel supplier', shipping:'Shipping partner', banner:'Factory banner', machine:'Station sponsor', career:'Career partner'};
 const SPONSOR_MODE=(()=>{ const q=new URLSearchParams(location.search), nm=(q.get('sponsor')||'').trim().slice(0,40);
   if(nm) return {kind:'preview', s:{name:nm, tagline:(q.get('tagline')||'').slice(0,50), color:/^#[0-9a-f]{3,8}$/i.test(q.get('color')||'')?q.get('color'):'#0EA5E9'}};
   if(q.has('slots')) return {kind:'slots'}; return {kind:'live'}; })();
@@ -94,6 +95,8 @@ const CAREERS={
   mill:       {icon:'🔥', role:'Mill Operator (Steel & Aluminum)', link:'Every MiniBot started as a steel sheet. Someone made that sheet.', what:'Runs the furnaces, casters and rolling mills that melt metal and roll it into the sheets and coils factories like yours buy. Big machines, big teams, very precise work.', path:'High school diploma. Mills train you, and many partner with community and technical colleges on apprenticeships.', skills:['Safety','Teamwork','Reading gauges'], ky:1},
   metallurgist:{icon:'🧪', role:'Metallurgist', link:'Some of your products came back broken. Was it the metal?', what:'The scientist of the mill: tests the chemistry and strength of the metal so every coil meets the customer\'s spec, and figures out what went wrong when it doesn\'t.', path:'Four-year degree in metallurgical, materials or chemical engineering.', skills:['Chemistry','Lab testing','Problem solving'], ky:1},
   recycling:  {icon:'♻️', role:'Metals Recycling Specialist', link:'Your QA scrapped defects today. That scrap metal doesn\'t go to waste.', what:'Sorts, tests and processes scrap metal so it can be melted down into new steel and aluminum. A lot of new metal is made from recycled scrap.', path:'High school diploma and on-the-job training. Equipment certifications and supervisor roles come with experience.', skills:['Sorting & testing','Heavy equipment','Safety'], ky:1},
+  craneop:    {icon:'🧲', role:'Overhead Crane Operator', link:'You ran the scrap magnet.', what:'Runs the giant cranes that move scrap, ladles of molten metal and finished coils around a mill. Steady hands and sharp focus, every lift.', path:'High school diploma and on-the-job training, plus a crane certification. Many mills train you from day one.', skills:['Focus','Safety','Spatial thinking'], ky:1},
+  meltshop:   {icon:'⚡', role:'Melt Shop Operator', link:'You melted scrap in an electric arc furnace.', what:'Runs the furnace that turns scrap into liquid metal: loading charges, watching temperature and chemistry, and tapping the heat into the ladle.', path:'High school diploma. Mills train you, often with apprenticeships through community and technical colleges.', skills:['Teamwork','Reading gauges','Heat safety'], ky:1},
   plant:      {icon:'🏆', role:'Plant Manager', link:'You just expanded your plant. Someone has to run all of it.', what:'Runs the entire plant: safety, quality, cost, on-time delivery and the people. Most plant managers started on the floor.', path:'Usually years of experience plus a degree in engineering or business. Many work their way up from operator.', skills:['Leadership','Every lesson in this game','Decisions under pressure']}
 };
 /* pick the career that matches what actually happened today (tags are set by the game) */

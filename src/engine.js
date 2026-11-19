@@ -125,7 +125,7 @@ function updateCamera(dt,t){
 function initInput(){
   addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.code]=true;if(blocked())return;
     if(e.code==='KeyE'||e.code==='Enter')doAction();if(e.code==='Space'){e.preventDefault();togglePause();}
-    if(e.code==='Digit1')setSpeed(1);if(e.code==='Digit2')setSpeed(2);if(e.code==='Digit3')setSpeed(3);if(e.code==='KeyQ')camS.yaw-=.35;if(e.code==='KeyR')camS.yaw+=.35;if(e.code==='KeyV')toggleOverview();if(e.code==='KeyF'&&(CX.riding||nearFork()))toggleRide();if(e.code==='KeyH'&&CX.riding)sfx('horn');});
+    if(e.code==='Digit1')setSpeed(1);if(e.code==='Digit2')setSpeed(2);if(e.code==='Digit3')setSpeed(3);if(e.code==='KeyQ')camS.yaw-=.35;if(e.code==='KeyR')camS.yaw+=.35;if(e.code==='KeyV')toggleOverview();if(e.code==='KeyT')toggleTwin();if(e.code==='KeyF'&&(CX.riding||nearFork()))toggleRide();if(e.code==='KeyH'&&CX.riding)sfx('horn');});
   addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
   const cv=$('#gl');let down=null;
   cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,yaw:camS.yaw,t:performance.now()};});

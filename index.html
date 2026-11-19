@@ -88,6 +88,26 @@ body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0}.kpis>div{border:1px solid var(--line);border-radius:12px;padding:8px 12px;background:rgba(255,255,255,.03)}.kpis em{display:block;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--mute)}.kpis b{font:700 18px var(--mono)}.kpis b.st{color:var(--yel);font-size:15px}.kpis b.st i{color:rgba(255,255,255,.18);font-style:normal}
 .bars{display:flex;align-items:flex-end;gap:5px;height:120px;border-bottom:1px solid var(--line);padding-top:6px}.bars.thin{height:80px}.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:3px}.bar i{width:100%;border-radius:6px 6px 0 0;min-height:3px}.bar i.p{background:var(--neon)}.bar i.n{background:var(--red)}.bar i.u{background:var(--blue)}.bar span{font-size:10.5px;color:var(--mute)}
 .techs{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}.tc{border:1px solid var(--line);border-radius:16px;padding:14px;background:linear-gradient(160deg,rgba(14,165,233,.12),rgba(255,255,255,.02));display:flex;flex-direction:column;gap:6px}.tc-i{font-size:38px}.tc b{font:600 18px var(--display)}.tc p{margin:0;font-size:13px;color:#CBD5E1;line-height:1.4}.tc p b{font:inherit;font-weight:800;color:#fff}.tc .tc-l{color:#BAE6FD;font-size:12.5px}.tc.own{border-color:var(--neon)}.tc.lock{opacity:.55}.tc .btn{margin-top:auto}
+/* OEE */
+.oee{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.03)}.oee.empty{flex-direction:column;align-items:flex-start;gap:2px}.oee.empty small{color:var(--mute)}
+.oe-g{flex:none;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--c) var(--v),rgba(255,255,255,.08) 0);display:grid;place-items:center}.oe-g>div{width:76px;height:76px;border-radius:50%;background:#0D1117;display:grid;place-items:center;text-align:center;align-content:center}.oe-g b{font:700 24px var(--display);line-height:1}.oe-g small{font-size:9.5px;color:var(--mute);font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.oee.big .oe-g{width:116px;height:116px}.oee.big .oe-g>div{width:92px;height:92px}.oee.big .oe-g b{font-size:30px}
+.oe-rows{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}.oe-r{display:grid;grid-template-columns:22px 92px 1fr 44px;gap:8px;align-items:center;font-size:13px}.oe-r span{font:800 13px var(--mono);color:var(--yel)}.oe-r em{font-style:normal;color:#D1D5DB}.oe-r i{height:8px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}.oe-r i s{display:block;height:100%;text-decoration:none}.oe-r b{font-family:var(--mono);text-align:right}.oe-wc{font-size:11.5px;color:var(--mute)}.oe-wc b{color:var(--neon)}
+/* digital twin */
+#twinPins{position:fixed;inset:0;pointer-events:none;z-index:4}#twinHud{display:none}
+body.twin #twinHud{display:block;position:fixed;left:max(12px,env(safe-area-inset-left,0px));top:calc(80px + env(safe-area-inset-top,0px));z-index:6;width:min(330px,calc(100vw - 24px));border-radius:18px;padding:14px;border-color:rgba(34,211,238,.5);box-shadow:0 0 30px rgba(34,211,238,.18)}
+.th-h{font:800 12px var(--mono);letter-spacing:2px;color:#22D3EE;margin-bottom:8px;display:flex;align-items:center;gap:8px}.th-h .dot{width:9px;height:9px;border-radius:50%;background:#22D3EE;animation:rdy 1s infinite}.th-l{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 2px;border-bottom:1px solid var(--line)}.th-l b{font-family:var(--mono)}.th-n{font-size:12px;color:var(--mute);margin:10px 0}
+body.twin #twinHud .oee{padding:8px;gap:10px}body.twin #twinHud .oe-g{width:80px;height:80px}body.twin #twinHud .oe-g>div{width:62px;height:62px}body.twin #twinHud .oe-g b{font-size:19px}body.twin #twinHud .oe-r{grid-template-columns:18px 1fr 50px 40px;font-size:12px}
+.tpin{position:absolute;left:0;top:0;min-width:150px;background:rgba(2,12,22,.86);border:1.5px solid var(--c);border-radius:12px;padding:7px 9px;font-size:11.5px;box-shadow:0 0 18px color-mix(in srgb,var(--c) 40%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.tpin b{display:flex;justify-content:space-between;font:700 13px var(--display);color:#E0F2FE}.tpin b i{font-style:normal;color:#64748B;font-size:11px}.tpin .st{display:block;font:800 10.5px var(--mono);color:var(--c);letter-spacing:1px;margin:2px 0 4px}.tpin .kv{display:grid;grid-template-columns:auto auto;gap:1px 10px;color:#94A3B8}.tpin .kv em{font-style:normal;color:#fff;font-family:var(--mono);text-align:right}
+.tpin .hb{display:block;height:4px;border-radius:3px;background:rgba(255,255,255,.1);margin-top:5px;overflow:hidden}.tpin .hb s{display:block;height:100%;text-decoration:none}.tpin u{display:block;text-decoration:none;margin-top:5px;font:900 10px var(--body);letter-spacing:1px;color:#0D1117;background:var(--yel);border-radius:5px;text-align:center;padding:2px}.tpin.bn{border-color:var(--yel)}
+body.twin #nextUp,body.twin #advisor,body.twin #act{display:none!important}
+/* mill */
+#millBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:7;display:flex;align-items:center;gap:12px;border-radius:16px;padding:8px 10px 8px 16px;border-color:rgba(255,138,61,.6)}#millBar span{font:800 11px var(--body);letter-spacing:2px;color:#FF8A3D}#millBar b{font:600 17px var(--display)}
+body.inmill #dock,body.inmill #btnStart,body.inmill #hPlant,body.inmill #clock,body.inmill #btnTwin,body.inmill #btnView{display:none!important}body.inmill #act{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.millcard{display:flex;gap:14px;border:1.5px solid #FF8A3D;border-radius:18px;padding:14px;margin:10px 0 14px;background:linear-gradient(135deg,rgba(255,90,0,.2),rgba(250,204,21,.06))}.mc-i{font-size:44px}.millcard b{font:600 20px var(--display);display:block;margin:2px 0}.millcard p{margin:0 0 10px;font-size:13.5px;color:#E5E7EB}
+.mill-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.mill-steps>div{border:1px solid rgba(255,138,61,.4);border-radius:14px;padding:10px;background:rgba(255,90,0,.07)}.mill-steps span{font-size:26px}.mill-steps b{display:block;font:600 14px var(--display);margin:4px 0}.mill-steps small{font-size:11.5px;color:var(--mute);line-height:1.35;display:block}
+@media (max-width:760px){.mill-steps{grid-template-columns:1fr 1fr}.tpin{min-width:118px;font-size:10.5px;padding:5px 7px}body.twin #twinHud{top:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px))}.millcard{flex-direction:column}}
 .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.mkc{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(56,189,248,.06)}.mkc span{font-size:26px}.mkc b{display:block;font-size:14px;margin:4px 0}.mkc small{color:var(--mute);font-size:11.5px;line-height:1.35;display:block}.mkc.lock{opacity:.45;background:none}
 /* report */
 .rep-top{display:flex;gap:16px;align-items:center}.gl{flex:none;width:86px;height:86px;border-radius:22px;display:grid;place-items:center;font:700 56px/1 var(--display);color:var(--gc);border:3px solid var(--gc);background:rgba(0,0,0,.25);box-shadow:0 0 30px color-mix(in srgb,var(--gc) 45%,transparent);animation:gIn .6s cubic-bezier(.2,1.6,.4,1)}@keyframes gIn{0%{transform:scale(2.2) rotate(-12deg);opacity:0}}
@@ -145,11 +165,14 @@ body.titling #hud,body.titling #dock,body.titling #nextUp,body.titling #btnStart
   <button id="hPlant" class="glass"><em><span>Plant</span><span id="hNext"></span></em><b id="hStage">Garage Shop</b><div class="pb"><i id="hBar"></i></div></button>
   <div class="spacer"></div>
   <div id="clock" class="glass"><span id="hDay">Day 1</span><div class="cb"><i id="clockFill"></i></div><div id="speed"><button data-s="0" title="Pause (Space)">❚❚</button><button data-s="1">1×</button><button data-s="2">2×</button><button data-s="3">3×</button></div></div>
+  <button class="ib glass" id="btnTwin" title="Digital twin (T)">🧿</button>
   <button class="ib glass" id="btnView" title="Overview (V)">🗺️</button>
   <button class="ib glass" id="btnMute" title="Sound">🔊</button>
 </header>
 <div id="nextUp" class="glass" hidden><i></i><div><small>Next up</small><b></b></div></div>
 <div id="rush" hidden></div>
+<div id="twinPins"></div><div id="twinHud" class="glass"></div>
+<div id="millBar" class="glass" hidden><span>🔥 FIELD TRIP</span><b id="millName"></b><button class="btn sm" id="millExit">Exit tour</button></div>
 <button id="btnStart" hidden>▶ Start Shift</button>
 <button id="act" hidden></button>
 <nav id="dock" class="glass">
@@ -5705,13 +5728,15 @@ function boostStation(li,k,secs){const s=S.lines[li].st[k];s.boost=Math.max(s.bo
 
 /* ---------- the shift ---------- */
 function startShift(){S.phase='day';S.clock=0;S.today={rev:0,mat:0,capex:0,repairs:0,returns:0,retN:0,scrap:0,shipped:0,byLine:S.lines.map(()=>0),bonus:0,games:0,best:0};
-  S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
+  S.today.oee=S.lines.map(()=>({plan:0,down:0,made:0,bad:0,ideal:0}));S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
 function itemsNear(l,x,y0){return l.belt.some(it=>Math.abs(it.x-x)<.86);}
 function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KEYS.filter(k=>need.includes(k)||(k==='qa'&&l.st.qa.built&&STAGES[S.stage].wide)),sx=shipX();
+  /* OEE bookkeeping: planned time, downtime, ideal rate */
+  const O=S.today.oee&&S.today.oee[l.i];if(O){O.plan+=dt;if(route.some(k=>l.st[k].broken||l.st[k].needsCode))O.down+=dt;O.ideal=Math.min(...route.map(k=>TIERS[l.st[k].tier].speed*techSpeed()/STATIONS[k].cycle));}
   /* release raw steel when the first stop has room */
   const first=l.st[route[0]];l.spawnT-=dt;
   if(l.spawnT<=0&&first.q.length+l.belt.filter(it=>it.next===route[0]).length<3&&!itemsNear(l,DOCK_IN_X+.4)){
-    l.belt.push({x:DOCK_IN_X+.4,next:route[0],d:false,p:l.job.product,lvl:0});S.today.mat+=P.mat;l.spawnT=.35;}
+    l.belt.push({x:DOCK_IN_X+.4,next:route[0],d:false,p:l.job.product,lvl:0});S.today.mat+=P.mat*(S.flags.millPartner?.85:1);l.spawnT=.35;}
   /* belt: move toward the next stop, keep spacing, stop at a full queue */
   l.belt.sort((a,b)=>b.x-a.x);let ahead=1e9;
   for(let i=0;i<l.belt.length;i++){const it=l.belt[i],stopX=it.next==='ship'?sx:SLOT_X[it.next]-.55;
@@ -5729,7 +5754,7 @@ function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KE
       if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*T.speed*techSpeed()*(s.boost>0?2:1)/STATIONS[k].cycle;
         s.wear+=dt*(s.tier===2?.0016:.0028);
         if(s.prog>=1){const it=s.cur;s.cur=null;s.prog=0;s.made++;
-          if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;emit('scrap',{li:l.i});it.dead=true;}}
+          if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;const O2=S.today.oee&&S.today.oee[l.i];if(O2){O2.made++;O2.bad++;}emit('scrap',{li:l.i});it.dead=true;}}
           else if(Math.random()<T.defect*(s.boost>0?.2:1))it.d=true;
           it.lvl=ST_KEYS.indexOf(k)+1;
           if(!it.dead){const ri2=route.indexOf(k);it.next=route[ri2+1]||'ship';s.out=it;}}
@@ -5740,6 +5765,7 @@ function ship(l,it){const P=PRODUCTS[it.p],c=contractOf(l);let v;
   if(c&&c.got<c.qty){v=c.price;c.got++;if(c.got>=c.qty){S.cash+=c.bonus;S.today.bonus+=c.bonus;S.stats.contracts++;S.rep=clamp(S.rep+5,0,100);
       S.contracts=S.contracts.filter(x=>x!==c);l.job.cid=null;emit('contractDone',{c,li:l.i});}}
   else v=Math.round(P.price*ECON.marketCut);
+  {const O=S.today.oee&&S.today.oee[l.i];if(O){O.made++;if(it.d)O.bad++;}}
   S.cash+=v;S.today.rev+=v;S.today.shipped++;S.today.byLine[l.i]++;S.stats.shipped++;S.stats.rev+=v;
   if(it.d&&S.tech.dog&&Math.random()<.5){it.d=false;emit('dogCatch',{li:l.i});}
   if(it.d)S.returnsQ.push({at:S.clock+rand(8,40),v,li:l.i});
@@ -5767,6 +5793,9 @@ function endShift(){S.phase='report';const T=S.today,st=S.lines.slice(0,lineCoun
   emit('report',{T});}
 const techSpeed=()=>S&&S.tech&&S.tech.agv?1.1:1;
 function buyTech(id){const T=TECH.find(x=>x.id===id);if(!T)return 'Unknown';S.tech=S.tech||{};if(S.tech[id])return 'Already yours';if(T.stage>S.stage)return 'Unlocks at '+STAGES[T.stage].name;if(S.cash<T.cost)return 'Need '+money(T.cost);S.cash-=T.cost;if(S.today)S.today.capex+=T.cost;S.tech[id]=1;emit('tech',{id});return '';}
+/* OEE = Availability x Performance x Quality */
+function oeeOf(o){if(!o||o.plan<1)return null;const run=Math.max(.001,o.plan-o.down),A=run/o.plan,Pf=Math.min(1,o.made/Math.max(.001,o.ideal*run)),Qu=o.made?(o.made-o.bad)/o.made:1;return {A,P:Pf,Q:Qu,v:A*Pf*Qu};}
+function plantOEE(T){T=T||S.today;if(!T||!T.oee)return null;const tot=T.oee.slice(0,lineCount()).reduce((a,o)=>({plan:a.plan+o.plan,down:a.down+o.down,made:a.made+o.made,bad:a.bad+o.bad,ideal:a.ideal+o.ideal*o.plan}),{plan:0,down:0,made:0,bad:0,ideal:0});if(tot.plan<1)return null;tot.ideal/=tot.plan;return oeeOf(tot);}
 function nextDay(){S.day++;S.phase='board';makeOffers();}
 function grade(T){const pts=T.net+T.shipped*6-T.retN*30-T.late.length*200+T.games*40;const base=120+S.stage*260+S.lines.length*80;
   return pts>=base*3?'S':pts>=base*2?'A':pts>=base?'B':pts>=0?'C':'D';}
@@ -5901,7 +5930,7 @@ function updateCamera(dt,t){
 function initInput(){
   addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;keys[e.code]=true;if(blocked())return;
     if(e.code==='KeyE'||e.code==='Enter')doAction();if(e.code==='Space'){e.preventDefault();togglePause();}
-    if(e.code==='Digit1')setSpeed(1);if(e.code==='Digit2')setSpeed(2);if(e.code==='Digit3')setSpeed(3);if(e.code==='KeyQ')camS.yaw-=.35;if(e.code==='KeyR')camS.yaw+=.35;if(e.code==='KeyV')toggleOverview();if(e.code==='KeyF'&&(CX.riding||nearFork()))toggleRide();if(e.code==='KeyH'&&CX.riding)sfx('horn');});
+    if(e.code==='Digit1')setSpeed(1);if(e.code==='Digit2')setSpeed(2);if(e.code==='Digit3')setSpeed(3);if(e.code==='KeyQ')camS.yaw-=.35;if(e.code==='KeyR')camS.yaw+=.35;if(e.code==='KeyV')toggleOverview();if(e.code==='KeyT')toggleTwin();if(e.code==='KeyF'&&(CX.riding||nearFork()))toggleRide();if(e.code==='KeyH'&&CX.riding)sfx('horn');});
   addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
   const cv=$('#gl');let down=null;
   cv.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,yaw:camS.yaw,t:performance.now()};});
@@ -5988,14 +6017,15 @@ const SPONSORS={
   shipping:null,
   banners:[],
   machines:{},
-  careers:{}
+  careers:{},
+  showcase:null      /* the Mill Tour field trip: the whole mill wears this partner's name */
 };
 /* Optional: send anonymous placement events (views, career clicks) to your
    own endpoint so you can report numbers to sponsors. Off when empty. */
 const SPONSOR_BEACON='';
 
 /* ---------- the slot inventory (used by ?slots and ?sponsor previews) ---------- */
-const SLOT_INFO={presenting:'Presenting partner', steel:'Steel supplier', shipping:'Shipping partner', banner:'Factory banner', machine:'Station sponsor', career:'Career partner'};
+const SLOT_INFO={showcase:'Showcase mill',presenting:'Presenting partner', steel:'Steel supplier', shipping:'Shipping partner', banner:'Factory banner', machine:'Station sponsor', career:'Career partner'};
 const SPONSOR_MODE=(()=>{ const q=new URLSearchParams(location.search), nm=(q.get('sponsor')||'').trim().slice(0,40);
   if(nm) return {kind:'preview', s:{name:nm, tagline:(q.get('tagline')||'').slice(0,50), color:/^#[0-9a-f]{3,8}$/i.test(q.get('color')||'')?q.get('color'):'#0EA5E9'}};
   if(q.has('slots')) return {kind:'slots'}; return {kind:'live'}; })();
@@ -6050,6 +6080,8 @@ const CAREERS={
   mill:       {icon:'🔥', role:'Mill Operator (Steel & Aluminum)', link:'Every MiniBot started as a steel sheet. Someone made that sheet.', what:'Runs the furnaces, casters and rolling mills that melt metal and roll it into the sheets and coils factories like yours buy. Big machines, big teams, very precise work.', path:'High school diploma. Mills train you, and many partner with community and technical colleges on apprenticeships.', skills:['Safety','Teamwork','Reading gauges'], ky:1},
   metallurgist:{icon:'🧪', role:'Metallurgist', link:'Some of your products came back broken. Was it the metal?', what:'The scientist of the mill: tests the chemistry and strength of the metal so every coil meets the customer\'s spec, and figures out what went wrong when it doesn\'t.', path:'Four-year degree in metallurgical, materials or chemical engineering.', skills:['Chemistry','Lab testing','Problem solving'], ky:1},
   recycling:  {icon:'♻️', role:'Metals Recycling Specialist', link:'Your QA scrapped defects today. That scrap metal doesn\'t go to waste.', what:'Sorts, tests and processes scrap metal so it can be melted down into new steel and aluminum. A lot of new metal is made from recycled scrap.', path:'High school diploma and on-the-job training. Equipment certifications and supervisor roles come with experience.', skills:['Sorting & testing','Heavy equipment','Safety'], ky:1},
+  craneop:    {icon:'🧲', role:'Overhead Crane Operator', link:'You ran the scrap magnet.', what:'Runs the giant cranes that move scrap, ladles of molten metal and finished coils around a mill. Steady hands and sharp focus, every lift.', path:'High school diploma and on-the-job training, plus a crane certification. Many mills train you from day one.', skills:['Focus','Safety','Spatial thinking'], ky:1},
+  meltshop:   {icon:'⚡', role:'Melt Shop Operator', link:'You melted scrap in an electric arc furnace.', what:'Runs the furnace that turns scrap into liquid metal: loading charges, watching temperature and chemistry, and tapping the heat into the ladle.', path:'High school diploma. Mills train you, often with apprenticeships through community and technical colleges.', skills:['Teamwork','Reading gauges','Heat safety'], ky:1},
   plant:      {icon:'🏆', role:'Plant Manager', link:'You just expanded your plant. Someone has to run all of it.', what:'Runs the entire plant: safety, quality, cost, on-time delivery and the people. Most plant managers started on the floor.', path:'Usually years of experience plus a degree in engineering or business. Many work their way up from operator.', skills:['Leadership','Every lesson in this game','Decisions under pressure']}
 };
 /* pick the career that matches what actually happened today (tags are set by the game) */
@@ -6075,7 +6107,7 @@ const W={shell:null,lines:[],lot:null,kiosk:null,beltMats:[],trucks:[],lights:[]
 const PCOL={toy:'#38BDF8',kart:'#EF4444',drone:'#A855F7',scooter:'#10B981',dog:'#F59E0B',ev:'#22C55E'};
 function stageNow(){return S?S.stage:0;}
 function linesNow(){return STAGES[stageNow()].lines;}
-function hallBounds(st){st=st==null?stageNow():st;const wide=STAGES[st].wide,n=STAGES[st].lines;return {x0:-19.5,x1:wide?19.5:7.6,z0:LZ(n-1)-5.6,z1:7.2};}
+function hallBounds(st){if(st==null&&typeof MILL!=='undefined'&&MILL.on)return millBounds();st=st==null?stageNow():st;const wide=STAGES[st].wide,n=STAGES[st].lines;return {x0:-19.5,x1:wide?19.5:7.6,z0:LZ(n-1)-5.6,z1:7.2};}
 function hallCenter(){const B=hallBounds();return {x:(B.x0+B.x1)/2,z:(B.z0+B.z1)/2};}
 
 /* ---------- textures ---------- */
@@ -6434,7 +6466,7 @@ function shiftShots(done){const c=hallCenter(),B=hallBounds(),pl=()=>[P.pos.x,.8
 
 /* ---------- per frame ---------- */
 let scrT=0;
-function updateCine(dt,t,run){if(!S)return;stepShots(dt);const f=S.phase==='day'?S.clock/SHIFT_LEN:S.phase==='report'?1:0;applyTime(f);
+function updateCine(dt,t,run){if(!S)return;stepShots(dt);const f=S.phase==='day'?S.clock/SHIFT_LEN:S.phase==='report'?1:0;if(!MILL.on&&!TWIN.on)applyTime(f);
   CX.cars.forEach(c=>{c.g.position.x+=c.dir*c.v*dt;if(c.g.position.x>170)c.g.position.x=-170;if(c.g.position.x<-170)c.g.position.x=170;});
   const m=run?S.speed:0,B=hallBounds();
   CX.agvs.forEach(a=>{const near=Math.hypot(P.pos.x-a.x,P.pos.z-a.z)<1.5&&Math.sign(P.pos.x-a.x)===a.dir;if(a.wait>0)a.wait-=dt;else if(!near){a.x+=a.dir*2.6*dt*Math.max(.6,m||.6);if(a.x>a.x1||a.x<a.x0){a.dir*=-1;a.wait=1.4;a.x=clamp(a.x,a.x0,a.x1);}}else if(Math.random()<dt*1.5)tone(1200,.06,'square',.015);
@@ -6478,10 +6510,10 @@ function mgDrawSparks(g,P,dt){g.save();g.globalCompositeOperation='lighter';for(
 
 /* ---------- entry ---------- */
 function playGame(kind,ctx,done){MG.on=true;MG.ctx=ctx;MG.done=done;
-  ({laser:gameTrace,weld:gameTrace,assemble:gameAssemble,paint:gamePaint,qa:gameQA,repair:gameRepair,program:gameProgram})[kind](kind,ctx);}
+  (({laser:gameTrace,weld:gameTrace,assemble:gameAssemble,paint:gamePaint,qa:gameQA,repair:gameRepair,program:gameProgram})[kind]||MILL_GAMES[kind])(kind,ctx);}
 function mgFinish(kind,score,ctx){cancelAnimationFrame(MG.raf);MG.on=false;score=clamp(score,0,1);
   const g=score>=.9?['PERFECT','#FACC15']:score>=.7?['GREAT','#39E75F']:score>=.45?['GOOD','#38BDF8']:['MISSED IT','#F87171'];const I=MG_INFO[kind];
-  const reward=kind==='repair'?(score>=.45?'Machine back online. Parts cost $40 instead of $220 for the crew.':'The crew had to finish the job.'):kind==='program'?'Robot online. It runs this program on every unit now.':kind==='qa'?(score>=.45?'Defects pulled before shipping. Reputation up.':'Some defects slipped through.'):score>=.45?`Station boosted: <b>2× speed</b> and fewer defects for ${Math.round(12+score*18)} seconds.`:'No boost this time. Try again in a bit!';
+  const reward=I.reward&&score>=.45?I.reward:I.reward?'You got through it. The mill crew finished the job!':kind==='repair'?(score>=.45?'Machine back online. Parts cost $40 instead of $220 for the crew.':'The crew had to finish the job.'):kind==='program'?'Robot online. It runs this program on every unit now.':kind==='qa'?(score>=.45?'Defects pulled before shipping. Reputation up.':'Some defects slipped through.'):score>=.45?`Station boosted: <b>2× speed</b> and fewer defects for ${Math.round(12+score*18)} seconds.`:'No boost this time. Try again in a bit!';
   if(score>=.45&&kind!=='program'){sfx('win');if(score>=.9)confetti(90);}else if(kind!=='program')sfx('bad');else{sfx('big');confetti(120);}
   const C=openModal(`<div class="mg mg-res"><div class="mg-grade" style="--gc:${g[1]}">${g[0]}</div><div class="eyebrow">${I.icon} ${I.name}</div><p class="mg-rw">${reward}</p><p class="mg-fact">💡 ${I.fact}</p><div class="mact"><button class="btn pri" id="mgOk" data-focus>Back to the floor</button></div></div>`,{cls:'dark mgcard'});
   C.querySelector('#mgOk').onclick=()=>{closeModal();MG.done&&MG.done(score);};}
@@ -6566,6 +6598,167 @@ function gameProgram(kind,ctx){const k=(ctx&&ctx.k)||'weld',seq=PROGRAMS[k]||PRO
       if(prog.length===seq.length){$('#pgErr').innerHTML='<b class="ok">✓ Program compiled. Running…</b>';setTimeout(()=>mgFinish(kind,1-Math.min(.5,miss*.08),ctx),900);}}
     else{miss++;sfx('bad');b.classList.remove('no');void b.offsetWidth;b.classList.add('no');$('#pgErr').innerHTML=`⚠ The robot can't <b>${esc(b.dataset.s.toLowerCase())}</b> yet. What has to happen first?`;}});}
 
+/* ---- twin.js ---- */
+/* =====================================================================
+   BOTFACTORY · OEE gauges + Digital Twin x-ray view
+   OEE = Availability × Performance × Quality (85% = world class)
+   ===================================================================== */
+const TWIN={on:false,mat:null,grid:null,pins:[],hidden:[],t:0,bg:new THREE.Color()};
+const pct=v=>Math.round(clamp(v,0,1)*100)+'%';
+function oeeColor(v){return v>=.85?'#39E75F':v>=.6?'#FACC15':'#F87171';}
+function oeeHTML(o,title,big){if(!o)return `<div class="oee empty"><b>OEE</b><small>Run a shift to measure</small></div>`;const row=(k,n,v,tip)=>`<div class="oe-r" title="${tip}"><span>${k}</span><em>${n}</em><i><s style="width:${pct(v)};background:${oeeColor(v)}"></s></i><b>${pct(v)}</b></div>`;
+  return `<div class="oee ${big?'big':''}"><div class="oe-g" style="--v:${clamp(o.v,0,1)*360}deg;--c:${oeeColor(o.v)}"><div><b>${pct(o.v)}</b><small>${title||'OEE'}</small></div></div><div class="oe-rows">
+    ${row('A','Availability',o.A,'Time the line was up and running vs planned time')}${row('P','Performance',o.P,'How fast it ran vs its ideal speed')}${row('Q','Quality',o.Q,'Good units vs all units made')}
+    <div class="oe-wc">World-class plants: <b>85%</b></div></div></div>`;}
+function oeeLesson(o){if(!o)return '';const w=[['A',o.A,'Breakdowns stopped your line. Service machines before they break (or unlock Control Room Screens).'],['P',o.P,'Your line ran slower than it could: upgrade the bottleneck or get hands-on to boost it.'],['Q',o.Q,'Too many defects. Build a QA Scanner, upgrade stations or unlock the Robot Dog Patrol.']].sort((a,b)=>a[1]-b[1])[0];
+  return `<b>OEE ${pct(o.v)}</b> = Availability × Performance × Quality. Your weakest: <b>${{A:'Availability',P:'Performance',Q:'Quality'}[w[0]]}</b>. ${w[2]}`;}
+
+/* ---------- digital twin ---------- */
+function toggleTwin(force){if(!S||titleOn()||camS.mode==='cine')return;const on=force!=null?force:!TWIN.on;if(on===TWIN.on)return;TWIN.on=on;document.body.classList.toggle('twin',on);$('#btnTwin').classList.toggle('on',on);
+  if(on){TWIN.mat=TWIN.mat||new THREE.MeshBasicMaterial({color:'#22D3EE',wireframe:true,transparent:true,opacity:.2,depthWrite:false});scene.overrideMaterial=TWIN.mat;if(composer)composer.passes[0].overrideMaterial=TWIN.mat;TWIN.bg.copy(scene.background);scene.background.set('#020812');scene.fog.near=400;
+    if(!TWIN.grid){TWIN.grid=new THREE.GridHelper(120,60,0x0EA5E9,0x0B3A57);TWIN.grid.position.y=.03;}scene.add(TWIN.grid);
+    TWIN.hidden=[];scene.traverse(o=>{if(o.isSprite&&o.visible){o.visible=false;TWIN.hidden.push(o);}});camS.overPrev=camS.over;camS.over=true;buildPins();sfx('zap');tone(220,.4,'sine',.04,0,880);}
+  else{scene.overrideMaterial=null;if(composer)composer.passes[0].overrideMaterial=null;scene.background.copy(TWIN.bg);scene.fog.near=110;if(TWIN.grid)scene.remove(TWIN.grid);TWIN.hidden.forEach(o=>o.visible=true);TWIN.hidden=[];camS.over=!!camS.overPrev;$('#twinPins').innerHTML='';TWIN.pins=[];tone(880,.3,'sine',.03,0,220);}}
+function buildPins(){const box=$('#twinPins');box.innerHTML='';TWIN.pins=[];S.lines.slice(0,lineCount()).forEach((l,li)=>ST_KEYS.forEach(k=>{if(!l.st[k].built||(!STAGES[S.stage].wide&&['paint','qa'].includes(k)))return;const e=document.createElement('div');e.className='tpin';box.appendChild(e);TWIN.pins.push({e,li,k});}));}
+function stationState(l,k){const s=l.st[k],need=PRODUCTS[l.job.product].needs.includes(k)||(k==='qa'&&l.st.qa.built);if(s.broken)return ['DOWN','#F87171'];if(s.needsCode)return ['NEEDS PROGRAM','#FACC15'];if(!need)return ['IDLE · not used','#64748B'];if(s.blocked)return ['BLOCKED','#FB923C'];if(s.cur)return ['RUNNING','#39E75F'];return ['STARVED','#94A3B8'];}
+function updateTwin(dt){if(!TWIN.on||!S)return;TWIN.t-=dt;const refresh=TWIN.t<=0;if(refresh)TWIN.t=.3;
+  TWIN.pins.forEach(p=>{const l=S.lines[p.li],s=l.st[p.k],pr=project(SLOT_X[p.k],3.2+(ST_KEYS.indexOf(p.k)%2)*1.9,LZ(p.li)-.4);if(!pr.on){p.e.style.display='none';return;}p.e.style.display='';p.e.style.transform=`translate(${pr.x}px,${pr.y}px) translate(-50%,-100%)`;
+    if(!refresh)return;const [st,c]=stationState(l,p.k),bn=capacity(l).by===p.k,cyc=STATIONS[p.k].cycle/(TIERS[s.tier].speed*techSpeed()),health=1-s.wear;
+    p.e.style.setProperty('--c',c);p.e.classList.toggle('bn',bn&&PRODUCTS[l.job.product].needs.includes(p.k));
+    p.e.innerHTML=`<b>${STATIONS[p.k].icon} ${STATIONS[p.k].short.toUpperCase()}<i>L${p.li+1}</i></b><span class="st">${st}</span><div class="kv"><span>Util</span><em>${pct(s.util)}</em><span>Cycle</span><em>${cyc.toFixed(1)}s</em><span>Queue</span><em>${s.q.length}</em><span>Health</span><em style="color:${oeeColor(health)}">${pct(health)}</em></div><i class="hb"><s style="width:${pct(health)};background:${oeeColor(health)}"></s></i>${bn?'<u>BOTTLENECK</u>':''}`;});
+  if(refresh){const live=S.phase==='day'?plantOEE():S.hist.length?plantOEE(S.hist[S.hist.length-1]):null;
+    $('#twinHud').innerHTML=`<div class="th-h"><span class="dot"></span>DIGITAL TWIN · LIVE</div>${oeeHTML(live,S.phase==='day'?'Plant OEE now':'Last shift')}
+    ${S.phase==='day'&&S.today.oee?S.lines.slice(0,lineCount()).map((l,i)=>{const o=oeeOf(S.today.oee[i]);return `<div class="th-l"><span>Line ${i+1} ${PRODUCTS[l.job.product].icon}</span><b style="color:${o?oeeColor(o.v):'#94A3B8'}">${o?pct(o.v):'—'}</b></div>`;}).join(''):''}
+    <p class="th-n">A digital twin is a live virtual copy of a real plant. Engineers use it to spot problems before they cost money.</p><button class="btn sm" onclick="toggleTwin(false)">Exit twin view</button>`;}}
+
+/* ---- mill.js ---- */
+/* =====================================================================
+   BOTFACTORY · Sponsor Showcase: the Kentucky Steel Mill field trip
+   Scrap yard → Electric arc furnace → Continuous caster → Hot rolling → Coil
+   Sponsor-ready: SPONSORS.showcase (or ?sponsor=Name) brands the whole mill.
+   ===================================================================== */
+const MX=320;                       /* the mill lives far from the plant */
+const MILL={on:false,g:null,step:0,done:[0,0,0,0],coll:[],saved:null,fx:{},t:0};
+const MSTOPS=[
+  {x:-22,z:1.2,key:'magnet',name:'Scrap Yard',icon:'🧲',career:'craneop',cap:'Stop 1 · Scrap Yard',blurb:'Kentucky mills melt old cars, appliances and beams back into brand-new steel.'},
+  {x:-8,z:1.2,key:'furnace',name:'Electric Arc Furnace',icon:'⚡',career:'meltshop',cap:'Stop 2 · Melt Shop',blurb:'Giant graphite electrodes make lightning hot enough to melt scrap in under an hour.'},
+  {x:6,z:1.2,key:'caster',name:'Continuous Caster',icon:'🌋',career:'metallurgist',cap:'Stop 3 · Caster',blurb:'Liquid steel pours into a cooled mold and comes out as a glowing solid slab.'},
+  {x:20,z:1.2,key:'roll',name:'Hot Rolling Mill',icon:'🔥',career:'mill',cap:'Stop 4 · Rolling Mill',blurb:'Huge rolls squeeze a slab thinner and thinner until it\'s a coil of sheet steel.'}];
+function millSponsor(){return slotFill('showcase',SPONSORS.showcase);}
+function millName(){const s=millSponsor();return s?(s.placeholder?'YOUR COMPANY HERE':s.name):'Kentucky Steel Mill';}
+function millBounds(){return {x0:MX-31,x1:MX+31,z0:-11,z1:7.6};}
+
+/* ---------- building the mill ---------- */
+function buildMill(){if(MILL.g)scene.remove(MILL.g);const g=new THREE.Group();MILL.g=g;g.position.x=MX;scene.add(g);const F=MILL.fx={};
+  const dark=mat('#1B2027',{roughness:.6,metalness:.4}),rust=mat('#7C4A2B',{roughness:.9,metalness:.3}),steelM=mat('#6B7280',{roughness:.45,metalness:.85}),yel=mat('#FACC15',{roughness:.45}),refr=mat('#3B2F2A',{roughness:.95}),hot=mat('#FF7A1A',{emissive:'#FF5A00',emissiveIntensity:2.4,roughness:.5}),hot2=mat('#FFB347',{emissive:'#FF8A00',emissiveIntensity:3.2});
+  const ct=concreteTex().clone();ct.needsUpdate=true;ct.repeat.set(8,3);ct.wrapS=ct.wrapT=THREE.RepeatWrapping;const fl=new THREE.Mesh(new THREE.PlaneGeometry(64,20),new THREE.MeshStandardMaterial({map:ct,color:'#6B7076',roughness:.5,metalness:.1}));fl.rotation.x=-Math.PI/2;fl.position.set(0,0,-1.6);fl.receiveShadow=true;g.add(fl);
+  const et=epoxyTex().clone();et.needsUpdate=true;et.wrapS=et.wrapT=THREE.RepeatWrapping;et.repeat.set(7,1);const ai=new THREE.Mesh(new THREE.PlaneGeometry(60,3.4),new THREE.MeshStandardMaterial({map:et,roughness:.4}));ai.rotation.x=-Math.PI/2;ai.position.set(0,.012,5);g.add(ai);
+  const wm=new THREE.MeshStandardMaterial({map:sidingTex(),roughness:.55,metalness:.35});bx(g,64,13,.5,0,0,-11.6,wm);bx(g,.5,13,20,-32,0,-1.6,wm);bx(g,.5,13,20,32,0,-1.6,wm);bx(g,64,.6,.3,0,0,8,wm);
+  for(let x=-30;x<=30;x+=10){bx(g,.7,13.5,.7,x,0,-11.3,mat('#2E7D5B',{metalness:.5,roughness:.45}));}
+  bx(g,62,.5,.6,0,11,-10.8,yel,false);
+  const sp=millSponsor(),sg=signMesh([{t:millName().toUpperCase(),size:110,color:sp&&sp.placeholder?'#FACC15':'#FF8A3D'},{t:(sp&&sp.tagline)||'Recycled scrap in. Kentucky steel out.',size:46,color:'#fff',font:'Inter, system-ui, sans-serif',weight:700}],18,3,{w:1800,h:300,bg:'#0D1117',glow:1});sg.position.set(0,8.4,-11.3);g.add(sg);
+  /* stop 1: scrap pile + magnet crane */
+  for(let i=0;i<70;i++){const a=Math.random()*6.28,r=Math.sqrt(Math.random())*4.2,h=Math.max(.2,2.8-r*.6),m=Math.random()<.8?rust:steelM;const b=new THREE.Mesh(Math.random()<.6?BOX:CYL,m);b.scale.set(rand(.3,1.2),rand(.2,.7),rand(.3,1.1));b.position.set(-22+Math.cos(a)*r,rand(0,h),-4.5+Math.sin(a)*r*.7);b.rotation.set(rand(0,3),rand(0,3),rand(0,3));b.castShadow=Q.t>0;g.add(b);}
+  bx(g,.5,9,.5,-28,0,-4.5,yel);bx(g,.5,9,.5,-16,0,-4.5,yel);bx(g,12.5,.6,.8,-22,9,-4.5,yel);const mag=new THREE.Group();cy(mag,.03,3.5,0,-3.5,0,dark,false);cy(mag,1,.35,0,-3.9,0,dark);mag.position.set(-22,9,-4.5);g.add(mag);F.mag=mag;
+  /* stop 2: electric arc furnace + ladle */
+  const fu=new THREE.Group();fu.position.set(-8,0,-5);g.add(fu);cy(fu,3,.6,0,0,0,dark);cy(fu,2.8,3,0,.6,0,refr);cy(fu,3.05,.25,0,3.5,0,mat('#FF6A00',{emissive:'#FF4A00',emissiveIntensity:1.2}));const roof=cy(fu,2.9,.5,0,3.75,0,dark);
+  F.elec=[[-.9,0],[.9,0],[0,1]].map(([x,z])=>cy(fu,.28,4.2,x,3.6,z-.4,mat('#4B5563',{roughness:.3,metalness:.6})));F.arcs=new THREE.PointLight(0x9FD4FF,0,16,2);F.arcs.position.set(-8,4,-5);g.add(F.arcs);
+  const lad=new THREE.Group();lad.position.set(-2.5,0,-4);g.add(lad);cy(lad,1.5,2.4,0,.4,0,refr);cy(lad,1.38,.08,0,2.82,0,hot);bx(lad,.2,3.2,.2,-1.6,0,0,dark);bx(lad,.2,3.2,.2,1.6,0,0,dark);bx(lad,3.4,.2,.2,0,3.2,0,dark);F.ladleTop=lad.children[1];
+  const stream=new THREE.Mesh(CYL,hot2);stream.scale.set(.18,2.4,.18);stream.position.set(-4.3,2.7,-4.5);stream.rotation.z=.9;stream.visible=false;g.add(stream);F.stream=stream;
+  /* stop 3: caster: tundish, mold, glowing strand, slabs on rollers */
+  bx(g,3,1.1,1.6,6,4.2,-5,refr);[-1.2,1.2].forEach(x=>bx(g,.3,4.2,.3,6+x,0,-5,dark));bx(g,1.2,1.6,1.2,6,2.6,-5,mat('#94A3B8',{metalness:.9,roughness:.3}));
+  for(let i=0;i<14;i++){const r=new THREE.Mesh(CYL,steelM);r.scale.set(.18,1.6,.18);r.rotation.x=Math.PI/2;r.position.set(6+i*.75,.75,-5);g.add(r);}
+  F.slabs=[];for(let i=0;i<3;i++){const s=new THREE.Mesh(BOX,hot);s.scale.set(2.2,.4,1.2);s.position.set(7+i*3,1.05,-5);g.add(s);F.slabs.push(s);}
+  F.casterLight=new THREE.PointLight(0xFF7A1A,0,14,2);F.casterLight.position.set(8,3,-4);g.add(F.casterLight);
+  /* stop 4: rolling stands + strip + coiler */
+  F.rolls=[];for(let i=0;i<4;i++){const x=15+i*3;[-1.3,1.3].forEach(z=>bx(g,.6,4,.6,x,0,-5+z,mat('#1E3A8A',{metalness:.5,roughness:.4})));bx(g,.8,.6,3.2,x,4,-5,mat('#1E3A8A',{metalness:.5,roughness:.4}));
+    [1.0,1.75].forEach(y=>{const r=new THREE.Mesh(CYL,mat('#9CA3AF',{metalness:.95,roughness:.2}));r.scale.set(.45,2.2,.45);r.rotation.x=Math.PI/2;r.position.set(x,y,-5);g.add(r);F.rolls.push(r);});}
+  const strip=new THREE.Mesh(BOX,hot);strip.scale.set(16,.08,1.1);strip.position.set(21,1.38,-5);g.add(strip);F.strip=strip;
+  const coil=new THREE.Mesh(new THREE.TorusGeometry(.9,.55,14,28),hot);coil.position.set(28,1.5,-5);g.add(coil);F.coil=coil;bx(g,1.6,1,2,28,0,-5,dark);
+  F.rollLight=new THREE.PointLight(0xFF8A3D,0,14,2);F.rollLight.position.set(21,3,-3.5);g.add(F.rollLight);
+  /* truck out to your factory */
+  const tr=makeTruck('#F97316','TO: YOUR FACTORY');tr.position.set(MX+28,0,3.4);tr.rotation.y=0;F.truck=tr;
+  /* stop pads: holo signs */
+  F.pads=MSTOPS.map((s,i)=>{const p=signMesh([{t:s.icon+'  '+s.cap.toUpperCase(),size:64,color:'#FACC15'},{t:s.name,size:52,color:'#fff'}],5.4,1.4,{w:1100,h:290,bg:'rgba(10,14,20,.92)',border:'#FACC15',bw:8,r:24,glow:.7});p.position.set(s.x,4.8,-.6);g.add(p);
+    const ring=new THREE.Mesh(new THREE.RingGeometry(1.1,1.35,40),new THREE.MeshBasicMaterial({color:'#FACC15',transparent:true,opacity:.8,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.set(s.x,.04,4.6);g.add(ring);return {p,ring};});
+  /* glow lights for the hall */
+  if(Q.t>=1){[-18,0,18].forEach(x=>{const h=new THREE.PointLight(0xFFC08A,1.1,34,2);h.position.set(x,8,0);g.add(h);});}
+  for(let x=-26;x<=26;x+=13){const f=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.5),new THREE.MeshBasicMaterial({color:'#FFE8C2'}));f.position.set(x,10.4,-11.2);g.add(f);}
+  MILL.coll=[{x0:MX-31,x1:MX+31,z0:-11,z1:-2.1}];}
+/* ---------- in and out ---------- */
+function enterMill(){if(!S||MILL.on)return;if(S.phase!=='board'){toast('Field trips happen between shifts. Finish this shift first!','warn');return;}
+  if(modalOpen())closeModal();if(TWIN.on)toggleTwin(false);if(CX.riding)toggleRide();
+  MILL.on=true;MILL.step=MILL.done.findIndex(d=>!d);if(MILL.step<0)MILL.step=0;if(!MILL.g)buildMill();MILL.g.visible=true;MILL.fx.truck.visible=true;
+  MILL.saved={pos:P.pos.clone(),coll:COLL.splice(0,COLL.length),fogN:scene.fog.near,fogF:scene.fog.far,bg:scene.background.clone()};MILL.coll.forEach(c=>COLL.push(c));
+  P.pos.set(MX-27,0,5);P.ry=Math.PI/2;scene.fog.near=55;scene.fog.far=150;scene.background.set('#120E0C');scene.fog.color.set('#120E0C');sun.position.set(MX-20,40,30);sun.target.position.set(MX,0,0);sun.intensity=.9;hemi.intensity=.5;camera.position.set(...playerCam());camS.look.set(P.pos.x,.8,P.pos.z-1.5);
+  document.body.classList.add('inmill');$('#millBar').hidden=false;$('#millName').textContent=millName();const sp=millSponsor();if(sp)spTrack('view',sp,{slot:'showcase'});
+  if(!PARAMS.has('test')){const pl=()=>[P.pos.x,.8,P.pos.z-1.5];playShots([{p:[MX+30,3,8],p2:[MX+10,6,10],l:[MX+22,1.5,-5],l2:[MX-8,3,-5],d:3.6,cap:'<small>FIELD TRIP</small>'+esc(millName())},{p:[MX-6,9,6],p2:[MX-18,5,9],l:[MX-8,3,-5],l2:[MX-22,1.5,-4],d:3.2,cap:'Every MiniBot you build starts as recycled scrap, right here.'},{p:[MX-18,5,9],p2:playerCam,l:[MX-22,1.5,-4],l2:pl,d:2,cap:'',slam:['MILL TOUR','4 stops · real Kentucky jobs','#FF8A3D']}],()=>advise(`Welcome to <b>${esc(millName())}</b>! Walk to <b>Stop 1</b> and press <b>${TOUCH?'the button':'E'}</b> to work the magnet crane.`,10000));}
+  else advise('Welcome to the mill tour!',4000);sfx('big');}
+function exitMill(){if(!MILL.on)return;MILL.on=false;MILL.g.visible=false;MILL.fx.truck.visible=false;COLL.length=0;MILL.saved.coll.forEach(c=>COLL.push(c));P.pos.copy(MILL.saved.pos);scene.fog.near=MILL.saved.fogN;scene.fog.far=MILL.saved.fogF;scene.background.copy(MILL.saved.bg);sun.target.position.set(0,0,0);camera.position.set(...playerCam());camS.look.set(P.pos.x,.8,P.pos.z-1.5);
+  document.body.classList.remove('inmill');$('#millBar').hidden=true;camS.mode='play';renderHUD();save();}
+/* ---------- acts + guide ---------- */
+function millAct(){const i=MILL.step,s=MSTOPS[i];if(i<0||!s)return {t:'Tour complete! Head home',ic:'🏠',f:exitMill};
+  for(let j=0;j<MSTOPS.length;j++){const st=MSTOPS[j];if(Math.hypot(P.pos.x-(MX+st.x),P.pos.z-4.6)<2.6){if(MILL.done[j]&&j!==i)return {t:`${st.name} ✓ done`,ic:'✓',f:null};if(j!==i)return {t:`Finish ${MSTOPS[i].cap} first`,ic:'🔒',f:null};return {t:`${st.icon} Work the ${st.name}`,ic:'▶',hot:1,f:()=>millGame(j)};}}return null;}
+function millGoal(){const i=MILL.step,s=MSTOPS[i];if(!s)return {t:'Tour complete! Tap Exit tour to head back to your factory',k:'🏠'};return {t:`${s.cap}: ${s.name}`,k:s.icon,hot:1,x:MX+s.x,z:4.6};}
+function millGame(j){const s=MSTOPS[j];playGame(s.key,{p:'kart'},score=>{MILL.done[j]=1;S.stats.games++;MILL.step=MILL.done.findIndex(d=>!d);sfx('good');
+  const c=CAREERS[s.career];floatAt(MX+s.x,3.2,2,s.name.toUpperCase()+' ONLINE','#FF8A3D',true);setTimeout(()=>advise(`${c.icon} <b>Real job: ${c.role}.</b> ${c.what}`,11000),600);(S.flags.careersShown=S.flags.careersShown||{})[s.career]=1;
+  if(MILL.step<0)setTimeout(millFinale,1400);});}
+function millFinale(){S.flags.millPartner=1;S.flags.millDone=1;const sp=millSponsor();sfx('big');confetti(200);slam('TOUR COMPLETE','You made Kentucky steel','#FF8A3D',2200);
+  setTimeout(()=>{const C=openModal(`<div class="rep"><div class="eyebrow">Field trip · ${esc(millName())}</div><h2>From scrap to steel coil</h2><p class="sub">You just ran the four big steps every steel mill uses. That coil is on a truck to <b>your</b> factory.</p>
+    <div class="mill-steps">${MSTOPS.map(s=>`<div><span>${s.icon}</span><b>${s.name}</b><small>${s.blurb}</small></div>`).join('')}</div>
+    <div class="mk-ky">📍 <b>Kentucky is a metals state:</b> 1,000+ metals facilities, 36,000+ people working directly in metals, and primary metals jobs that average about $90K a year. <small>Source: MI2 / UK Gatton metals impact study</small></div>
+    <div class="note">🤝 <b>Partner bonus unlocked:</b> your factory now buys steel <b>15% cheaper</b>. Strong supplier relationships lower your variable costs.</div>
+    <h4>Jobs you just did</h4><div class="mk-grid">${MSTOPS.map(s=>{const c=CAREERS[s.career];return `<div class="mkc"><span>${c.icon}</span><b>${c.role}</b><small>${c.path.split('.')[0]}.</small></div>`;}).join('')}</div>
+    <div class="mact">${spBadge(sp,'Mill tour presented by')}<button class="btn pri big" id="mlOk" data-focus>Back to my factory</button></div></div>`,{cls:'dark panel wide'});C.querySelector('#mlOk').onclick=()=>{closeModal();exitMill();toast('🤝 Steel partnership active: materials cost 15% less','good');};},2300);}
+/* ---------- per frame ---------- */
+function updateMill(dt,t){if(!MILL.on)return;const F=MILL.fx,D=MILL.done;
+  if(F.mag)F.mag.position.y=9+Math.sin(t*.8)*.6;F.pads.forEach((p,i)=>{p.ring.material.color.set(D[i]?'#39E75F':i===MILL.step?'#FACC15':'#475569');p.ring.scale.setScalar(1+Math.sin(t*3+i)*.06);});
+  /* furnace comes alive after stop 2 (or while you are at it) */
+  const fOn=D[1]||MILL.step===1;F.arcs.intensity=D[1]?rand(2,6):fOn?rand(0,1.2):0;if(D[1]&&Math.random()<dt*24)burst(MX-8+rand(-1,1),4,-5+rand(-1,1),{add:true,n:3,color:pick(['#FFFFFF','#BFE3FF','#FFD27A']),spread:3,up:3,life:.5,size:.06});
+  F.stream.visible=!!D[1];F.stream.scale.y=2.4+Math.sin(t*20)*.08;F.ladleTop.material.emissiveIntensity=D[1]?2.6+Math.sin(t*6)*.4:.3;if(D[1]&&Math.random()<dt*10)burst(MX-2.5+rand(-1,1),3,-4,{add:true,n:2,color:'#FF9A3D',spread:2,up:2.5,life:.5,size:.05});
+  F.casterLight.intensity=D[2]?2.2:0;F.slabs.forEach((s,i)=>{s.visible=!!D[2];if(D[2]){s.position.x+=dt*1.2;if(s.position.x>14)s.position.x=7;}});
+  F.rollLight.intensity=D[3]?2.4:0;F.strip.visible=!!D[3];F.coil.visible=!!D[3];F.rolls.forEach(r=>r.rotation.y+=dt*(D[3]?6:0));if(F.coil.visible)F.coil.rotation.z-=dt*2;
+  if(D[3]&&Math.random()<dt*5)burst(MX+15+Math.floor(rand(0,4))*3,2.2,-5,{n:2,color:'#E5E7EB',spread:.5,up:1.2,g:-1.5,life:1.4,size:.3,grow:3});}
+
+/* ---------- the four mill mini-games ---------- */
+Object.assign(MG_INFO,{
+  magnet:{icon:'🧲',name:'Scrap Yard · Crane Operator',title:'Grab the steel',how:'Scrap rolls past. Tap the <b>steel</b> pieces (dark and rusty) to grab them with the magnet. Leave the <b>aluminum</b> (shiny silver).',fact:'Steel has iron in it, so a magnet grabs it. Aluminum isn\'t magnetic, which is how mills sort scrap. Kentucky mills recycle millions of tons of scrap into new metal.',secs:10,reward:'Scrap sorted and loaded into the furnace bucket.'},
+  furnace:{icon:'⚡',name:'Melt Shop · Furnace Operator',title:'Melt the scrap',how:'Hold <b>POWER</b> to heat the furnace. Keep it in the green zone (2,900–3,100°F) until the bar fills. Too hot wastes electricity!',fact:'An electric arc furnace runs on as much power as a small city. Furnace operators balance speed, temperature and energy cost every single heat.',secs:10,reward:'Molten steel tapped into the ladle. 🔥'},
+  caster:{icon:'🌋',name:'Caster · Operator',title:'Hold the casting speed',how:'Keep the speed needle in the green band with ◀ and ▶. Too fast and the slab breaks; too slow and the whole mill backs up.',fact:'A continuous caster turns liquid steel into solid slabs nonstop, for days at a time. Metallurgists check the chemistry of every batch.',secs:9,reward:'Perfect glowing slabs rolling out of the caster.'},
+  roll:{icon:'🔥',name:'Hot Rolling · Mill Operator',title:'Roll it to gauge',how:'Tap <b>ROLL</b> when the glowing slab lines up under the rolls. Five good passes take it from thick slab to thin sheet.',fact:'A hot strip mill can squeeze a slab thicker than a mattress into sheet steel thinner than a coin, in under a minute.',secs:11,reward:'Coil finished and loaded on the truck to your factory!'}});
+const MILL_GAMES={
+  magnet(kind,ctx){openModal(mgShell(kind),{cls:'dark mgcard'});const {c,g,w,h}=mgCanvas(),items=[],P2=[];let grabbed=0,wrong=0,steelSeen=0,started=false,sp=0;
+    const spawn=()=>{const st=Math.random()<.6;if(st)steelSeen++;items.push({x:w+40,y:h*.62+rand(-10,10),st,r:rand(16,24),a:rand(0,6),lift:0,gone:false});};
+    const draw=dt=>{g.fillStyle='#1A1410';g.fillRect(0,0,w,h);g.fillStyle='#2B2F35';g.fillRect(0,h*.62+26,w,22);for(let x=(-sp*60)%40;x<w;x+=40){g.fillStyle='#3B4048';g.fillRect(x,h*.62+30,20,14);}
+      g.fillStyle='#374151';g.fillRect(w*.42,0,8,h*.2);g.fillStyle='#111827';g.beginPath();g.ellipse(w*.42+4,h*.22,46,12,0,0,7);g.fill();
+      items.forEach(it=>{if(it.gone)return;g.save();g.translate(it.x,it.y-it.lift);g.rotate(it.a);if(it.st){g.fillStyle='#6B4A35';g.fillRect(-it.r,-it.r*.6,it.r*2,it.r*1.2);g.fillStyle='rgba(160,82,45,.8)';g.fillRect(-it.r*.6,-it.r*.4,it.r*.7,it.r*.5);}else{const gr=g.createLinearGradient(-it.r,0,it.r,0);gr.addColorStop(0,'#E5E7EB');gr.addColorStop(.5,'#FFFFFF');gr.addColorStop(1,'#9CA3AF');g.fillStyle=gr;g.beginPath();g.ellipse(0,0,it.r,it.r*.55,0,0,7);g.fill();}g.restore();});mgDrawSparks(g,P2,dt);};
+    mgPointer(c,(ev,p)=>{if(ev!=='down')return;if(!started){started=true;$('#mgGo').style.display='none';initAudio();
+        mgTimer(MG_INFO[kind].secs,dt=>{sp+=dt;if(Math.random()<dt*2.4)spawn();items.forEach(it=>{if(it.lift>0){it.lift+=dt*260;if(it.lift>h)it.gone=true;}else it.x-=dt*110;});$('#mgP').style.width=Math.min(100,grabbed/8*100)+'%';draw(dt);},()=>mgFinish(kind,(grabbed-wrong)/Math.max(6,Math.min(steelSeen,10)),ctx));return;}
+      const it=items.find(i=>!i.gone&&!i.lift&&Math.hypot(i.x-p.x,i.y-p.y)<i.r+12);if(!it)return;if(it.st){it.lift=1;grabbed++;sfx('clang');mgSpark(P2,it.x,it.y,10,['#FACC15','#fff']);}else{wrong++;sfx('bad');it.a+=1;}});draw(0);},
+  furnace(kind,ctx){openModal(mgShell(kind,`<div class="mg-stage"><canvas id="mgC"></canvas></div><div class="rp-row"><button class="btn pri big" id="fuBtn">⚡ HOLD FOR POWER</button></div><div class="mg-bar"><i id="mgP"></i></div>`),{cls:'dark mgcard'});
+    const {c,g,w,h}=mgCanvas();let temp=1800,hold=false,inZ=0,waste=0,started=false;const P2=[];
+    const draw=dt=>{g.fillStyle='#120C0A';g.fillRect(0,0,w,h);const k=clamp((temp-1800)/1600,0,1);const r=g.createRadialGradient(w*.38,h*.62,10,w*.38,h*.62,h*.6);r.addColorStop(0,`rgba(255,${120+k*120|0},40,${.2+k*.8})`);r.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=r;g.fillRect(0,0,w,h);
+      g.fillStyle='#3B2F2A';g.beginPath();g.ellipse(w*.38,h*.7,w*.22,h*.18,0,0,7);g.fill();g.fillStyle=`rgba(255,${90+k*140|0},20,${.3+k*.7})`;g.beginPath();g.ellipse(w*.38,h*.66,w*.18,h*.1,0,0,7);g.fill();
+      [-.08,0,.08].forEach(o=>{g.fillStyle='#4B5563';g.fillRect(w*(.38+o)-6,0,12,h*.52);if(hold){g.strokeStyle='rgba(200,230,255,.9)';g.lineWidth=2;g.beginPath();let y=h*.52;g.moveTo(w*(.38+o),y);for(let i=0;i<5;i++){y+=h*.025;g.lineTo(w*(.38+o)+rand(-8,8),y);}g.stroke();}});
+      const gx=w*.8,gy=h*.1,gh=h*.8;g.fillStyle='#1F2937';g.fillRect(gx,gy,30,gh);const yOf=T=>gy+gh-(T-1800)/1600*gh;g.fillStyle='rgba(57,231,95,.35)';g.fillRect(gx,yOf(3100),30,yOf(2900)-yOf(3100));g.fillStyle=temp>3100?'#F87171':temp>=2900?'#39E75F':'#FB923C';g.fillRect(gx+6,yOf(temp),18,gy+gh-yOf(temp));
+      g.fillStyle='#fff';g.font='700 18px ui-monospace, monospace';g.textAlign='right';g.fillText(Math.round(temp).toLocaleString()+'°F',gx-10,yOf(temp)+6);g.textAlign='left';mgDrawSparks(g,P2,dt);};
+    const btn=$('#fuBtn'),on=()=>{hold=true;initAudio();if(!started){started=true;mgTimer(MG_INFO[kind].secs,dt=>{temp+=(hold?620:-380)*dt;temp=clamp(temp,1800,3400);if(temp>=2900&&temp<=3100)inZ+=dt;if(temp>3150)waste+=dt;if(hold&&Math.random()<.4){mgSpark(P2,w*.38+rand(-40,40),h*.55,4,['#BFE3FF','#fff','#FFD27A']);if(Math.random()<.3)sfx('zap');}$('#mgP').style.width=Math.min(100,inZ/3*100)+'%';if(inZ>=3)MG.stop=true;draw(dt);},()=>mgFinish(kind,inZ/3-waste*.15,ctx));}},off=()=>{hold=false;};
+    btn.addEventListener('pointerdown',on);btn.addEventListener('pointerup',off);btn.addEventListener('pointerleave',off);addEventListener('keydown',e=>{if(e.code==='Space'&&MG.on){e.preventDefault();on();}});addEventListener('keyup',e=>{if(e.code==='Space')off();});draw(0);},
+  caster(kind,ctx){openModal(mgShell(kind,`<div class="mg-stage"><canvas id="mgC"></canvas></div><div class="rp-row"><button class="btn big" id="caL">◀ Slower</button><button class="btn big" id="caR">Faster ▶</button></div><div class="mg-bar"><i id="mgP"></i></div>`),{cls:'dark mgcard'});
+    const {c,g,w,h}=mgCanvas();let v=.5,drift=0,band=.5,good=0,started=false,push=0,sx=0;
+    const draw=()=>{g.fillStyle='#120C0A';g.fillRect(0,0,w,h);sx=(sx+v*6)%60;for(let x=-60+sx;x<w;x+=60){const gr=g.createLinearGradient(0,h*.55,0,h*.75);gr.addColorStop(0,'#FFB347');gr.addColorStop(1,'#FF5A00');g.fillStyle=gr;g.fillRect(x,h*.58,52,h*.14);}
+      for(let x=0;x<w;x+=30){g.fillStyle='#4B5563';g.beginPath();g.arc(x+15,h*.76,8,0,7);g.fill();}
+      const bx2=w*.1,bw=w*.8,y=h*.22;g.fillStyle='#1F2937';g.fillRect(bx2,y,bw,22);g.fillStyle='rgba(57,231,95,.45)';g.fillRect(bx2+(band-.12)*bw,y,bw*.24,22);g.fillStyle='#fff';g.fillRect(bx2+v*bw-3,y-8,6,38);g.font='700 14px Inter, system-ui';g.fillStyle='#9CA3AF';g.fillText('SLOW',bx2,y-12);g.textAlign='right';g.fillText('FAST',bx2+bw,y-12);g.textAlign='left';};
+    const go=d=>{initAudio();push=d;if(!started){started=true;mgTimer(MG_INFO[kind].secs,dt=>{drift+=rand(-1,1)*dt*2;drift=clamp(drift,-.5,.5);v=clamp(v+drift*dt*.5+push*dt*.9,0,1);band=clamp(.5+Math.sin(performance.now()/1400)*.25,.15,.85);if(Math.abs(v-band)<.12)good+=dt;$('#mgP').style.width=Math.min(100,good/6*100)+'%';draw();},()=>mgFinish(kind,good/6,ctx));}};
+    [['#caL',-1],['#caR',1]].forEach(([id,d])=>{const b=$(id);b.addEventListener('pointerdown',()=>go(d));b.addEventListener('pointerup',()=>push=0);b.addEventListener('pointerleave',()=>push=0);});draw();},
+  roll(kind,ctx){openModal(mgShell(kind,`<div class="mg-stage"><canvas id="mgC"></canvas></div><div class="rp-row"><button class="btn pri big" id="roBtn">▶ START</button></div><div class="mg-bar"><i id="mgP"></i></div>`),{cls:'dark mgcard'});
+    const {c,g,w,h}=mgCanvas(),gauges=[250,120,60,25,8,3];let pass=0,x=0,dir=1,miss=0,started=false,flash=0;const P2=[];
+    const draw=dt=>{g.fillStyle='#120C0A';g.fillRect(0,0,w,h);const th=Math.max(4,gauges[pass]/250*70),sw=w*.34;const gr=g.createLinearGradient(0,h*.6-th/2,0,h*.6+th/2);gr.addColorStop(0,'#FFD27A');gr.addColorStop(1,'#FF5A00');g.fillStyle=gr;g.fillRect(x-sw/2,h*.6-th/2,sw,th);
+      g.fillStyle=flash>0?'#FACC15':'#9CA3AF';g.beginPath();g.arc(w/2,h*.6-th/2-26,24,0,7);g.arc(w/2,h*.6+th/2+26,24,0,7);g.fill();g.strokeStyle='rgba(57,231,95,.6)';g.setLineDash([6,6]);g.strokeRect(w/2-sw*.12,h*.18,sw*.24,h*.75);g.setLineDash([]);
+      g.fillStyle='#fff';g.font='700 22px ui-monospace, monospace';g.fillText(`GAUGE ${gauges[pass]} mm`,16,32);g.fillStyle='#FACC15';g.font='700 15px Inter, system-ui';g.fillText('target: 3 mm',18,54);flash-=dt;mgDrawSparks(g,P2,dt);};
+    $('#roBtn').onclick=()=>{initAudio();if(!started){started=true;$('#roBtn').textContent='🔥 ROLL!';x=-w*.2;mgTimer(MG_INFO[kind].secs,dt=>{x+=dir*dt*w*(.55+pass*.12);if(x>w*1.1){dir=-1;}if(x<-w*.1){dir=1;}draw(dt);if(pass>=5)MG.stop=true;$('#mgP').style.width=(pass/5*100)+'%';},()=>mgFinish(kind,pass/5-miss*.06,ctx));return;}
+      if(Math.abs(x-w/2)<w*.08){pass=Math.min(5,pass+1);flash=.2;sfx('clang');mgSpark(P2,w/2,h*.6,18,['#FFD27A','#FF5A00','#fff']);}else{miss++;sfx('bad');}};draw(0);}};
+
 /* ---- main.js ---- */
 /* =====================================================================
    BOTFACTORY · game glue: HUD, panels, interactions, Next Up, shift loop
@@ -6621,10 +6814,13 @@ function panelExpand(){const nx=STAGES[S.stage+1],cost=nx?nx.cost:0;
 function panelNumbers(){const H=S.hist.slice(-12),mx=Math.max(100,...H.map(h=>Math.abs(h.net))),last=H[H.length-1];
   return `<div class="eyebrow">The numbers</div><h2>How's the business?</h2>
   <div class="kpis"><div><em>Cash</em><b>${money(S.cash)}</b></div><div><em>Plant value</em><b>${short(plantValue())}</b></div><div><em>Products shipped</em><b>${S.stats.shipped.toLocaleString()}</b></div><div><em>Best shift</em><b>${money(S.stats.best)}</b></div></div>
+  <h4>OEE (last shift)</h4>${oeeHTML(S.hist.length?plantOEE(S.hist[S.hist.length-1]):null,'Plant OEE')}<p class="muted small">Tip: press <b>T</b> or the 🧿 button for the live Digital Twin view.</p>
   <h4>Profit per shift</h4>${H.length?`<div class="bars">${H.map(h=>`<div class="bar"><i class="${h.net>=0?'p':'n'}" style="height:${Math.max(3,Math.abs(h.net)/mx*100)}%"></i><span>${h.day}</span></div>`).join('')}</div>`:'<p class="muted">Run a shift to see your numbers.</p>'}
   ${H.length>1?`<h4>Cost to make one product</h4><div class="bars thin">${H.map(h=>`<div class="bar"><i class="u" style="height:${h.unit?Math.min(100,h.unit/Math.max(...H.map(x=>x.unit||0))*100):0}%"></i><span>${h.unit?'$'+Math.round(h.unit):'-'}</span></div>`).join('')}</div><p class="muted small">When this drops, you're making each product for less. More volume spreads your fixed costs (rent, wages) thinner.</p>`:''}
   ${last?`<p class="muted small">Last shift: fixed costs ${money(last.fixed)} · materials ${money(last.mat)} · ${last.shipped} shipped</p>`:''}`;}
-function panelTech(){S.tech=S.tech||{};return `<div class="eyebrow">Plant Tech</div><h2>Robots & tech for your plant</h2><p class="sub">Each unlock shows up in your plant <b>and</b> makes it run better.</p><div class="techs">${TECH.map(T=>{const own=S.tech[T.id],lock=T.stage>S.stage;return `<div class="tc ${own?'own':''} ${lock?'lock':''}"><div class="tc-i">${lock?'🔒':T.icon}</div><b>${T.name}</b><p>${T.does}</p><p class="tc-l">💡 ${T.lesson}</p>${own?'<span class="maxd">✓ ONLINE</span>':lock?`<small class="muted">Unlocks at the ${STAGES[T.stage].name}</small>`:`<button class="btn pri sm" data-tech="${T.id}" ${S.cash<T.cost?'disabled':''}>Unlock · ${money(T.cost)}</button>`}</div>`;}).join('')}</div>`;}
+function panelTech(){S.tech=S.tech||{};return `<div class="eyebrow">Plant Tech</div><h2>Robots & tech for your plant</h2>
+  <div class="millcard"><div class="mc-i">🔥</div><div><div class="eyebrow">Field trip · Sponsor showcase</div><b>${esc(millName())} Tour</b><p>Run a real steel mill: magnet crane, electric arc furnace, caster and hot rolling mill. Finish it and your factory gets <b>15% cheaper steel</b>.</p>${S.flags.millDone?'<span class="maxd">✓ TOUR COMPLETE · PARTNER BONUS ACTIVE</span> ':''}<button class="btn pri sm" id="goMill" ${S.phase!=='board'?'disabled title="Between shifts only"':''}>${S.flags.millDone?'Visit again':'Start the tour'} ▶</button></div></div>
+  <p class="sub">Each unlock shows up in your plant <b>and</b> makes it run better.</p><div class="techs">${TECH.map(T=>{const own=S.tech[T.id],lock=T.stage>S.stage;return `<div class="tc ${own?'own':''} ${lock?'lock':''}"><div class="tc-i">${lock?'🔒':T.icon}</div><b>${T.name}</b><p>${T.does}</p><p class="tc-l">💡 ${T.lesson}</p>${own?'<span class="maxd">✓ ONLINE</span>':lock?`<small class="muted">Unlocks at the ${STAGES[T.stage].name}</small>`:`<button class="btn pri sm" data-tech="${T.id}" ${S.cash<T.cost?'disabled':''}>Unlock · ${money(T.cost)}</button>`}</div>`;}).join('')}</div>`;}
 function panelMakers(){const seen=(S.flags.careersShown)||{};return `<div class="eyebrow">Meet the Makers</div><h2>Real jobs you've met</h2><p class="sub">Every shift, you'll meet a real manufacturing career connected to what you just did on the floor.</p>
   <div class="mk-grid">${Object.keys(CAREERS).map(k=>{const c=CAREERS[k];return seen[k]?`<div class="mkc"><span>${c.icon}</span><b>${c.role}</b><small>${c.path.split('.')[0]}.</small></div>`:`<div class="mkc lock"><span>🔒</span><b>???</b><small>Keep playing to meet this one</small></div>`;}).join('')}</div>`;}
 function bindPanel(C,k){
@@ -6632,6 +6828,7 @@ function bindPanel(C,k){
   C.querySelectorAll('[data-svc]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.svc.split(':');const e=service(+li,key);if(e)toast(e,'bad');else{toast('🧰 Serviced. Fresh machines break down less.','good');sfx('good');}refreshPanel();});
   C.querySelectorAll('[data-prod]').forEach(b=>b.onclick=()=>{const [li,p]=b.dataset.prod.split(':');const e=setProduct(+li,p);if(e)toast(e,'bad');else sfx('tick');refreshPanel();});
   C.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{const [id,li]=b.dataset.acc.split(':');const e=acceptOffer(+id,+li);if(e)toast(e,'bad');else{sfx('good');tagToday('contract');}refreshPanel();});
+  const gm=C.querySelector('#goMill');if(gm)gm.onclick=()=>{UI.panel=null;closeModal();enterMill();};
   C.querySelectorAll('[data-tech]').forEach(b=>b.onclick=()=>{const e=buyTech(b.dataset.tech);if(e){toast(e,'bad');return;}UI.panel=null;closeModal();});
   const x=C.querySelector('#doExpand');if(x)x.onclick=()=>{UI.panel=null;closeModal();doExpand();};
   renderHUD();save();}
@@ -6641,7 +6838,7 @@ function afterUpgrade(li,k){const s=S.lines[li].st[k];syncStations();const x=SLO
   renderHUD();save();}
 
 /* ---------- expansion: the big moment ---------- */
-function doExpand(){const e=expand();if(e){toast(e,'bad');return;}const st=STAGES[S.stage],B=hallBounds();tagToday('expand');
+function doExpand(){toggleTwin(false);const e=expand();if(e){toast(e,'bad');return;}const st=STAGES[S.stage],B=hallBounds();tagToday('expand');
   $('#fade').classList.add('on');sfx('build');letterbox(true);setTimeout(()=>{rebuildWorld();UI.beacon=null;initBeacon();
     const c=hallCenter();camS.mode='cine';camS.cinePos=V(c.x+(B.x1-B.x0)*.25,Math.max(26,(B.z1-B.z0)*1.2),c.z+(B.z1-B.z0)*.75+16);camS.cineLook=V(c.x,0,c.z);camera.position.set(c.x+30,40,c.z+60);
     $('#fade').classList.remove('on');sfx('big');confetti(200);
@@ -6649,7 +6846,7 @@ function doExpand(){const e=expand();if(e){toast(e,'bad');return;}const st=STAGE
     setTimeout(()=>{b.remove();camS.mode='play';letterbox(false);advise(S.stage===1?'Welcome to the <b>Workshop</b>! Walk to the glowing pads to <b>build a Paint Booth and QA Scanner</b>. They unlock Drones and E-Scooters.':S.stage===2?'A <b>second line</b>! Set what it makes in <b>Contracts</b>. '+TIPS.scale:TIPS.scale,14000);renderHUD();save();},4200);},700);}
 
 /* ---------- interacting with the floor ---------- */
-function nearestAct(){if(!S||blocked())return null;const px=P.pos.x,pz=P.pos.z;let best=null,bd=3.1;
+function nearestAct(){if(!S||blocked())return null;if(MILL.on)return millAct();const px=P.pos.x,pz=P.pos.z;let best=null,bd=3.1;
   if(nearFork())return {t:'Hop on the forklift',ic:'🚜',f:toggleRide};
   if(W.kiosk&&Math.hypot(px-W.kiosk.x,pz-W.kiosk.z-.9)<2.2)return {t:'Open the Expansion Office',ic:'🏗',f:()=>openPanel('expand')};
   S.lines.slice(0,lineCount()).forEach((l,li)=>stationsOnAll(li).forEach(k=>{const x=SLOT_X[k],z=LZ(li)+2.3,d=Math.hypot(px-x,pz-z);if(d<bd){bd=d;best={li,k};}}));
@@ -6675,12 +6872,13 @@ function startGame(kind,li,k){const l=S.lines[li];playGame(kind,{li,k,p:l.job.pr
 /* ---------- Next Up guide + 3D arrow ---------- */
 function initBeacon(){if(UI.beacon){scene.remove(UI.beacon);scene.remove(UI.ring);}const g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:'#39E75F',transparent:true,opacity:.95,depthTest:false});const cone=new THREE.Mesh(new THREE.ConeGeometry(.45,.9,4),m);cone.rotation.x=Math.PI;cone.renderOrder=11;g.add(cone);
   const ring=new THREE.Mesh(new THREE.RingGeometry(.8,1.02,40),new THREE.MeshBasicMaterial({color:'#39E75F',transparent:true,opacity:.75,depthWrite:false,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;g.visible=ring.visible=false;scene.add(g);scene.add(ring);UI.beacon=g;UI.ring=ring;UI.coneMat=m;}
-function goal(){if(!S||titleOn())return null;const nx=STAGES[S.stage+1],lines=S.lines.slice(0,lineCount()),fr=(li,k)=>({x:SLOT_X[k],z:LZ(li)+2.3});
+function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const nx=STAGES[S.stage+1],lines=S.lines.slice(0,lineCount()),fr=(li,k)=>({x:SLOT_X[k],z:LZ(li)+2.3});
   if(S.phase==='board'){if(S.day===1&&!S.hist.length)return {t:'Press Start Shift to fire up your line',k:'▶'};
     if(nx&&S.cash>=nx.cost)return {t:`You can afford the ${nx.name}! Head to the Expansion Office`,k:'🏗',hot:1,x:W.kiosk.x,z:W.kiosk.z+1};
     if(S.stage>=1){for(const l of lines)for(const k of ['paint','qa'])if(!l.st[k].built&&S.cash>=STATIONS[k].buildCost)return {t:`Build a ${STATIONS[k].name} on Line ${l.i+1}`,k:STATIONS[k].icon,...fr(l.i,k)};}
     for(const l of lines){const b=capacity(l).by,c=upgradeCost(l,b);if(c!=null&&S.cash>=c)return {t:`Upgrade your bottleneck: ${STATIONS[b].name}`,k:'⬆',...fr(l.i,b)};}
     for(const T of TECH)if(!S.tech[T.id]&&T.stage<=S.stage&&S.cash>=T.cost+300)return {t:`Unlock new tech: ${T.icon} ${T.name}`,k:'🤖'};
+    if(S.day>=2&&!S.flags.millDone)return {t:'New field trip! Open Tech and take the Steel Mill Tour',k:'🔥'};
     return {t:nx?`Save up ${short(nx.cost)} to build the ${nx.name}`:'Start the next shift',k:'💰'};}
   if(S.phase!=='day')return null;
   for(const l of lines)for(const k of ST_KEYS)if(l.st[k].built&&l.st[k].broken)return {t:`${STATIONS[k].name} broke down! Go fix it`,k:'⚠️',hot:1,...fr(l.i,k)};
@@ -6728,6 +6926,7 @@ function shiftReport(T){const gr=grade(T),gc={S:'#FACC15',A:'#39E75F',B:'#38BDF8
       ${row('Net profit',T.net,'tot '+(T.net>=0?'g':'r'))}</div>
     <div class="kpis"><div><em>Cost per product</em><b>${T.unit?money(T.unit):'—'}</b></div><div><em>Cash</em><b>${money(S.cash)}</b></div><div><em>Reputation</em><b class="st">${stars(S.rep)}</b></div></div>
     ${T.late.length?`<div class="note bad">⏰ Missed deadline: ${T.late.map(c=>esc(c.client)).join(', ')}. Reputation dropped.</div>`:''}${T.bailout?'<div class="note bad">You ran out of cash, so the bank gave you $2,000. Reputation took a hit.</div>':''}
+    <h4>OEE · the score real plants live by</h4>${oeeHTML(plantOEE(T),'Shift OEE',true)}<div class="lesson">📈 ${oeeLesson(plantOEE(T))}</div>
     <div class="lesson">💡 ${lessonOf(T)}</div>${careerCard(T)}
     <div class="mact">${spBadge(spPresenting(),'Shift presented by')}<button class="btn pri big" id="rpGo" data-focus>Plan the next shift ▶</button></div></div>`,{cls:'dark panel wide'});
   C.querySelector('#rpGo').onclick=()=>{closeModal();nextDay();renderHUD();save();const nx=STAGES[S.stage+1];if(nx&&S.cash>=nx.cost&&!S.flags['xp'+S.stage]){S.flags['xp'+S.stage]=1;advise(TIPS.expand,12000);}};}
@@ -6735,7 +6934,7 @@ function shiftReport(T){const gr=grade(T),gc={S:'#FACC15',A:'#39E75F',B:'#38BDF8
 /* ---------- title + how to play ---------- */
 function startNew(){const nm=($('#pname').value||'').trim().slice(0,18)||'Boss';newGame(nm);enterGame(true);}
 function enterGame(fresh){initAudio();$('#title').hidden=true;document.body.classList.remove('titling');rebuildWorld();initBeacon();P.rig.root.visible=true;P.pos.set(-8,0,4.4);camS.mode='play';camS.yaw=.15;renderHUD();
-  CX.parked=[];CX.lotDirty=true;if(fresh){if(PARAMS.has('test'))setTimeout(()=>howTo(),400);else introShots(()=>howTo());}else advise(`Welcome back, <b>${esc(S.name)}</b>. Your ${STAGES[S.stage].name} is ready.`,7000);}
+  CX.parked=[];CX.lotDirty=true;if(PARAMS.has('mill')){setTimeout(()=>{if(modalOpen())closeModal();enterMill();},700);return;}if(fresh){if(PARAMS.has('test'))setTimeout(()=>howTo(),400);else introShots(()=>howTo());}else advise(`Welcome back, <b>${esc(S.name)}</b>. Your ${STAGES[S.stage].name} is ready.`,7000);}
 function howTo(){const C=openModal(`<div class="howto-w"><img src="${MB_ASSETS.logo}" class="ht-logo" alt=""><div class="eyebrow">Welcome, ${esc(S.name)}</div><h2>Build a garage into a Mega Plant</h2>
   <div class="howto"><div><i>🏭</i><b>Run the line</b><p>Steel goes in, products come out, money comes in. Pick what your line makes in <b>Contracts</b>.</p></div>
   <div><i>🔥</i><b>Get hands-on</b><p>Walk up to a station and press ${TOUCH?'the button':'<b>E</b>'}: laser-cut, weld, assemble, paint. Nail it for a speed boost.</p></div>
@@ -6743,9 +6942,9 @@ function howTo(){const C=openModal(`<div class="howto-w"><img src="${MB_ASSETS.l
   <p class="ht-arrow">Stuck? Follow the <b>green arrow</b> and the <b>Next up</b> tip.</p></div><div class="mact"><button class="btn pri big" id="ok" data-focus>Let's build!</button></div>`,{cls:'dark panel wide'});
   C.querySelector('#ok').onclick=()=>{closeModal();advise(TIPS.start,12000);};}
 function bindUI(){$('#btnNew').onclick=startNew;$('#pname').addEventListener('keydown',e=>{if(e.key==='Enter')startNew();});$('#btnCont').onclick=()=>{S=load();if(S){S.tech=S.tech||{};S.phase=S.phase==='day'?'board':S.phase==='report'?'board':S.phase;enterGame(false);}};
-  $('#btnStart').onclick=()=>{if(!S||S.phase!=='board')return;initAudio();startShift();sfx('horn');S.lines.slice(0,lineCount()).forEach((l,i)=>setTimeout(()=>sendTruck(i,'in'),i*400));renderHUD();if(!PARAMS.has('test'))shiftShots(()=>{});if(S.day===2&&!S.flags.wTold){S.flags.wTold=1;setTimeout(()=>advise(TIPS.weld,12000),4000);}};
+  $('#btnStart').onclick=()=>{if(!S||S.phase!=='board'||MILL.on)return;toggleTwin(false);initAudio();startShift();sfx('horn');S.lines.slice(0,lineCount()).forEach((l,i)=>setTimeout(()=>sendTruck(i,'in'),i*400));renderHUD();if(!PARAMS.has('test'))shiftShots(()=>{});if(S.day===2&&!S.flags.wTold){S.flags.wTold=1;setTimeout(()=>advise(TIPS.weld,12000),4000);}};
   $$('#speed button').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.s));$('#btnMute').onclick=()=>{muted=!muted;try{localStorage.setItem('botfactory-mute',muted?'1':'0');}catch(e){}$('#btnMute').textContent=muted?'🔇':'🔊';};$('#btnMute').textContent=muted?'🔇':'🔊';
-  $('#btnView').onclick=toggleOverview;$('#skip').onclick=endShots;$('#act').onclick=doAction;$('#advisor').onclick=()=>$('#advisor').classList.add('hide');
+  $('#btnView').onclick=toggleOverview;$('#skip').onclick=endShots;$('#btnTwin').onclick=()=>toggleTwin();$('#millExit').onclick=exitMill;$('#act').onclick=doAction;$('#advisor').onclick=()=>$('#advisor').classList.add('hide');
   $$('#dock [data-p]').forEach(b=>b.onclick=()=>{if(!blocked())openPanel(b.dataset.p);});$('#hPlant').onclick=()=>{if(!blocked())openPanel('expand');};
   $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&UI.panel){UI.panel=null;closeModal();}});
   addEventListener('keydown',e=>{if(e.code==='Escape'&&UI.panel&&modalOpen()){UI.panel=null;closeModal();}});}
@@ -6769,7 +6968,7 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
     UI.gT-=dt;if(UI.gT<=0){UI.gT=.15;updateGoal();renderHUD();renderRush();updateAct();}
     $('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';
     if(!blocked()||camS.mode==='cine')updatePlayer(dt);else P.rig.mixer.update(dt);}
-  if(S)updateCine(dt,t,UI.demo||running());
+  if(S)updateCine(dt,t,UI.demo||running());updateMill(dt,t);updateTwin(dt);
   updateWorld(dt,t,UI.demo||running());stepFX(dt);updateBeacon(dt,t);updateCamera(dt,t);drawConfetti();renderFrame(t);}
 window.BF={get S(){return S;},startShift,stepShift,endShift,upgrade,expand:doExpand,startGame,openPanel,P,camS,W,playGame,setSpeed};
 boot().catch(e=>{console.error(e);$('#btnNew').textContent='Could not load: '+e.message;});

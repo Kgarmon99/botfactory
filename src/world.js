@@ -6,7 +6,7 @@ const W={shell:null,lines:[],lot:null,kiosk:null,beltMats:[],trucks:[],lights:[]
 const PCOL={toy:'#38BDF8',kart:'#EF4444',drone:'#A855F7',scooter:'#10B981',dog:'#F59E0B',ev:'#22C55E'};
 function stageNow(){return S?S.stage:0;}
 function linesNow(){return STAGES[stageNow()].lines;}
-function hallBounds(st){st=st==null?stageNow():st;const wide=STAGES[st].wide,n=STAGES[st].lines;return {x0:-19.5,x1:wide?19.5:7.6,z0:LZ(n-1)-5.6,z1:7.2};}
+function hallBounds(st){if(st==null&&typeof MILL!=='undefined'&&MILL.on)return millBounds();st=st==null?stageNow():st;const wide=STAGES[st].wide,n=STAGES[st].lines;return {x0:-19.5,x1:wide?19.5:7.6,z0:LZ(n-1)-5.6,z1:7.2};}
 function hallCenter(){const B=hallBounds();return {x:(B.x0+B.x1)/2,z:(B.z0+B.z1)/2};}
 
 /* ---------- textures ---------- */

@@ -53,13 +53,15 @@ function boostStation(li,k,secs){const s=S.lines[li].st[k];s.boost=Math.max(s.bo
 
 /* ---------- the shift ---------- */
 function startShift(){S.phase='day';S.clock=0;S.today={rev:0,mat:0,capex:0,repairs:0,returns:0,retN:0,scrap:0,shipped:0,byLine:S.lines.map(()=>0),bonus:0,games:0,best:0};
-  S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
+  S.today.oee=S.lines.map(()=>({plan:0,down:0,made:0,bad:0,ideal:0}));S.rush=null;S.rushAt=S.day>=2?rand(.25,.7):9;emit('open');}
 function itemsNear(l,x,y0){return l.belt.some(it=>Math.abs(it.x-x)<.86);}
 function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KEYS.filter(k=>need.includes(k)||(k==='qa'&&l.st.qa.built&&STAGES[S.stage].wide)),sx=shipX();
+  /* OEE bookkeeping: planned time, downtime, ideal rate */
+  const O=S.today.oee&&S.today.oee[l.i];if(O){O.plan+=dt;if(route.some(k=>l.st[k].broken||l.st[k].needsCode))O.down+=dt;O.ideal=Math.min(...route.map(k=>TIERS[l.st[k].tier].speed*techSpeed()/STATIONS[k].cycle));}
   /* release raw steel when the first stop has room */
   const first=l.st[route[0]];l.spawnT-=dt;
   if(l.spawnT<=0&&first.q.length+l.belt.filter(it=>it.next===route[0]).length<3&&!itemsNear(l,DOCK_IN_X+.4)){
-    l.belt.push({x:DOCK_IN_X+.4,next:route[0],d:false,p:l.job.product,lvl:0});S.today.mat+=P.mat;l.spawnT=.35;}
+    l.belt.push({x:DOCK_IN_X+.4,next:route[0],d:false,p:l.job.product,lvl:0});S.today.mat+=P.mat*(S.flags.millPartner?.85:1);l.spawnT=.35;}
   /* belt: move toward the next stop, keep spacing, stop at a full queue */
   l.belt.sort((a,b)=>b.x-a.x);let ahead=1e9;
   for(let i=0;i<l.belt.length;i++){const it=l.belt[i],stopX=it.next==='ship'?sx:SLOT_X[it.next]-.55;
@@ -77,7 +79,7 @@ function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KE
       if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*T.speed*techSpeed()*(s.boost>0?2:1)/STATIONS[k].cycle;
         s.wear+=dt*(s.tier===2?.0016:.0028);
         if(s.prog>=1){const it=s.cur;s.cur=null;s.prog=0;s.made++;
-          if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;emit('scrap',{li:l.i});it.dead=true;}}
+          if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;const O2=S.today.oee&&S.today.oee[l.i];if(O2){O2.made++;O2.bad++;}emit('scrap',{li:l.i});it.dead=true;}}
           else if(Math.random()<T.defect*(s.boost>0?.2:1))it.d=true;
           it.lvl=ST_KEYS.indexOf(k)+1;
           if(!it.dead){const ri2=route.indexOf(k);it.next=route[ri2+1]||'ship';s.out=it;}}
@@ -88,6 +90,7 @@ function ship(l,it){const P=PRODUCTS[it.p],c=contractOf(l);let v;
   if(c&&c.got<c.qty){v=c.price;c.got++;if(c.got>=c.qty){S.cash+=c.bonus;S.today.bonus+=c.bonus;S.stats.contracts++;S.rep=clamp(S.rep+5,0,100);
       S.contracts=S.contracts.filter(x=>x!==c);l.job.cid=null;emit('contractDone',{c,li:l.i});}}
   else v=Math.round(P.price*ECON.marketCut);
+  {const O=S.today.oee&&S.today.oee[l.i];if(O){O.made++;if(it.d)O.bad++;}}
   S.cash+=v;S.today.rev+=v;S.today.shipped++;S.today.byLine[l.i]++;S.stats.shipped++;S.stats.rev+=v;
   if(it.d&&S.tech.dog&&Math.random()<.5){it.d=false;emit('dogCatch',{li:l.i});}
   if(it.d)S.returnsQ.push({at:S.clock+rand(8,40),v,li:l.i});
@@ -115,6 +118,9 @@ function endShift(){S.phase='report';const T=S.today,st=S.lines.slice(0,lineCoun
   emit('report',{T});}
 const techSpeed=()=>S&&S.tech&&S.tech.agv?1.1:1;
 function buyTech(id){const T=TECH.find(x=>x.id===id);if(!T)return 'Unknown';S.tech=S.tech||{};if(S.tech[id])return 'Already yours';if(T.stage>S.stage)return 'Unlocks at '+STAGES[T.stage].name;if(S.cash<T.cost)return 'Need '+money(T.cost);S.cash-=T.cost;if(S.today)S.today.capex+=T.cost;S.tech[id]=1;emit('tech',{id});return '';}
+/* OEE = Availability x Performance x Quality */
+function oeeOf(o){if(!o||o.plan<1)return null;const run=Math.max(.001,o.plan-o.down),A=run/o.plan,Pf=Math.min(1,o.made/Math.max(.001,o.ideal*run)),Qu=o.made?(o.made-o.bad)/o.made:1;return {A,P:Pf,Q:Qu,v:A*Pf*Qu};}
+function plantOEE(T){T=T||S.today;if(!T||!T.oee)return null;const tot=T.oee.slice(0,lineCount()).reduce((a,o)=>({plan:a.plan+o.plan,down:a.down+o.down,made:a.made+o.made,bad:a.bad+o.bad,ideal:a.ideal+o.ideal*o.plan}),{plan:0,down:0,made:0,bad:0,ideal:0});if(tot.plan<1)return null;tot.ideal/=tot.plan;return oeeOf(tot);}
 function nextDay(){S.day++;S.phase='board';makeOffers();}
 function grade(T){const pts=T.net+T.shipped*6-T.retN*30-T.late.length*200+T.games*40;const base=120+S.stage*260+S.lines.length*80;
   return pts>=base*3?'S':pts>=base*2?'A':pts>=base?'B':pts>=0?'C':'D';}
