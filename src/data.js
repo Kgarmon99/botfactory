@@ -8,7 +8,7 @@ const DOCK_IN_X=-16.2, LINE_GAP=11;
 const LZ=l=>-l*LINE_GAP;             /* belt z for line l */
 
 const STATIONS={
-  cut:  {name:'Laser Cutter', short:'Cut',   icon:'⚡', color:'#EF4444', cycle:4.5,
+  cut:  {name:'Laser Cutter', short:'Cut',   icon:'🔦', color:'#EF4444', cycle:4.5,
          blurb:'A laser hot enough to slice steel cuts sheets into parts.', game:'laser'},
   weld: {name:'Welding Cell', short:'Weld',  icon:'🔥', color:'#3B82F6', cycle:9,
          blurb:'Melts metal parts together into one strong frame.', game:'weld'},

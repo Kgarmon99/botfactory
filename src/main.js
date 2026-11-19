@@ -21,57 +21,9 @@ function renderHUD(){if(!S)return;const st=STAGES[S.stage],nx=STAGES[S.stage+1],
   $$('#speed button').forEach(b=>b.classList.toggle('on',+b.dataset.s===S.speed));$('#speed').style.visibility=S.phase==='day'?'visible':'hidden';
   $('#btnStart').hidden=S.phase!=='board';$('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';
   const dkE=$('#dkExpand');if(dkE)dkE.classList.toggle('ping',!!nx&&S.cash>=nx.cost);}
-function renderRush(){const r=S&&S.rush,el=$('#rush');if(!r){el.hidden=true;return;}el.hidden=false;el.innerHTML=`<b>🚚 RUSH TRUCK</b> Ship <b>${r.need-r.got}</b> more in <b>${Math.ceil(r.t)}s</b> <span>+${money(r.bonus)} bonus</span>`;}
+function renderRush(){const r=S&&S.rush,el=$('#rush');if(!r){el.hidden=true;return;}el.hidden=false;el.innerHTML=iconize(`<b>🚚 RUSH TRUCK</b> Ship <b>${r.need-r.got}</b> more in <b>${Math.ceil(r.t)}s</b> <span>+${money(r.bonus)} bonus</span>`);}
 
 /* ---------- panels ---------- */
-function openPanel(k){if(!S)return;UI.panel=k;const C=openModal(`<button class="x" id="pX" aria-label="Close">×</button>`+({tech:panelTech,contracts:panelContracts,upgrades:panelUpgrades,expand:panelExpand,numbers:panelNumbers,makers:panelMakers})[k](),{cls:'dark panel wide'});
-  C.querySelector('#pX').onclick=()=>{UI.panel=null;closeModal();};bindPanel(C,k);}
-function refreshPanel(){if(UI.panel&&modalOpen()){const k=UI.panel;closeModal();openPanel(k);}}
-function tierPips(t){return `<span class="pips">${[0,1,2].map(i=>`<i class="${i<=t?'on':''}"></i>`).join('')}</span>`;}
-function lineHead(l){const P=PRODUCTS[l.job.product],cap=capacity(l),c=contractOf(l);return `<div class="lh"><b>Line ${l.i+1}</b><span>${P.icon} ${P.name}</span><span class="muted">~${cap.n}/shift · slowest: <b class="warn">${STATIONS[cap.by].name}</b></span>${c?`<span class="tag">📄 ${esc(c.client)} ${c.got}/${c.qty}</span>`:''}</div>`;}
-function panelUpgrades(){const lines=S.lines.slice(0,lineCount());return `<div class="eyebrow">Upgrades</div><h2>Level up your stations</h2><p class="sub">Each station goes <b>Manual → Power Tools → Robot Cell</b>. Your line only goes as fast as its <b>slowest</b> station, so upgrade that one first.</p>`+
-  lines.map(l=>lineHead(l)+`<div class="ups">${ST_KEYS.filter(k=>STAGES[S.stage].wide||!['paint','qa'].includes(k)).map(k=>{const s=l.st[k],D=STATIONS[k],c=upgradeCost(l,k),bn=capacity(l).by===k&&PRODUCTS[l.job.product].needs.includes(k),T=TIERS[s.tier],N=s.built&&s.tier<2?TIERS[s.tier+1]:null;
-    return `<div class="up ${bn?'bn':''} ${s.built?'':'unb'}"><div class="up-h"><span class="up-ic" style="--c:${D.color}">${D.icon}</span><div><b>${D.name}</b>${s.built?tierPips(s.tier)+` <small>${T.name}</small>`:'<small>Not built</small>'}</div>${bn?'<em class="bnb">BOTTLENECK</em>':''}</div>
-      <p>${D.blurb}</p>${s.built?`<div class="up-st"><span>Speed <b>${T.speed}×</b></span><span>Defects <b>${Math.round(T.defect*100)}%</b></span><span>${T.wage?`Wage <b>${money(T.wage)}</b>`:'No wages'}</span></div>`:''}
-      ${c!=null?`<button class="btn ${bn?'pri':''} sm" data-up="${l.i}:${k}" ${S.cash<c?'disabled':''}>${s.built?`⬆ ${N.name}`:'🏗 Build'} · ${money(c)}</button>${N?`<small class="up-n">→ ${N.speed}× speed, ${Math.round(N.defect*100)}% defects${s.tier+1===2?', robot: no wages, $45/shift upkeep':''}</small>`:''}`:'<span class="maxd">MAXED</span>'}
-      ${s.built&&s.tier<2&&(s.crew||1)<2?`<button class="btn ghost sm" data-hire="${l.i}:${k}" ${S.cash<ECON.hireFee?'disabled':''}>👷 Hire 2nd ${WORKER[k]} · ${money(ECON.hireFee)} <small>1.6× speed, +${money(T.wage)}/shift</small></button>`:s.built&&s.tier<2?'<small class="up-n">👷👷 2 workers on this station</small>':''}
-      ${s.built&&s.wear>.45?`<button class="btn ghost sm" data-svc="${l.i}:${k}">🧰 Service · ${money(ECON.serviceCost)} <small>wear ${Math.round(s.wear*100)}%</small></button>`:''}</div>`;}).join('')}</div>`).join('');}
-function panelContracts(){const lines=S.lines.slice(0,lineCount());
-  return `<div class="eyebrow">Contracts</div><h2>What should your lines make?</h2><p class="sub">Contracts pay <b>more</b> than the open market, but you have to deliver on time. Check your line can make enough per shift before you sign.</p>
-  <h4>Your lines</h4>${lines.map(l=>{const c=contractOf(l);return `<div class="ln">${lineHead(l)}${c?`<div class="cbar"><i style="width:${c.got/c.qty*100}%"></i></div><small class="muted">Due end of day ${c.due} · ${money(c.price)} each + ${money(c.bonus)} bonus</small>`:`<div class="prods">${Object.keys(PRODUCTS).map(p=>{const P=PRODUCTS[p],why=canMake(l,p);return `<button class="prod ${l.job.product===p?'on':''}" data-prod="${l.i}:${p}" ${why?'disabled':''} title="${esc(why)}"><span>${P.icon}</span><b>${P.name}</b><small>${why?esc(why):`${money(Math.round(P.price*ECON.marketCut))} each · ~${capacity(l,p).n}/shift`}</small></button>`;}).join('')}</div>`}</div>`;}).join('')}
-  <h4>Offers on the board</h4><div class="offers">${S.offers.map(o=>{const P=PRODUCTS[o.p];return `<div class="offer"><div class="of-h"><span>${P.icon}</span><div><b>${esc(o.client)}</b><small>${o.qty} × ${P.name}</small></div><em>${money(o.price*o.qty+o.bonus)}</em></div>
-    <div class="of-st"><span>${money(o.price)} each <small class="g">(market ${money(Math.round(P.price*ECON.marketCut))})</small></span><span>${o.days} day${o.days>1?'s':''}</span><span>+${money(o.bonus)} bonus</span></div>
-    <div class="of-acts">${lines.map(l=>{const why=canMake(l,o.p)||(l.job.cid?'Busy':''),cap=capacity(l,o.p).n*o.days,risky=!why&&cap<o.qty;return `<button class="btn sm ${risky?'':'pri'}" data-acc="${o.id}:${l.i}" ${why?'disabled':''} title="${esc(why)}">Line ${l.i+1}${why?'':risky?` ⚠ makes ~${cap}`:` ✓ ~${cap}`}</button>`;}).join('')}</div></div>`;}).join('')||'<p class="muted">New offers arrive every day.</p>'}</div>`;}
-function panelExpand(){const nx=STAGES[S.stage+1],cost=nx?nx.cost:0;
-  return `<div class="eyebrow">Expand the plant</div><h2>${nx?'Go bigger: '+nx.name:'You built a Mega Plant'}</h2>
-  ${nx?`<div class="xp-card"><p>${nx.pitch}</p><div class="xp-row"><span>Cost <b>${money(cost)}</b></span><span>Rent <b>${money(STAGES[S.stage].rent)} → ${money(nx.rent)}</b>/shift</span><span>Lines <b>${STAGES[S.stage].lines} → ${nx.lines}</b></span></div>
-    <div class="xbar"><i style="width:${clamp(S.cash/cost,0,1)*100}%"></i><span>${money(S.cash)} / ${money(cost)}</span></div>
-    <button class="btn pri big" id="doExpand" ${S.cash<cost?'disabled':''}>🏗 Build the ${nx.name}</button>
-    <p class="muted small">💡 Rent goes up, but more products share it. Bigger plants make each product <b>cheaper</b>. That's <b>economies of scale</b>.</p></div>`:'<p class="sub">Four lines, a robot fleet and your name on the roof. Keep stacking profit to push your plant value higher.</p>'}
-  <h4>The road to Mega Plant</h4><div class="ladder">${STAGES.map((s,i)=>`<div class="rung ${i<S.stage?'done':i===S.stage?'cur':''}"><b>${i<S.stage?'✓':i===S.stage?'▶':'🔒'} ${s.name}</b><small>${s.lines} line${s.lines>1?'s':''}${s.wide?' · full width':''} · ${i?money(s.cost):'start'}</small></div>`).join('')}</div>
-  <p class="muted">Plant value: <b>${money(plantValue())}</b></p>`;}
-function panelNumbers(){const H=S.hist.slice(-12),mx=Math.max(100,...H.map(h=>Math.abs(h.net))),last=H[H.length-1];
-  return `<div class="eyebrow">The numbers</div><h2>How's the business?</h2>
-  <div class="kpis"><div><em>Cash</em><b>${money(S.cash)}</b></div><div><em>Plant value</em><b>${short(plantValue())}</b></div><div><em>Products shipped</em><b>${S.stats.shipped.toLocaleString()}</b></div><div><em>Best shift</em><b>${money(S.stats.best)}</b></div></div>
-  <h4>OEE (last shift)</h4>${oeeHTML(S.hist.length?plantOEE(S.hist[S.hist.length-1]):null,'Plant OEE')}<p class="muted small">Tip: press <b>T</b> or the 🧿 button for the live Digital Twin view.</p>
-  <h4>Profit per shift</h4>${H.length?`<div class="bars">${H.map(h=>`<div class="bar"><i class="${h.net>=0?'p':'n'}" style="height:${Math.max(3,Math.abs(h.net)/mx*100)}%"></i><span>${h.day}</span></div>`).join('')}</div>`:'<p class="muted">Run a shift to see your numbers.</p>'}
-  ${H.length>1?`<h4>Cost to make one product</h4><div class="bars thin">${H.map(h=>`<div class="bar"><i class="u" style="height:${h.unit?Math.min(100,h.unit/Math.max(...H.map(x=>x.unit||0))*100):0}%"></i><span>${h.unit?'$'+Math.round(h.unit):'-'}</span></div>`).join('')}</div><p class="muted small">When this drops, you're making each product for less. More volume spreads your fixed costs (rent, wages) thinner.</p>`:''}
-  ${last?`<p class="muted small">Last shift: fixed costs ${money(last.fixed)} · materials ${money(last.mat)} · ${last.shipped} shipped</p>`:''}`;}
-function panelTech(){S.tech=S.tech||{};return `<div class="eyebrow">Plant Tech</div><h2>Robots & tech for your plant</h2>
-  <div class="millcard"><div class="mc-i">🔥</div><div><div class="eyebrow">Field trip · Sponsor showcase</div><b>${esc(millName())} Tour</b><p>Run a real steel mill: magnet crane, electric arc furnace, caster and hot rolling mill. Finish it and your factory gets <b>15% cheaper steel</b>.</p>${S.flags.millDone?'<span class="maxd">✓ TOUR COMPLETE · PARTNER BONUS ACTIVE</span> ':''}<button class="btn pri sm" id="goMill" ${S.phase!=='board'?'disabled title="Between shifts only"':''}>${S.flags.millDone?'Visit again':'Start the tour'} ▶</button></div></div>
-  <p class="sub">Each unlock shows up in your plant <b>and</b> makes it run better.</p><div class="techs">${TECH.map(T=>{const own=S.tech[T.id],lock=T.stage>S.stage;return `<div class="tc ${own?'own':''} ${lock?'lock':''}"><div class="tc-i">${lock?'🔒':T.icon}</div><b>${T.name}</b><p>${T.does}</p><p class="tc-l">💡 ${T.lesson}</p>${own?'<span class="maxd">✓ ONLINE</span>':lock?`<small class="muted">Unlocks at the ${STAGES[T.stage].name}</small>`:`<button class="btn pri sm" data-tech="${T.id}" ${S.cash<T.cost?'disabled':''}>Unlock · ${money(T.cost)}</button>`}</div>`;}).join('')}</div>`;}
-function panelMakers(){const seen=(S.flags.careersShown)||{};return `<div class="eyebrow">Meet the Makers</div><h2>Real jobs you've met</h2><p class="sub">Every shift, you'll meet a real manufacturing career connected to what you just did on the floor.</p>
-  <div class="mk-grid">${Object.keys(CAREERS).map(k=>{const c=CAREERS[k];return seen[k]?`<div class="mkc"><span>${c.icon}</span><b>${c.role}</b><small>${c.path.split('.')[0]}.</small></div>`:`<div class="mkc lock"><span>🔒</span><b>???</b><small>Keep playing to meet this one</small></div>`;}).join('')}</div>`;}
-function bindPanel(C,k){
-  C.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.up.split(':');const e=upgrade(+li,key);if(e){toast(e,'bad');return;}afterUpgrade(+li,key);refreshPanel();});
-  C.querySelectorAll('[data-hire]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.hire.split(':');const before=capacity(S.lines[+li]).n,e=hireCrew(+li,key);if(e){toast(e,'bad');return;}syncStations();celebrateFix(+li,before);refreshPanel();});
-  C.querySelectorAll('[data-svc]').forEach(b=>b.onclick=()=>{const [li,key]=b.dataset.svc.split(':');const e=service(+li,key);if(e)toast(e,'bad');else{toast('🧰 Serviced. Fresh machines break down less.','good');sfx('good');}refreshPanel();});
-  C.querySelectorAll('[data-prod]').forEach(b=>b.onclick=()=>{const [li,p]=b.dataset.prod.split(':');const e=setProduct(+li,p);if(e)toast(e,'bad');else sfx('tick');refreshPanel();});
-  C.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{const [id,li]=b.dataset.acc.split(':');const e=acceptOffer(+id,+li);if(e)toast(e,'bad');else{sfx('good');tagToday('contract');}refreshPanel();});
-  const gm=C.querySelector('#goMill');if(gm)gm.onclick=()=>{UI.panel=null;closeModal();enterMill();};
-  C.querySelectorAll('[data-tech]').forEach(b=>b.onclick=()=>{const e=buyTech(b.dataset.tech);if(e){toast(e,'bad');return;}UI.panel=null;closeModal();});
-  const x=C.querySelector('#doExpand');if(x)x.onclick=()=>{UI.panel=null;closeModal();doExpand();};
-  renderHUD();save();}
 function afterUpgrade(li,k){const s=S.lines[li].st[k];syncStations();const x=SLOT_X[k],z=LZ(li);for(let i=0;i<5;i++)setTimeout(()=>burst(x+rand(-1.5,1.5),.4,z+rand(-1.5,.5),{n:6,color:'#D1D5DB',spread:1.4,up:1.6,g:2,life:.9,size:.18,grow:2}),i*80);
   sfx('build');floatAt(x,3,z,s.tier===0?'BUILT!':TIERS[s.tier].name.toUpperCase()+'!','#FACC15',true);camS.shake=.3;
   if(s.tier===2){sfx('big');confetti(80);if(!S.flags.robotTold){S.flags.robotTold=1;advise(TIPS.robot,12000);}}
@@ -102,7 +54,7 @@ function nearestAct(){if(!S||blocked())return null;if(MILL.on)return millAct();c
   return {t:`Work the ${D.name}`,ic:D.icon,hot:l.st[k].q.length>=4,f:()=>startGame(D.game,li,k)};}
 function stationsOnAll(li){return ST_KEYS.filter(k=>STAGES[S.stage].wide||!['paint','qa'].includes(k));}
 function doAction(){const a=nearestAct();if(a&&a.f)a.f();}
-function updateAct(){const a=nearestAct(),el=$('#act');UI.act=a;if(!a){el.hidden=true;return;}el.hidden=false;el.classList.toggle('hot',!!a.hot);el.disabled=!a.f;const h=`<kbd>${TOUCH?'TAP':'E'}</kbd><span>${a.ic}</span>${esc(a.t)}`;if(el.dataset.h!==h){el.innerHTML=h;el.dataset.h=h;}}
+function updateAct(){const a=nearestAct(),el=$('#act');UI.act=a;if(!a){el.hidden=true;return;}el.hidden=false;el.classList.toggle('hot',!!a.hot);el.disabled=!a.f;const h=`<kbd>${TOUCH?'TAP':'E'}</kbd><span>${a.ic}</span>${esc(a.t)}`;if(el.dataset.h!==h){el.innerHTML=iconize(h);el.dataset.h=h;}}
 function startGame(kind,li,k){const l=S.lines[li];playGame(kind,{li,k,p:l.job.product},score=>{S.stats.games++;if(S.today){S.today.games++;}const x=SLOT_X[k],z=LZ(li);
   ({laser:'laser',weld:'weld',assemble:'assemble',paint:'paint',qa:'qa',repair:'repair',program:'program'})[kind]&&tagToday(kind);
   if(kind==='repair'){if(score>=.45){fixStation(li,k,true);floatAt(x,2.6,z,'FIXED! −$40','#39E75F',true);}else{toast('The repair crew is on the way.','warn');}}
@@ -131,7 +83,7 @@ function goal(){if(!S||titleOn())return null;if(MILL.on)return millGoal();const 
   if(best)return {t:`Get hands-on: work the ${STATIONS[best.k2].name} for a speed boost`,k:STATIONS[best.k2].icon,x:best.x,z:best.z};
   return {t:'Line is humming. Watch for jams and breakdowns',k:'👀'};}
 function updateGoal(){const g=goal(),el=$('#nextUp');UI.goal=g;const show=!!g&&!modalOpen()&&camS.mode!=='cine';el.hidden=!show;if(!show)return;const key=g.k+g.t+(g.hot?1:0);
-  if(key!==UI.goalKey){UI.goalKey=key;el.querySelector('i').textContent=g.k;el.querySelector('b').textContent=g.t;el.classList.toggle('hot',!!g.hot);el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}}
+  if(key!==UI.goalKey){UI.goalKey=key;el.querySelector('i').innerHTML=iconize(g.k);el.querySelector('b').innerHTML=iconize(esc(g.t));el.classList.toggle('hot',!!g.hot);el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}}
 function updateBeacon(dt,t){const B=UI.beacon,R=UI.ring;if(!B)return;const g=UI.goal,show=g&&g.x!=null&&!modalOpen()&&camS.mode==='play'&&Math.hypot(P.pos.x-g.x,P.pos.z-g.z)>2.4;B.visible=R.visible=!!show;if(!show)return;
   const col=g.hot?'#FFB020':'#39E75F';UI.coneMat.color.set(col);R.material.color.set(col);B.position.set(g.x,3.9+Math.sin(t*5)*.25,g.z-.6);B.rotation.y=t*2;const p=(t*1.4)%1;R.position.set(g.x,.06,g.z);R.scale.setScalar(.8+p*.6);R.material.opacity=.8*(1-p);}
 
@@ -192,7 +144,7 @@ function bindUI(){$('#btnNew').onclick=startNew;$('#pname').addEventListener('ke
   addEventListener('keydown',e=>{if(e.code==='Escape'&&UI.panel&&modalOpen()){UI.panel=null;closeModal();}});}
 
 /* ---------- boot + loop ---------- */
-async function boot(){const bar=$('#loadfill');bar.style.width='15%';initThree();setupMaterials();initFX();initItems();buildOutdoors();initCity();
+async function boot(){const bar=$('#loadfill');bar.style.width='15%';['#hud','#dock','#title .chips','#btnStart','#nextUp','#skip'].forEach(s=>{const e=$(s);if(e)e.innerHTML=iconize(e.innerHTML);});try{await Promise.race([Promise.all(["700 40px 'Barlow Condensed'","800 40px 'Barlow Condensed'","600 20px 'Barlow'"].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,2500))]);}catch(e){}initThree();setupMaterials();initFX();initItems();buildOutdoors();initCity();
   await loadSponsorLogos();$('#tSpons').innerHTML=spBadge(spPresenting());
   W.logoImg=await new Promise(r=>{const im=new Image();im.onload=()=>r(im);im.onerror=()=>r(null);im.src=MB_ASSETS.logo;});bar.style.width='35%';
   const [h,c]=await Promise.all([parseGLB(MB_ASSETS.hero),parseGLB(MB_ASSETS.crowd)]);const clips=emoteClips();h.animations.push(...clips);c.animations.push(...clips.map(x=>x.clone()));GLTF.hero=h;GLTF.crowd=c;bar.style.width='70%';

@@ -103,6 +103,13 @@ function buildLine(i){const g=new THREE.Group(),z=LZ(i),sx=S?shipX():4.6,x0=DOCK
   bx(g,len,.14,.08,cxb,.74,z-.66,yel,false);bx(g,len,.14,.08,cxb,.74,z+.66,yel,false);
   const bt=beltTex();bt.repeat.set(1,len/1.3);const belt=new THREE.Mesh(new THREE.PlaneGeometry(1.15,len),new THREE.MeshStandardMaterial({map:bt,roughness:.75,metalness:.1}));belt.rotation.x=-Math.PI/2;belt.rotation.z=Math.PI/2;belt.position.set(cxb,.75,z);belt.receiveShadow=true;g.add(belt);W.beltMats.push(bt);
   COLL.push({x0:x0-.4,x1:sx+.6,z0:z-.8,z1:z+.8});
+  /* conveyor detail: side rollers, drive motors, e-stops, overhead cable tray */
+  {const rol=new THREE.InstancedMesh(CYL,mat('#9CA3AF',{metalness:.9,roughness:.25}),Math.ceil(len/.55)*2);let n=0;for(let x=x0;x<sx;x+=.55)for(const zz of [-.6,.6]){_p.set(x,.66,z+zz);_q.setFromAxisAngle(V(1,0,0),Math.PI/2);_m4.compose(_p,_q,V(.07,.08,.07));rol.setMatrixAt(n++,_m4);}rol.count=n;g.add(rol);
+   [[x0-.1,1],[sx+.25,-1]].forEach(([mx])=>{bx(g,.5,.42,.42,mx,.32,z+.86,mat('#1D4ED8',{metalness:.5,roughness:.35}));cy(g,.2,.5,mx,.53,z+.86,mat('#1E3A8A',{metalness:.5}));bx(g,.3,.2,.3,mx,.74,z+.86,mat('#374151'));});
+   for(let x=x0+3;x<sx;x+=6.2){const e=new THREE.Group();bx(e,.22,.22,.14,0,0,0,mat('#FACC15'));const b=new THREE.Mesh(new THREE.SphereGeometry(.09,12,8,0,Math.PI*2,0,Math.PI/2),mat('#DC2626',{emissive:'#7F1D1D',emissiveIntensity:.5}));b.position.set(0,.22,0);e.add(b);e.position.set(x,.78,z+.68);g.add(e);}
+   const ct=mat('#6B7280',{metalness:.8,roughness:.35}),tray=new THREE.Group();bx(tray,len,.06,.5,0,0,0,ct,false);bx(tray,len,.18,.04,0,0,-.25,ct,false);bx(tray,len,.18,.04,0,0,.25,ct,false);
+   for(let i=0;i<5;i++){const c=new THREE.Mesh(CYL,mat(['#111827','#1D4ED8','#DC2626','#F59E0B','#16A34A'][i],{roughness:.6}));c.scale.set(.035,len,.035);c.rotation.z=Math.PI/2;c.position.set(0,.08,-.16+i*.08);tray.add(c);}
+   tray.position.set(cxb,4.4,z-2.7);g.add(tray);for(let x=x0+1;x<sx;x+=7)bx(g,.1,4.4,.1,x,0,z-2.7,ct);}
   /* steel in: coil rack */
   const ri=new THREE.Group();ri.position.set(x0-1.6,0,z);g.add(ri);bx(ri,1.6,.25,2.4,0,0,0,mat('#4B5563'));
   for(let k=0;k<3;k++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.55,24,1,false),mat('#CBD5E1',{metalness:.95,roughness:.22}));c.rotation.x=Math.PI/2;c.position.set(0,.68,-.75+k*.75);c.castShadow=true;ri.add(c);const h=new THREE.Mesh(CYL,mat('#374151'));h.scale.set(.16,.56,.16);h.rotation.x=Math.PI/2;h.position.copy(c.position);ri.add(h);}
@@ -117,8 +124,8 @@ function buildLine(i){const g=new THREE.Group(),z=LZ(i),sx=S?shipX():4.6,x0=DOCK
 function stationSig(l,k){const s=l.st[k];return (s.built?1:0)+':'+s.tier+':'+stageNow();}
 function syncStations(){if(!S)return;W.lines.forEach((L,i)=>{const l=S.lines[i];if(!l)return;ST_KEYS.forEach(k=>{const sig=stationSig(l,k);if(L.st[k].sig===sig)return;if(L.st[k].g){L.g.remove(L.st[k].g);L.st[k].coll&&(L.st[k].coll.off=true);if(L.st[k].worker){L.st[k].worker=null;}}
   L.st[k]=buildStation(L,l,k);L.st[k].sig=sig;});});}
-function buildStation(L,l,k){const s=l.st[k],D=STATIONS[k],x=SLOT_X[k],z=L.z,g=new THREE.Group();L.g.add(g);const out={g,k,sig:''};
-  if((k==='paint'||k==='qa')&&!STAGES[stageNow()].wide){g.visible=false;return out;}
+function buildStation(L,l,k,force){const s=l.st[k],D=STATIONS[k],x=SLOT_X[k],z=L.z,g=new THREE.Group();L.g.add(g);const out={g,k,sig:''};
+  if(!force&&(k==='paint'||k==='qa')&&!STAGES[stageNow()].wide){g.visible=false;return out;}
   const dk=mat('#1F2937',{roughness:.4,metalness:.5}),stl=mat('#9CA3AF',{roughness:.3,metalness:.85}),col=mat(D.color,{roughness:.4,metalness:.2}),glow=mat(D.color,{emissive:D.color,emissiveIntensity:1.2});
   /* floor pad + color stripe */
   const pad=new THREE.Mesh(new THREE.PlaneGeometry(4.6,3.9),mat(s.built?'#2A313B':'#161B22',{roughness:.45,metalness:.15,transparent:true,opacity:s.built?.95:.6}));pad.rotation.x=-Math.PI/2;pad.position.set(x,.015,z-.35);pad.receiveShadow=true;g.add(pad);
@@ -156,6 +163,19 @@ function buildStation(L,l,k){const s=l.st[k],D=STATIONS[k],x=SLOT_X[k],z=L.z,g=n
     [-1,1].forEach(a=>{const sp2=new THREE.Mesh(BOX,mesh);sp2.scale.set(.04,1.3,1.2);sp2.position.set(x+a*2.2,.75,z-1.5);g.add(sp2);});
     const hz=new THREE.Mesh(new THREE.PlaneGeometry(4.4,.3),new THREE.MeshStandardMaterial({map:hazardTex(),roughness:.6}));hz.rotation.x=-Math.PI/2;hz.position.set(x,.02,z-.8);g.add(hz);
     const lite=new THREE.Group();cy(lite,.08,.5,0,0,0,dk,false);const lb=sp(lite,.11,0,.6,0,mat('#39E75F',{emissive:'#39E75F',emissiveIntensity:2}));lite.position.set(x+2.2,1.5,z-2.1);g.add(lite);out.lamp=lb;}
+  /* stack light (andon tower): green running, yellow waiting, red down */
+  {const t=new THREE.Group();cy(t,.04,1.6,0,0,0,dk,false);const cols=['#22C55E','#FACC15','#EF4444'];out.stack=cols.map((c,i)=>{const m=new THREE.Mesh(CYL,new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.1,roughness:.3,transparent:true,opacity:.92}));m.scale.set(.11,.2,.11);m.position.y=1.65+i*.22;t.add(m);return m;});
+   cy(t,.12,.04,0,2.31,0,dk,false);t.position.set(x-1.9,0,z-.95);g.add(t);}
+  /* HMI control panel */
+  {const h=new THREE.Group();bx(h,.12,1.05,.12,0,0,0,dk);const box=bx(h,.62,.46,.16,0,1.05,0,mat('#E5E7EB',{roughness:.5}));box.rotation.x=-.3;const scr=new THREE.Mesh(new THREE.PlaneGeometry(.48,.3),new THREE.MeshBasicMaterial({color:'#22C55E'}));scr.position.set(0,1.3,.09);scr.rotation.x=-.3;h.add(scr);out.hmi=scr;
+   const bt=[['#22C55E',-.15],['#DC2626',.15]];bt.forEach(([c,xx])=>{const b=new THREE.Mesh(CYL,mat(c));b.scale.set(.03,.02,.03);b.rotation.x=Math.PI/2-.3;b.position.set(xx,1.08,.12);h.add(b);});h.position.set(x+1.75,0,z+1.05);h.rotation.y=-.5;g.add(h);COLL.push({x0:x+1.6,x1:x+1.9,z0:z+.9,z1:z+1.2});}
+  /* machine-specific extras */
+  if(k==='weld'&&T>=1){const hood=bx(g,1.6,.5,1.2,x,2.35,z-.4,mat('#9CA3AF',{metalness:.85,roughness:.3}));cy(g,.18,2.2,x,2.85,z-.4,mat('#9CA3AF',{metalness:.85,roughness:.3}),false);const hose=new THREE.Mesh(new THREE.TorusGeometry(.6,.06,8,16,Math.PI),mat('#374151'));hose.position.set(x+.9,1.9,z-1.2);hose.rotation.y=Math.PI/2;g.add(hose);}
+  if(k==='paint'&&T>=1){cy(g,.22,2.6,x+.8,2.4,z-.6,mat('#9CA3AF',{metalness:.85,roughness:.3}),false);cy(g,.3,.12,x+.8,5,z-.6,mat('#374151'),false);}
+  if(k==='asm'){const pb=new THREE.Mesh(new THREE.PlaneGeometry(1.8,1),new THREE.MeshStandardMaterial({map:canvasTex(256,140,(c2,w,h)=>{c2.fillStyle='#E5E7EB';c2.fillRect(0,0,w,h);c2.fillStyle='#9CA3AF';for(let i=8;i<w;i+=14)for(let j=8;j<h;j+=14)c2.fillRect(i,j,2,2);c2.strokeStyle='#1F2937';c2.lineWidth=5;c2.lineCap='round';[[30,30,30,100],[70,25,90,110],[130,30,130,95],[180,40,210,90],[60,120,120,120]].forEach(([a,b,cc,d])=>{c2.beginPath();c2.moveTo(a,b);c2.lineTo(cc,d);c2.stroke();});}),roughness:.6}));pb.position.set(x-.2,1.75,z-2.32);g.add(pb);
+    const bins=['#2563EB','#DC2626','#FACC15','#16A34A'];bins.forEach((c,i)=>bx(g,.3,.2,.32,x-1.1+i*.36,1.0,z-2.05,mat(c,{roughness:.5})));}
+  if(k==='qa'&&T>=1){[-1,1].forEach(a=>{for(let i=0;i<4;i++){const b=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:'#EF4444',transparent:true,opacity:.55,blending:THREE.AdditiveBlending}));b.scale.set(1.5,.012,.012);b.position.set(x,.95+i*.2,z+a*.75);g.add(b);}});}
+  if(k==='cut'&&T>=1){const cab=bx(g,.6,1.5,.5,x+1.4,0,z-1.6,mat('#E5E7EB',{roughness:.5}));for(let i=0;i<5;i++)bx(g,.4,.03,.02,x+1.4,.4+i*.18,z-1.34,mat('#374151'),false);}
   /* worker bot for manual + power tools */
   if(T<2&&GLTF.crowd){const r=makeRig(GLTF.crowd,MB.crew[(L.i*5+ST_KEYS.indexOf(k))%MB.crew.length],1.35);hardHat(r);r.root.position.set(x+.15,0,z-2.15);r.root.rotation.y=0;g.add(r.root);out.worker=r;}
   /* label */
@@ -214,6 +234,7 @@ function updateWorld(dt,t,running){W.t=t;if(!S)return;
       if(k==='paint'&&busy&&!V2.arms&&Math.random()<dt*6)burst(x+rand(-.4,.4),1.2,z,{n:2,color:PCOL[l.job.product],spread:.5,up:.2,g:-.2,life:.9,size:.12,grow:2});
       if(V2.scan){V2.scan.visible=busy||s.tier>0;V2.scan.position.y=.95+Math.abs(Math.sin(t*(busy?3:1)))*.9;V2.screen.material.color.set(s.broken?'#EF4444':busy?'#22C55E':'#334155');}
       if(V2.light){V2.light.intensity=busy?(k==='weld'?rand(1.5,4.5):rand(.6,1.4)):0;}
+      if(V2.stack){const st=s.broken?2:s.needsCode||s.blocked||(!busy&&running&&PRODUCTS[l.job.product].needs.includes(k))?1:busy?0:-1,fl=s.broken||s.needsCode?(Math.sin(t*10)>0?1:.15):1;V2.stack.forEach((m,i)=>m.material.emissiveIntensity=i===st?2.4*fl:.08);if(V2.hmi)V2.hmi.material.color.set(['#22C55E','#FACC15','#EF4444','#1E293B'][st<0?3:st]);}
       if(V2.lamp)V2.lamp.material=s.broken?MB.eye.r:s.needsCode?MB.eye.y:MB.eye.g;
       /* broken: smoke + bubble */
       if(s.broken&&Math.random()<dt*7)burst(x+rand(-.3,.3),1.6,z-.4,{n:1,color:'#4B5563',spread:.3,up:.8,g:-1,life:1.4,size:.22,grow:2.5});
