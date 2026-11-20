@@ -1,3 +1,8 @@
+/* ---------- player settings (loaded first so the renderer can use them) ---------- */
+const SETTINGS_KEY='botfactory-settings',SET_DEF={master:.9,sfx:.9,music:.55,gfx:-1,sens:1,cb:false,motion:true,tips:true};
+const SET=(()=>{try{return Object.assign({},SET_DEF,JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}'));}catch(e){return Object.assign({},SET_DEF);}})();
+function saveSet(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(SET));}catch(e){}}
+const VERSION='1.0.0';
 /* =====================================================================
    BOTFACTORY · data: stations, upgrades, products, plant stages, tuning
    ===================================================================== */

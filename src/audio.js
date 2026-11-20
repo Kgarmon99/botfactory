@@ -32,7 +32,7 @@ function startAudio(){if(AUD.on||!AC)return;AUD.on=true;
   V.furn=chain(loopSrc(brown),filt('lowpass',140),gainN(0));V.furn.connect(AUD.amb);
   AUD.next=AC.currentTime+.1;applySoundMode();}
 
-function applySoundMode(){if(!AUD.on)return;const t=AC.currentTime;muted=AUD.mode===2;AUD.bus.gain.setTargetAtTime(AUD.mode===2?0:1,t,.05);AUD.mus.gain.setTargetAtTime(AUD.mode===0?.5:0,t,.2);}
+function applySoundMode(){if(!AUD.on)return;const t=AC.currentTime;muted=AUD.mode===2;AUD.bus.gain.setTargetAtTime(AUD.mode===2?0:SET.master,t,.05);AUD.sfx.gain.setTargetAtTime(SET.sfx,t,.05);AUD.amb.gain.setTargetAtTime(SET.sfx,t,.05);AUD.mus.gain.setTargetAtTime(AUD.mode===0?SET.music:0,t,.2);}
 function cycleSound(){AUD.mode=(AUD.mode+1)%3;try{localStorage.setItem('botfactory-sound',AUD.mode);localStorage.setItem('botfactory-mute',AUD.mode===2?'1':'0');}catch(e){}muted=AUD.mode===2;applySoundMode();soundBtn();
   toast(['<b>Sound + music</b> on','<b>Music off</b> · factory sounds on','<b>Muted</b>'][AUD.mode]);}
 function soundBtn(){const b=$('#btnMute');if(!b)return;b.innerHTML=ic(AUD.mode===2?'mute':AUD.mode===1?'sound':'music');b.title=['Sound + music','Sound only','Muted'][AUD.mode];}
@@ -78,3 +78,7 @@ function music(){if(AUD.mode!==0)return;const bpm=94,st=60/bpm/4,ahead=AC.curren
     if(s%4===0||(hype&&s%4===3))note(t,BASS[b]-12+(s===12&&hype?7:0),st*2.6,.11,'sawtooth',420);
     if(hype&&(s===6||s===14))note(t,CH[b][(AUD.step>>3)%3]+24,st*1.5,.025,'square',2600);
     AUD.next+=st;AUD.step++;}}
+
+/* UI clicks */
+let _uiT=0;function uiClick(){if(!AUD.on||muted)return;grain(1500,.035,.03,'square',800,AUD.sfx);}
+function uiHover(){if(!AUD.on||muted)return;const n=performance.now();if(n-_uiT<70)return;_uiT=n;grain(2600,.02,.008,'sine',null,AUD.sfx);}

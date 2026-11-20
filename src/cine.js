@@ -53,7 +53,7 @@ function initCity(){const g=new THREE.Group();scene.add(g);CX.city=g;const aspha
   buildGoodsLot();}
 /* finished goods lot: every product you ship parks out front */
 function buildGoodsLot(){if(CX.lot)scene.remove(CX.lot);const g=new THREE.Group();CX.lot=g;scene.add(g);const x0=-8,x1=18,z0=9.2,z1=15.6;
-  const a=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,z1-z0),mat('#3A3F46',{roughness:.9}));a.rotation.x=-Math.PI/2;a.position.set((x0+x1)/2,.015,(z0+z1)/2);a.receiveShadow=true;g.add(a);
+  const a=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,z1-z0),mat('#2C3137',{roughness:.9}));a.rotation.x=-Math.PI/2;a.position.set((x0+x1)/2,.015,(z0+z1)/2);a.receiveShadow=true;g.add(a);
   for(let x=x0+.5;x<=x1;x+=3.2){bx(g,.1,.02,2.4,x,.02,z0+1.5,mat('#F8FAFC'),false);bx(g,.1,.02,2.4,x,.02,z1-1.5,mat('#F8FAFC'),false);}
   const s=signMesh([{t:'FINISHED GOODS',size:84,color:'#39E75F'},{t:'ready to ship',size:44,color:'#FACC15'}],5,1.3,{w:1000,h:260,bg:'#0D1117',glow:.8});s.position.set(x0+3,2.6,z1+.4);g.add(s);cy(g,.06,2.2,x0+1,0,z1+.35,mat('#374151'),false);cy(g,.06,2.2,x0+5,0,z1+.35,mat('#374151'),false);
   CX.lotSlots=[];for(let r=0;r<2;r++)for(let i=0;i<8;i++)CX.lotSlots.push({x:x0+2.1+i*3.2,z:r?z1-1.5:z0+1.5,ry:r?Math.PI/2:-Math.PI/2});CX.lotG=[];}

@@ -327,6 +327,76 @@ body.inmill #driveHud,body.cine #driveHud{display:none!important}
 #pitchCard{position:fixed;right:24px;top:50%;transform:translate(30px,-50%);opacity:0;transition:.6s;z-index:40;width:min(430px,44vw);pointer-events:none}#pitchCard.on{opacity:1;transform:translate(0,-50%)}#pitchCard .maker{background:#141A21;border:1px solid #2F3A46;border-top:5px solid var(--yel,#FACC15);border-radius:6px;padding:16px;color:#E5E7EB;box-shadow:0 20px 60px rgba(0,0,0,.55)}
 body.pitching #twinHud{display:none!important}
 @media (max-width:640px){.pe h1{font-size:38px}.pgo h1{font-size:46px}.pgo>b{font-size:34px}#pitchCard{display:none}}
+
+/* ================= SHELL: boot, menu, slots, settings, pause, credits, coach ================= */
+#boot{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 40%,#18202A 0%,#07090C 70%);transition:opacity .7s,visibility .7s}
+#boot::before{content:'';position:absolute;left:0;right:0;bottom:0;height:10px;background:repeating-linear-gradient(-45deg,#FACC15 0 14px,#111418 14px 28px);opacity:.9}
+#boot.out{opacity:0;visibility:hidden}
+.bt{width:min(520px,88vw);text-align:center;color:#E5E7EB;font-family:var(--body,'Barlow')}
+.bt-pre{display:flex;flex-direction:column;align-items:center;gap:8px;animation:btIn .9s cubic-bezier(.2,.9,.3,1.2) both}.bt-pre img{width:74px;height:74px;filter:drop-shadow(0 0 22px rgba(57,231,95,.45))}
+.bt-pre span{font:700 13px var(--display,'Barlow Condensed');letter-spacing:3px;text-transform:uppercase;color:#9CA3AF}
+.bt h1{font:800 clamp(52px,11vw,92px)/.95 var(--display,'Barlow Condensed');text-transform:uppercase;margin:10px 0 26px;letter-spacing:.5px;color:#fff;animation:btIn .9s .15s cubic-bezier(.2,.9,.3,1.2) both}.bt h1 span{color:#FACC15}
+@keyframes btIn{from{opacity:0;transform:translateY(16px) scale(.92)}}
+.bt-bar{height:14px;background:#0B0F14;border:1px solid #2A333D;border-radius:3px;overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.6)}
+#boot #loadfill{height:100%;width:0;background:repeating-linear-gradient(-45deg,#FACC15 0 10px,#E2B50C 10px 20px);background-size:28px 28px;animation:btStripe .8s linear infinite;transition:width .45s ease}
+@keyframes btStripe{to{background-position:28px 0}}
+.bt-row{display:flex;justify-content:space-between;margin-top:8px;font:600 14px var(--display);letter-spacing:1px;text-transform:uppercase;color:#9CA3AF}.bt-row b{color:#FACC15}
+.bt-tip{margin-top:34px;padding:14px 18px;border-left:4px solid #39E75F;background:rgba(255,255,255,.04);text-align:left;min-height:64px}.bt-tip em{font:700 12px var(--display);letter-spacing:2px;text-transform:uppercase;color:#39E75F;font-style:normal}
+#bootTip{margin:4px 0 0;color:#D1D5DB;line-height:1.45;transition:opacity .26s}
+#title p{display:none}#title .chips{margin-bottom:18px}
+.tmenu{display:flex;flex-direction:column;gap:8px;width:min(420px,100%);animation:tmIn .5s .1s both}@keyframes tmIn{from{opacity:0;transform:translateX(-14px)}}
+.tm{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:12px 18px 12px 20px;border:1px solid #2F3A46;border-left:5px solid #3B4654;border-radius:4px;background:linear-gradient(180deg,rgba(30,38,48,.92),rgba(17,22,29,.92));color:#fff;cursor:pointer;transition:transform .1s,border-color .15s,background .15s;position:relative}
+.tm b{font:800 22px/1.05 var(--display,'Barlow Condensed');text-transform:uppercase;letter-spacing:.6px}.tm small{font-size:13px;color:#9CA3AF}
+.tm:hover{border-left-color:#FACC15;transform:translateX(4px);background:linear-gradient(180deg,rgba(40,50,62,.95),rgba(22,28,36,.95))}.tm:active{transform:translateX(4px) scale(.98)}
+.tm::after{content:'›';position:absolute;right:16px;top:50%;transform:translateY(-50%);font:700 26px var(--display);color:#4B5563;transition:.15s}.tm:hover::after{color:#FACC15;right:12px}
+.tm.pri{border-left-color:#FACC15;background:linear-gradient(180deg,#FACC15,#E5B80B);color:#111418}.tm.pri small{color:#3F3A1C}.tm.pri::after{color:#111418}.tm.pri:hover{background:linear-gradient(180deg,#FFD93D,#EFC213)}
+.tm-row{display:flex;gap:8px}.tm.sm{flex:1;padding:10px 12px;align-items:center}.tm.sm b{font-size:16px}.tm.sm::after{display:none}.tm.sm:hover{transform:translateY(-2px)}
+.tnew{width:min(520px,100%);animation:tmIn .3s both}.tn-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}.tn-h b{font:800 20px var(--display);text-transform:uppercase;letter-spacing:.6px;color:#fff}
+.tn-back{background:none;border:1px solid #2F3A46;color:#C9D1DA;border-radius:4px;padding:6px 10px;font:700 14px var(--display);text-transform:uppercase;cursor:pointer}.tn-back:hover{border-color:#FACC15;color:#FACC15}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.slot{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;border:1px solid #2F3A46;border-top:4px solid #3B4654;border-radius:4px;background:rgba(17,22,29,.92);color:#fff;cursor:pointer;min-height:96px;transition:.12s}
+.slot em{font:700 11px var(--display);letter-spacing:1.6px;text-transform:uppercase;color:#9CA3AF;font-style:normal}.slot b{font:800 18px/1.1 var(--display);text-transform:uppercase}.slot span{font-size:12px;color:#C9D1DA}.slot small{font-size:11px;color:#6B7684;margin-top:auto}
+.slot.empty b{color:#6B7684}.slot.on{border-top-color:#FACC15;background:rgba(40,36,14,.9);box-shadow:0 0 0 1px #FACC15}.slot:hover:not(:disabled){transform:translateY(-2px);border-top-color:#FACC15}.slot:disabled{opacity:.4;cursor:default}
+#title #pname{width:100%;margin-bottom:10px}#btnNew{width:100%}.btn.danger{background:linear-gradient(180deg,#DC2626,#B91C1C)!important;color:#fff!important;border-color:#7F1D1D!important}
+.tver{margin-top:14px;font-size:12px;color:#6B7684;letter-spacing:.3px}
+/* settings */
+.set h2,.pause h2,.cred h2{font:800 34px/1 var(--display);text-transform:uppercase;margin:4px 0 6px}
+.set h4{font:700 13px var(--display);letter-spacing:2px;text-transform:uppercase;color:#FACC15;margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid #26303A}
+.sr{display:grid;grid-template-columns:170px 1fr 48px;gap:12px;align-items:center;margin:8px 0;font-weight:600;color:#D1D5DB}.sr b{font:700 15px var(--mono);text-align:right;color:#fff}
+.sr input{-webkit-appearance:none;appearance:none;height:8px;border-radius:2px;background:#0B0F14;border:1px solid #2F3A46;outline:none}
+.sr input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:3px;background:#FACC15;border:2px solid #111418;box-shadow:0 2px 6px rgba(0,0,0,.5);cursor:pointer}
+.sr input::-moz-range-thumb{width:20px;height:20px;border-radius:3px;background:#FACC15;border:2px solid #111418;cursor:pointer}
+.seg{display:flex;border:1px solid #2F3A46;border-radius:4px;overflow:hidden}.seg button{flex:1;padding:10px 4px;background:#0F141A;color:#C9D1DA;border:0;border-right:1px solid #2F3A46;font:700 16px var(--display);text-transform:uppercase;letter-spacing:.6px;cursor:pointer}.seg button:last-child{border-right:0}.seg button.on{background:#FACC15;color:#111418}
+.set-n{font-size:13px;color:#9CA3AF;margin:8px 0}.set-n .btn{margin-top:8px}
+.tgl{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:10px 12px;margin:6px 0;border:1px solid #26303A;border-radius:4px;background:#0F141A;color:#fff;cursor:pointer}
+.tgl b{display:block;font:700 16px var(--display);text-transform:uppercase;letter-spacing:.4px}.tgl small{color:#9CA3AF;font-size:12.5px}
+.tgl i{flex:none;width:46px;height:24px;border-radius:12px;background:#374151;position:relative;transition:.2s}.tgl i::after{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.tgl.on i{background:#39E75F}.tgl.on i::after{left:25px}body.cb .tgl.on i{background:#3B82F6}
+.pm{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.cred{text-align:center}.cred>img{width:60px;height:60px}.cr-v{color:#9CA3AF;margin:0 0 14px}
+.cr-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}.cr-g>div{background:#0F141A;border:1px solid #26303A;border-left:3px solid #FACC15;border-radius:4px;padding:10px 12px}
+.cr-g em{display:block;font:700 11px var(--display);letter-spacing:1.6px;text-transform:uppercase;color:#9CA3AF;font-style:normal}.cr-g b{display:block;font:700 17px var(--display);text-transform:uppercase;color:#fff}.cr-g span{font-size:12px;color:#9CA3AF}
+.cr-priv{display:flex;gap:10px;align-items:flex-start;text-align:left;margin-top:12px;padding:10px 12px;border:1px dashed #2F3A46;border-radius:4px;font-size:13px;color:#C9D1DA}.cr-priv svg{width:22px;height:22px;flex:none;color:#39E75F}.cr-priv p{margin:0}
+/* coach marks */
+#coach{position:fixed;inset:0;z-index:30;pointer-events:none}
+.co-ring{position:fixed;border:3px solid #FACC15;border-radius:8px;animation:coP 1.4s ease-in-out infinite;transition:left .25s,top .25s,width .25s,height .25s}
+#coach.dim .co-ring{box-shadow:0 0 0 9999px rgba(5,8,12,.45)}@keyframes coP{50%{border-color:#FFF2A8;transform:scale(1.02)}}
+.co-bub{position:fixed;pointer-events:auto;background:#141A21;border:1px solid #2F3A46;border-top:5px solid #FACC15;border-radius:5px;padding:14px 16px;color:#E5E7EB;box-shadow:0 18px 50px rgba(0,0,0,.55);font-size:15px;line-height:1.45}
+#coach.pop .co-bub{animation:coIn .35s cubic-bezier(.2,.9,.3,1.25)}@keyframes coIn{from{opacity:0;transform:translateY(10px) scale(.96)}}
+.co-b{display:flex;justify-content:space-between;align-items:center;margin-top:10px}.co-skip{background:none;border:0;color:#6B7684;font:600 13px var(--body);cursor:pointer;text-decoration:underline}.co-n{min-height:36px;padding:6px 16px}
+/* feel */
+.stat.up b{animation:cashUp .45s}.stat.down b{animation:cashDn .45s}@keyframes cashUp{30%{color:#39E75F;transform:scale(1.08)}}@keyframes cashDn{30%{color:#F87171;transform:scale(.96)}}
+.stat b{display:inline-block}
+.btn,#dock button,.ib,.tab{transition:transform .09s ease,filter .15s,border-color .15s,box-shadow .15s}
+.btn:hover:not(:disabled),#dock button:hover,.ib:hover{filter:brightness(1.12)}.btn:active:not(:disabled),#dock button:active,.ib:active{transform:translateY(1px) scale(.97)}
+#btnStart:hover{filter:brightness(1.08)}#btnStart:active{transform:translateX(-50%) scale(.97)}
+.m-body{animation:mbIn .22s ease both}@keyframes mbIn{from{opacity:0;transform:translateY(6px)}}
+#btnPause svg{width:22px;height:22px}
+/* colorblind-safe */
+body.cb{--neon:#3B82F6;--good:#3B82F6;--bad:#F97316;--red:#F97316}
+body.cb .fl .fc.slow,body.cb .bn,body.cb .fl .slow b{border-color:#F97316!important}
+body.titling #modal,#title~#modal{z-index:45}
+@media (max-width:640px){#dock{gap:4px!important;padding:5px!important}#dock button{min-width:0!important;flex:1;padding:6px 1px 4px!important;font-size:10.5px!important;letter-spacing:.2px!important}#flow{bottom:calc(176px + env(safe-area-inset-bottom,0px))!important}.tm.sm b{font-size:14px}.slots{grid-template-columns:1fr}.slot{min-height:0}.sr{grid-template-columns:1fr 44px}.sr span{grid-column:1/-1}.cr-g{grid-template-columns:1fr}.tm b{font-size:19px}.tm{padding:10px 14px}}
 </style></head>
 <body class="titling">
 <canvas id="gl"></canvas>
@@ -341,6 +411,7 @@ body.pitching #twinHud{display:none!important}
   <button class="ib glass" id="btnTwin" title="Digital twin (T)">🧿</button>
   <button class="ib glass" id="btnView" title="Overview (V)">🗺️</button>
   <button class="ib glass" id="btnMute" title="Sound">🔊</button>
+  <button class="ib glass" id="btnPause" title="Menu (Esc)"></button>
 </header>
 <div id="nextUp" class="glass" hidden><i></i><div><small>Next up</small><b></b></div></div>
 <div id="rush" hidden></div>
@@ -366,22 +437,39 @@ body.pitching #twinHud{display:none!important}
 <div id="cineCap"></div>
 <div id="driveHud" hidden><em id="driveName">TEST DRIVE</em><b id="driveSpd">0</b><span>MPH</span><i>E to park</i></div>
 <button id="skip" hidden>Skip ▸▸</button>
+<section id="boot"><div class="bt">
+  <div class="bt-pre"><img id="bLogo" alt="MoneyBot"><span>A MoneyBot game</span></div>
+  <h1>Bot<span>Factory</span></h1>
+  <div class="bt-bar"><div id="loadfill"></div></div>
+  <div class="bt-row"><span id="bootMsg">Pouring the concrete…</span><b id="bootPct">0%</b></div>
+  <div class="bt-tip"><em>Plant floor tip</em><p id="bootTip"></p></div>
+</div></section>
 <section id="title"><div class="wrap">
   <img class="logo" id="tLogo" alt="MoneyBot">
   <div class="eyebrow">A MoneyBot Original · Factory Tycoon</div>
   <h1>Bot<span>Factory</span></h1>
   <div class="tag2">From garage to Mega Plant.</div>
-  <p>Fire up laser cutters, weld frames, program robot arms and crush your bottlenecks. Upgrade every station from hand tools to robot cells, then <b>expand</b> until your plant fills the skyline.</p>
   <div class="chips"><span>🤖 Robotics</span><span>🔥 Welding</span><span>⚡ Laser cutting</span><span>📦 Bottlenecks</span><span>💵 Costs & profit</span><span>🔍 Quality</span><span>🧑‍🏭 Real careers</span></div>
-  <input id="pname" maxlength="18" placeholder="Your factory boss name" autocomplete="off">
-  <div class="tbtns"><button class="btn pri big" id="btnNew" disabled>Loading the plant…</button><button class="btn big" id="btnCont" hidden>Continue</button></div>
-  <div id="loadbar"><div id="loadfill"></div></div>
+  <div class="tmenu" id="tmenu">
+    <button class="tm pri" id="btnCont" hidden><b>Continue</b><small id="contInfo"></small></button>
+    <button class="tm" id="btnNewM"><b>New Game</b><small>Start with a garage shop</small></button>
+    <button class="tm" id="btnLoad" hidden><b>Load Game</b><small>3 save slots</small></button>
+    <div class="tm-row"><button class="tm sm" id="btnSet"><b>Settings</b></button><button class="tm sm" id="btnHow"><b>How to Play</b></button><button class="tm sm" id="btnCred"><b>Credits</b></button></div>
+  </div>
+  <div class="tnew" id="tnew" hidden>
+    <div class="tn-h"><button class="tn-back" id="tnBack">&larr; Back</button><b id="tnTitle">New game</b></div>
+    <div class="slots" id="slots"></div>
+    <input id="pname" maxlength="18" placeholder="Your factory boss name" autocomplete="off">
+    <button class="btn pri big" id="btnNew" disabled>Loading the plant…</button>
+  </div>
+  <div id="loadbar" hidden></div>
   <div id="tSpons"></div>
+  <div class="tver" id="tVer"></div>
 </div></section>
 <script>/*LIBS*/</script>
 <script>/*ASSETS*/</script>
 <script>'use strict';
 /*GAME*/
-['tLogo','hLogo','aLogo'].forEach(id=>document.getElementById(id).src=MB_ASSETS.logo);
+['tLogo','hLogo','aLogo','bLogo'].forEach(id=>document.getElementById(id).src=MB_ASSETS.logo);
 </script>
 </body></html>

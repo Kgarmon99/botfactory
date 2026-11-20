@@ -2,9 +2,11 @@
    BOTFACTORY · game glue: HUD, panels, interactions, Next Up, shift loop
    ===================================================================== */
 const UI={panel:null,goal:null,goalKey:'',gT:0,beacon:null,ring:null,lastHud:'',act:null,cine:0};
-const SAVE='botfactory-v2';
-function save(){if(!S)return;try{localStorage.setItem(SAVE,JSON.stringify(S));}catch(e){}}
-function load(){try{const s=JSON.parse(localStorage.getItem(SAVE)||'null');if(s&&s.v===2)return s;}catch(e){}return null;}
+const SAVE='botfactory-v2';let SLOT=(()=>{try{return +(localStorage.getItem('botfactory-slot')||1)||1;}catch(e){return 1;}})();
+const slotKey=n=>n===1?SAVE:SAVE+'-s'+n;
+function save(){if(!S||UI.demo)return;S.saved=Date.now();try{localStorage.setItem(slotKey(SLOT),JSON.stringify(S));localStorage.setItem('botfactory-slot',SLOT);}catch(e){}}
+function load(n){try{const s=JSON.parse(localStorage.getItem(slotKey(n||SLOT))||'null');if(s&&s.v===2)return s;}catch(e){}return null;}
+function wipeSlot(n){try{localStorage.removeItem(slotKey(n));}catch(e){}}
 const titleOn=()=>!$('#title').hidden;
 const blocked=()=>modalOpen()||titleOn()||camS.mode==='cine'||MG.on;
 function running(){return S&&S.phase==='day'&&S.speed>0&&!modalOpen()&&!MG.on&&camS.mode!=='cine';}
@@ -16,7 +18,7 @@ const tagToday=k=>{if(S&&S.today){(S.today.tags=S.today.tags||{})[k]=1;}};
 /* ---------- HUD ---------- */
 function stars(r){const n=Math.round(r/20);return '★'.repeat(n)+'<i>'+'★'.repeat(5-n)+'</i>';}
 function renderHUD(){if(!S)return;const st=STAGES[S.stage],nx=STAGES[S.stage+1],prog=nx?clamp(S.cash/nx.cost,0,1):1;
-  $('#hCash').textContent=money(S.cash);$('#hRep').innerHTML=stars(S.rep);$('#hDay').textContent=S.phase==='day'?`Shift ${S.day} · ${timeStr(S.clock/SHIFT_LEN)}`:'Day '+S.day+' · 8:00 AM';
+  UI.cashT=S.cash;if(UI.cashV==null||UI.demo){UI.cashV=S.cash;$('#hCash').textContent=money(S.cash);}$('#hRep').innerHTML=stars(S.rep);$('#hDay').textContent=S.phase==='day'?`Shift ${S.day} · ${timeStr(S.clock/SHIFT_LEN)}`:'Day '+S.day+' · 8:00 AM';
   $('#hStage').textContent=st.name;$('#hNext').textContent=nx?`Next: ${nx.name} · ${short(nx.cost)}`:'MAX SIZE · legend status';$('#hBar').style.width=(prog*100)+'%';$('#hPlant').classList.toggle('ready',!!nx&&S.cash>=nx.cost);
   $$('#speed button').forEach(b=>b.classList.toggle('on',+b.dataset.s===S.speed));$('#speed').style.visibility=S.phase==='day'?'visible':'hidden';
   $('#btnStart').hidden=S.phase!=='board';$('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';
@@ -25,7 +27,7 @@ function renderRush(){const r=S&&S.rush,el=$('#rush');if(!r){el.hidden=true;retu
 
 /* ---------- panels ---------- */
 function afterUpgrade(li,k){const s=S.lines[li].st[k];syncStations();const x=SLOT_X[k],z=LZ(li);for(let i=0;i<5;i++)setTimeout(()=>burst(x+rand(-1.5,1.5),.4,z+rand(-1.5,.5),{n:6,color:'#D1D5DB',spread:1.4,up:1.6,g:2,life:.9,size:.18,grow:2}),i*80);
-  sfx('build');floatAt(x,3,z,s.tier===0?'BUILT!':TIERS[s.tier].name.toUpperCase()+'!','#FACC15',true);camS.shake=.3;
+  sfx('build');for(let i=0;i<3;i++)setTimeout(()=>burst(x+rand(-1,1),1.4,z-.8,{n:14,color:'#FFB547',add:true,spread:3,up:3,g:7,life:.6,size:.07}),120+i*140);floatAt(x,3,z,s.tier===0?'BUILT!':TIERS[s.tier].name.toUpperCase()+'!','#FACC15',true);camS.shake=.3;
   if(s.tier===2){sfx('big');confetti(80);if(!S.flags.robotTold){S.flags.robotTold=1;advise(TIPS.robot,12000);}}
   renderHUD();save();}
 
@@ -129,15 +131,15 @@ function shiftReport(T){const gr=grade(T),gc={S:'#FACC15',A:'#39E75F',B:'#38BDF8
 /* ---------- title + how to play ---------- */
 function startNew(){const nm=($('#pname').value||'').trim().slice(0,18)||'Boss';newGame(nm);enterGame(true);}
 function enterGame(fresh){initAudio();$('#title').hidden=true;document.body.classList.remove('titling');rebuildWorld();initBeacon();P.rig.root.visible=true;P.pos.set(-8,0,4.4);camS.mode='play';camS.yaw=.15;renderHUD();
-  CX.parked=[];CX.lotDirty=true;if(PARAMS.has('mill')){setTimeout(()=>{if(modalOpen())closeModal();enterMill();},700);return;}if(fresh){if(PARAMS.has('test'))setTimeout(()=>howTo(),400);else introShots(()=>howTo());}else advise(`Welcome back, <b>${esc(S.name)}</b>. Your ${STAGES[S.stage].name} is ready.`,7000);}
-function howTo(){const C=openModal(`<div class="howto-w"><img src="${MB_ASSETS.logo}" class="ht-logo" alt=""><div class="eyebrow">Welcome, ${esc(S.name)}</div><h2>Build a garage into a Mega Plant</h2>
+  CX.parked=[];CX.lotDirty=true;if(PARAMS.has('mill')){setTimeout(()=>{if(modalOpen())closeModal();enterMill();},700);return;}UI.cashV=null;if(fresh){const go=()=>{coachStart(COACH_FIRST);advise(`Welcome, <b>${esc(S.name)}</b>! This garage is yours. Let's get the line running.`,8000);};if(PARAMS.has('test'))setTimeout(()=>howTo(),400);else if(SET.motion)introShots(go);else setTimeout(go,300);}else advise(`Welcome back, <b>${esc(S.name)}</b>. Your ${STAGES[S.stage].name} is ready.`,7000);}
+function howTo(){const nm=S&&!UI.demo&&S.name;const C=openModal(`<div class="howto-w"><img src="${MB_ASSETS.logo}" class="ht-logo" alt=""><div class="eyebrow">${nm?'Welcome, '+esc(nm):'How to play'}</div><h2>Build a garage into a Mega Plant</h2>
   <div class="howto"><div><i>🏭</i><b>Run the line</b><p>Steel goes in, products come out, money comes in. Pick what your line makes in <b>Contracts</b>.</p></div>
   <div><i>🔥</i><b>Get hands-on</b><p>Walk up to a station and press ${TOUCH?'the button':'<b>E</b>'}: laser-cut, weld, assemble, paint. Nail it for a speed boost.</p></div>
   <div><i>🏗</i><b>Grow it huge</b><p>Upgrade to <b>robot cells</b>, then expand: Workshop, Factory, Big Factory, <b>Mega Plant</b>.</p></div></div>
   <p class="ht-arrow">Stuck? Follow the <b>green arrow</b> and the <b>Next up</b> tip.</p></div><div class="mact"><button class="btn pri big" id="ok" data-focus>Let's build!</button></div>`,{cls:'dark panel wide'});
-  C.querySelector('#ok').onclick=()=>{closeModal();advise(TIPS.start,12000);};}
-function bindUI(){$('#btnNew').onclick=startNew;$('#pname').addEventListener('keydown',e=>{if(e.key==='Enter')startNew();});$('#btnCont').onclick=()=>{S=load();if(S){S.tech=S.tech||{};S.phase=S.phase==='day'?'board':S.phase==='report'?'board':S.phase;enterGame(false);}};
-  $('#btnStart').onclick=()=>{if(!S||S.phase!=='board'||MILL.on)return;toggleTwin(false);initAudio();startShift();sfx('horn');S.lines.slice(0,lineCount()).forEach((l,i)=>setTimeout(()=>sendTruck(i,'in'),i*400));renderHUD();if(!PARAMS.has('test'))shiftShots(()=>{});if(S.day===2&&!S.flags.wTold){S.flags.wTold=1;setTimeout(()=>advise(TIPS.weld,12000),4000);}};
+  C.querySelector('#ok').onclick=()=>{closeModal();if(S&&!UI.demo&&S.day===1)advise(TIPS.start,12000);};}
+function bindUI(){$('#btnCont').onclick=()=>{S=load();if(S){S.tech=S.tech||{};S.phase=S.phase==='day'?'board':S.phase==='report'?'board':S.phase;enterGame(false);}};
+  $('#btnStart').onclick=()=>{if(!S||S.phase!=='board'||MILL.on)return;toggleTwin(false);initAudio();startShift();sfx('horn');S.lines.slice(0,lineCount()).forEach((l,i)=>setTimeout(()=>sendTruck(i,'in'),i*400));renderHUD();if(!PARAMS.has('test')&&SET.motion)shiftShots(()=>{});if(S.day===2&&!S.flags.wTold){S.flags.wTold=1;setTimeout(()=>advise(TIPS.weld,12000),4000);}};
   $$('#speed button').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.s));$('#btnMute').onclick=()=>{initAudio();cycleSound();};soundBtn();addEventListener('pointerdown',()=>initAudio(),{once:true});addEventListener('keydown',()=>initAudio(),{once:true});
   $('#btnView').onclick=toggleOverview;$('#skip').onclick=endShots;$('#btnTwin').onclick=()=>toggleTwin();$('#millExit').onclick=exitMill;$('#act').onclick=doAction;$('#advisor').onclick=()=>$('#advisor').classList.add('hide');
   $$('#dock [data-p]').forEach(b=>b.onclick=()=>{if(!blocked())openPanel(b.dataset.p);});$('#hPlant').onclick=()=>{if(!blocked())openPanel('expand');};
@@ -145,18 +147,18 @@ function bindUI(){$('#btnNew').onclick=startNew;$('#pname').addEventListener('ke
   addEventListener('keydown',e=>{if(e.code==='Escape'&&UI.panel&&modalOpen()){UI.panel=null;closeModal();}});}
 
 /* ---------- boot + loop ---------- */
-async function boot(){const bar=$('#loadfill');bar.style.width='15%';['#hud','#dock','#title .chips','#btnStart','#nextUp','#skip'].forEach(s=>{const e=$(s);if(e)e.innerHTML=iconize(e.innerHTML);});try{await Promise.race([Promise.all(["700 40px 'Barlow Condensed'","800 40px 'Barlow Condensed'","600 20px 'Barlow'"].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,2500))]);}catch(e){}initThree();setupMaterials();initFX();initItems();buildOutdoors();initCity();
+async function boot(){bootTips();bootProg(8);['#hud','#dock','#title .chips','#btnStart','#nextUp','#skip'].forEach(s=>{const e=$(s);if(e)e.innerHTML=iconize(e.innerHTML);});try{await Promise.race([Promise.all(["700 40px 'Barlow Condensed'","800 40px 'Barlow Condensed'","600 20px 'Barlow'"].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,2500))]);}catch(e){}bootProg(15);initThree();setupMaterials();initFX();initItems();buildOutdoors();initCity();bootProg(25);
   await loadSponsorLogos();$('#tSpons').innerHTML=spBadge(spPresenting());
-  W.logoImg=await new Promise(r=>{const im=new Image();im.onload=()=>r(im);im.onerror=()=>r(null);im.src=MB_ASSETS.logo;});bar.style.width='35%';
-  const [h,c]=await Promise.all([parseGLB(MB_ASSETS.hero),parseGLB(MB_ASSETS.crowd)]);const clips=emoteClips();h.animations.push(...clips);c.animations.push(...clips.map(x=>x.clone()));GLTF.hero=h;GLTF.crowd=c;bar.style.width='70%';
-  buildOutside();P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
+  W.logoImg=await new Promise(r=>{const im=new Image();im.onload=()=>r(im);im.onerror=()=>r(null);im.src=MB_ASSETS.logo;});bootProg(35);
+  const [h,c]=await Promise.all([parseGLB(MB_ASSETS.hero),parseGLB(MB_ASSETS.crowd)]);const clips=emoteClips();h.animations.push(...clips);c.animations.push(...clips.map(x=>x.clone()));GLTF.hero=h;GLTF.crowd=c;bootProg(70);
+  buildOutside();dimOutdoor(scene);P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
   /* a demo factory behind the title */
   newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
-  initInput();bindUI();initFlow();renderer.compile(scene,camera);bar.style.width='100%';
-  $('#btnNew').disabled=false;$('#btnNew').textContent='Build my factory';if(load())$('#btnCont').hidden=false;$('#loadbar').style.visibility='hidden';initPitch();
+  bootProg(88);initInput();bindUI();initFlow();renderer.compile(scene,camera);
+  initMenu();bootDone();initPitch();
   camera.position.set(30,30,60);requestAnimationFrame(frame);}
 let last=performance.now();
-function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;try{updateAudio(dt);}catch(e){}
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;const t=now/1000;try{updateAudio(dt);}catch(e){}try{tickShell(dt);}catch(e){}
   try{pitchStep();}catch(e){}if(UI.demo&&(titleOn()||UI.pitch)){stepShift(dt);EV.length=0;if(S.phase!=='day')startShift();}
   else if(UI.demo&&!titleOn()&&!UI.pitch){UI.demo=false;}
   if(S&&!UI.demo){if(running()){const sub=S.speed;for(let i=0;i<sub;i++)stepShift(dt);}drainEvents();syncStations();
@@ -166,4 +168,4 @@ function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last
   if(S)updateCine(dt,t,UI.demo||running());updateMill(dt,t);updateTwin(dt);if(S&&!UI.demo)tickFlow(dt);
   updateWorld(dt,t,UI.demo||running());stepFX(dt);updateBeacon(dt,t);updateCamera(dt,t);drawConfetti();renderFrame(t);}
 window.BF={get S(){return S;},startShift,stepShift,endShift,upgrade,expand:doExpand,startGame,openPanel,P,camS,W,playGame,setSpeed};
-boot().catch(e=>{console.error(e);$('#btnNew').textContent='Could not load: '+e.message;});
+boot().catch(e=>{console.error(e);const m=$('#bootMsg');if(m)m.textContent='Could not load: '+e.message;$('#btnNew').textContent='Could not load: '+e.message;});

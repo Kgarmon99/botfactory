@@ -40,8 +40,8 @@ function tourShots(){const s=SPONSOR_MODE.s,N=escS(s.name),B=hallBounds(),c=hall
     {p:[MX-24,10,30],p2:[MX+4,8,26],l:[MX-12,6,-8],l2:[MX+6,4.5,-7],d:7.5,cap:`Or own the field trip: a full showcase floor built around <b style="color:${escS(s.color)}">${N}</b>.`,on:()=>{hideCareer();millShot(true);}},
     {p:[2,9,34],p2:[-6,26,52],l:[4,1,12],l2:[-4,0,-6],d:7,cap:'Built in Kentucky. Runs on school Chromebooks. Nothing to install.',on:()=>{millShot(false);}}];}
 
-function millShot(on){if(on){if(!MILL.g)buildMill();MILL.g.visible=true;CX.holdSky=true;PITCH.bg=scene.background.clone();scene.background.set('#120E0C');scene.fog.color.set('#120E0C');PITCH.fog=[scene.fog.near,scene.fog.far];scene.fog.near=60;scene.fog.far=160;sun.position.set(MX-20,40,30);sun.target.position.set(MX,0,0);}
-  else if(CX.holdSky){MILL.g.visible=false;CX.holdSky=false;scene.fog.near=PITCH.fog[0];scene.fog.far=PITCH.fog[1];sun.target.position.set(0,0,0);}}
+function millShot(on){if(on){if(!MILL.g)buildMill();MILL.g.visible=true;CX.holdSky=true;PITCH.bg=scene.background.clone();scene.background.set('#120E0C');scene.fog.color.set('#120E0C');PITCH.fog=[scene.fog.near,scene.fog.far];scene.fog.near=60;scene.fog.far=160;sun.position.set(MX-20,40,30);sun.target.position.set(MX,0,0);PITCH.env=scene.environment;scene.environment=null;}
+  else if(CX.holdSky){MILL.g.visible=false;CX.holdSky=false;scene.fog.near=PITCH.fog[0];scene.fog.far=PITCH.fog[1];sun.target.position.set(0,0,0);if(PITCH.env)scene.environment=PITCH.env;}}
 function showCareer(){const d=document.createElement('div');d.id='pitchCard';d.innerHTML=iconize(careerCard({tags:{weld:1}}));document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add('on'));}
 function hideCareer(){const d=$('#pitchCard');if(d)d.remove();}
 

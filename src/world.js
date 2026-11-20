@@ -27,7 +27,7 @@ function epoxyTex(){return TX.epo||(TX.epo=canvasTex(512,128,(g,w,h)=>{g.fillSty
 /* ---------- outside + the hall ---------- */
 function buildOutdoors(){const g=new THREE.Group();scene.add(g);
   const grass=new THREE.Mesh(new THREE.PlaneGeometry(600,600),mat('#4F8A45',{roughness:1}));grass.rotation.x=-Math.PI/2;grass.position.y=-.06;grass.receiveShadow=true;g.add(grass);
-  const lot=new THREE.Mesh(new THREE.PlaneGeometry(110,96),mat('#3A4047',{roughness:.95}));lot.rotation.x=-Math.PI/2;lot.position.set(0,-.04,-22);lot.receiveShadow=true;g.add(lot);
+  const lot=new THREE.Mesh(new THREE.PlaneGeometry(110,96),mat('#2B2F34',{roughness:.95}));lot.rotation.x=-Math.PI/2;lot.position.set(0,-.04,-22);lot.receiveShadow=true;g.add(lot);
   for(let i=0;i<14;i++){const x=-44+i*4;bx(g,.14,.02,4,x,-.03,18,mat('#E5E7EB'),false);}
   /* distant city + trees for depth */
   const cols=['#5B6B7A','#6B7B8C','#4E5D6C','#7A8A99'];for(let i=0;i<26;i++){const x=-140+i*11+rand(-3,3),h=rand(14,46);bx(g,rand(7,11),h,rand(7,11),x,0,-120+rand(-10,10),mat(pick(cols),{roughness:.8}),false);}
@@ -168,7 +168,7 @@ function buildStation(L,l,k,force){const s=l.st[k],D=STATIONS[k],x=SLOT_X[k],z=L
     const hz=new THREE.Mesh(new THREE.PlaneGeometry(4.4,.3),new THREE.MeshStandardMaterial({map:hazardTex(),roughness:.6}));hz.rotation.x=-Math.PI/2;hz.position.set(x,.02,z-.8);g.add(hz);
     const lite=new THREE.Group();cy(lite,.08,.5,0,0,0,dk,false);const lb=sp(lite,.11,0,.6,0,mat('#39E75F',{emissive:'#39E75F',emissiveIntensity:2}));lite.position.set(x+2.2,1.5,z-2.1);g.add(lite);out.lamp=lb;}
   /* stack light (andon tower): green running, yellow waiting, red down */
-  {const t=new THREE.Group();cy(t,.04,1.6,0,0,0,dk,false);const cols=['#22C55E','#FACC15','#EF4444'];out.stack=cols.map((c,i)=>{const m=new THREE.Mesh(CYL,new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.1,roughness:.3,transparent:true,opacity:.92}));m.scale.set(.11,.2,.11);m.position.y=1.65+i*.22;t.add(m);return m;});
+  {const t=new THREE.Group();cy(t,.04,1.6,0,0,0,dk,false);const cols=[SET.cb?'#3B82F6':'#22C55E','#FACC15',SET.cb?'#F97316':'#EF4444'];out.stack=cols.map((c,i)=>{const m=new THREE.Mesh(CYL,new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.1,roughness:.3,transparent:true,opacity:.92}));m.scale.set(.11,.2,.11);m.position.y=1.65+i*.22;t.add(m);return m;});
    cy(t,.12,.04,0,2.31,0,dk,false);t.position.set(x-1.9,0,z-.95);g.add(t);}
   /* HMI control panel */
   {const h=new THREE.Group();bx(h,.12,1.05,.12,0,0,0,dk);const box=bx(h,.62,.46,.16,0,1.05,0,mat('#E5E7EB',{roughness:.5}));box.rotation.x=-.3;const scr=new THREE.Mesh(new THREE.PlaneGeometry(.48,.3),new THREE.MeshBasicMaterial({color:'#22C55E'}));scr.position.set(0,1.3,.09);scr.rotation.x=-.3;h.add(scr);out.hmi=scr;
