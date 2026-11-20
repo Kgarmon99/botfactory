@@ -3,7 +3,7 @@
    robot arms, items, crates, docks, trucks, expansion lots
    ===================================================================== */
 const W={shell:null,lines:[],lot:null,kiosk:null,beltMats:[],trucks:[],lights:[],t:0};
-const PCOL={toy:'#38BDF8',kart:'#EF4444',drone:'#A855F7',scooter:'#10B981',dog:'#F59E0B',ev:'#22C55E'};
+const PCOL={toy:'#38BDF8',kart:'#EF4444',drone:'#A855F7',scooter:'#10B981',dog:'#F59E0B',ev:'#22C55E',washer:'#E5E7EB',bracket:'#94A3B8',etruck:'#2563EB'};
 function stageNow(){return S?S.stage:0;}
 function linesNow(){return STAGES[stageNow()].lines;}
 function hallBounds(st){if(st==null&&typeof MILL!=='undefined'&&MILL.on)return millBounds();st=st==null?stageNow():st;const wide=STAGES[st].wide,n=STAGES[st].lines;return {x0:-19.5,x1:wide?19.5:7.6,z0:LZ(n-1)-5.6,z1:7.2};}
@@ -238,6 +238,7 @@ function updateWorld(dt,t,running){W.t=t;if(!S)return;
       if(k==='paint'&&busy&&!V2.arms&&Math.random()<dt*6)burst(x+rand(-.4,.4),1.2,z,{n:2,color:PCOL[l.job.product],spread:.5,up:.2,g:-.2,life:.9,size:.12,grow:2});
       if(V2.scan){V2.scan.visible=busy||s.tier>0;V2.scan.position.y=.95+Math.abs(Math.sin(t*(busy?3:1)))*.9;V2.screen.material.color.set(s.broken?'#EF4444':busy?'#22C55E':'#334155');}
       if(V2.light){V2.light.intensity=busy?(k==='weld'?rand(1.5,4.5):rand(.6,1.4)):0;}
+      if(V2.worker)V2.worker.visible=crewOf(s).some(w=>!(w.brk>0));
       if(V2.stack){const st=s.broken?2:s.needsCode||s.blocked||(!busy&&running&&PRODUCTS[l.job.product].needs.includes(k))?1:busy?0:-1,fl=s.broken||s.needsCode?(Math.sin(t*10)>0?1:.15):1;V2.stack.forEach((m,i)=>m.material.emissiveIntensity=i===st?2.4*fl:.08);if(V2.hmi)V2.hmi.material.color.set(['#22C55E','#FACC15','#EF4444','#1E293B'][st<0?3:st]);}
       if(V2.lamp)V2.lamp.material=s.broken?MB.eye.r:s.needsCode?MB.eye.y:MB.eye.g;
       /* broken: smoke + bubble */

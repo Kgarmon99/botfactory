@@ -54,13 +54,13 @@ upgrades(){return S.lines.slice(0,lineCount()).map(l=>{const P=PRODUCTS[l.job.pr
     const spd=v=>v.toFixed(1)+'×',q=v=>Math.round(v*100)+'%',cs=v=>money(v);
     if(locked)return `<div class="sc lock"><div class="sc-img">${img('st:'+k+':0','gray')}<span class="lk">${ic('lock')} WORKSHOP</span></div><div class="sc-b"><b>${D.name}</b><p>${D.blurb}</p><div class="sc-a"><button class="btn sm" data-pv="st:${k}:2" data-pt="${esc(D.name)} · Robot Cell">${ic('eye')} Preview</button><small>Unlocks when you expand to the Workshop</small></div></div></div>`;
     if(!s.built)return `<div class="sc unb"><div class="sc-img">${img('st:'+k+':0')}<span class="tb">NOT BUILT</span></div><div class="sc-b"><b>${D.name}</b><p>${D.blurb}</p><div class="sc-a"><button class="btn pri" data-up="${l.i}:${k}" ${S.cash<c?'disabled':''}>${ic('crane')} Build · ${money(c)}</button><button class="btn sm" data-pv="st:${k}:2" data-pt="${esc(D.name)} · Robot Cell">${ic('eye')}</button></div></div></div>`;
-    const sp2=stationSpeed(s),nsp=N?N.speed*crewMul({tier:s.tier+1,crew:s.crew})*techSpeed():null,wage=T.wage*(s.tier<2?(s.crew||1):0)+T.upkeep,nw=N?N.wage*(s.tier+1<2?(s.crew||1):0)+N.upkeep:null;
-    return `<div class="sc ${bn?'bn':''} ${used?'':'idle'}"><div class="sc-img">${img('st:'+k+':'+s.tier)}<span class="tb t${s.tier}">${T.name}</span>${bn?'<span class="rib">BOTTLENECK</span>':''}${(s.crew||1)>=2&&s.tier<2?`<span class="crew">${ic('worker')}${ic('worker')}</span>`:''}</div>
-      <div class="sc-b"><b>${D.name}</b>${pips(s.tier)}
+    const cw=crewOf(s),cwage=s.tier<2?cw.reduce((a,w)=>a+w.wage,0):0,sp2=stationSpeed(s),nsp=N?N.speed*(s.tier+1===2?1:Math.max(1,workForce(s)))*techSpeed():null,wage=cwage+T.upkeep,nw=N?(s.tier+1===2?0:cwage)+N.upkeep:null;
+    return `<div class="sc ${bn?'bn':''} ${used?'':'idle'}"><div class="sc-img">${img('st:'+k+':'+s.tier)}<span class="tb t${s.tier}">${T.name}</span>${bn?'<span class="rib">BOTTLENECK</span>':''}${s.tier<2?`<span class="crew">${cw.length?cw.map(()=>ic('worker')).join(''):'NO CREW'}</span>`:''}</div>
+      <div class="sc-b"><b>${D.name}</b>${pips(s.tier)}${s.tier<2?`<div class="sc-crew${cw.length?'':' none'}">${cw.length?cw.map(w=>`${esc(w.name.split(' ')[0])} <em>Lv${wLvl(w,k)}</em>`).join(' · '):'Nobody running it!'}</div>`:''}
       ${stat('Speed',sp2,nsp,4.2*1.1,spd)}${stat('Quality',1-T.defect,N?1-N.defect:null,1,q)}${stat('Per shift',wage,nw,160,cs)}
       ${N?`<div class="nx">${img('st:'+k+':'+(s.tier+1))}<div><small>NEXT TIER</small><b>${N.name}</b><button class="lnk" data-pv="st:${k}:${s.tier+1}" data-pt="${esc(D.name)} · ${N.name}">${ic('eye')} 360° preview</button></div></div>
         <div class="sc-a"><button class="btn ${bn?'pri':''}" data-up="${l.i}:${k}" ${S.cash<c?'disabled':''}>${ic('upgrade')} Upgrade · ${money(c)}</button></div>`:`<div class="maxd">${ic('check')} MAXED · ROBOT CELL</div>`}
-      ${s.tier<2&&(s.crew||1)<2?`<button class="btn sm ghost" data-hire="${l.i}:${k}" ${S.cash<ECON.hireFee?'disabled':''}>${ic('worker')} Hire 2nd ${WORKER[k]} · ${money(ECON.hireFee)}</button>`:''}
+      ${s.tier<2&&cw.length<2?`<button class="btn sm ghost" data-hire="${l.i}:${k}" ${S.cash<ECON.hireFee&&!S.workers.some(w=>!w.at)?'disabled':''}>${ic('worker')} ${S.workers.some(w=>!w.at)?'Assign an idle worker':(cw.length?'Hire 2nd ':'Hire ')+WORKER[k]+' · '+money(ECON.hireFee)}</button>`:''}
       ${s.wear>.45?`<button class="btn sm ghost" data-svc="${l.i}:${k}">${ic('wrench')} Service · ${money(ECON.serviceCost)} <small>wear ${Math.round(s.wear*100)}%</small></button>`:''}</div></div>`;}).join('')}</div></section>`;}).join('');},
 contracts(){const lines=S.lines.slice(0,lineCount());
   return `<section class="m-sec"><h4>Your lines</h4><div class="lines">${lines.map(l=>{const P=PRODUCTS[l.job.product],c=contractOf(l),cap=capacity(l);return `<div class="lp"><div class="lp-img">${img('pr:'+l.job.product)}</div><div class="lp-b"><small>LINE ${l.i+1}</small><b>${P.name}</b><span>${cap.n} / shift</span>
@@ -102,4 +102,4 @@ function bindMenu(C,k){
   C.querySelectorAll('[data-tech]').forEach(b=>b.onclick=()=>{const e=buyTech(b.dataset.tech);if(e){toast(e,'bad');return;}UI.panel=null;closeModal();});
   const gm=C.querySelector('#goMill');if(gm)gm.onclick=()=>{UI.panel=null;closeModal();enterMill();};
   const x=C.querySelector('#doExpand');if(x)x.onclick=()=>{UI.panel=null;closeModal();doExpand();};
-  renderHUD();save();}
+  if(typeof bindCrew==='function')bindCrew(C);renderHUD();save();}

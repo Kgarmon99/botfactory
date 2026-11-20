@@ -54,7 +54,7 @@ const IC={
   ruler:'M3 17L17 3l4 4L7 21z M7 13l2 2 M10 10l2 2 M13 7l2 2',
   flask:'M9 2.5h6 M10 2.5V9L4 19a2 2 0 0 0 2 2.5h12A2 2 0 0 0 20 19L14 9V2.5 M7 15h10',
   map:'M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z M9 3v15 M15 6v15',
-  gear:'M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z M12 2.5v3 M12 18.5v3 M2.5 12h3 M18.5 12h3 M5.3 5.3l2.1 2.1 M16.6 16.6l2.1 2.1 M5.3 18.7l2.1-2.1 M16.6 7.4l2.1-2.1',music:'M9 18V5l11-2v13 M9 18a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z M20 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z M9 9l11-2',sound:'M3.5 9h4l5.5-4.5v15L7.5 15h-4z M16.5 9a4 4 0 0 1 0 6 M19 6a8 8 0 0 1 0 12',
+  gear:'M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z M12 2.5v3 M12 18.5v3 M2.5 12h3 M18.5 12h3 M5.3 5.3l2.1 2.1 M16.6 16.6l2.1 2.1 M5.3 18.7l2.1-2.1 M16.6 7.4l2.1-2.1',washer:'M5 3h14v18H5z M5 7h14 M8 5h1 M12 14m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0 M10.5 13.5c.8.8 2.2.8 3 0',jet:'M21 15.5L13 11V5.5a1.5 1.5 0 0 0-3 0V11l-8 4.5V17l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-4.5l8 2.5z',music:'M9 18V5l11-2v13 M9 18a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z M20 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z M9 9l11-2',sound:'M3.5 9h4l5.5-4.5v15L7.5 15h-4z M16.5 9a4 4 0 0 1 0 6 M19 6a8 8 0 0 1 0 12',
   mute:'M3.5 9h4l5.5-4.5v15L7.5 15h-4z M16.5 9.5l5 5 M21.5 9.5l-5 5',
   play:'M7 4l13 8-13 8z',
   fan:C(12,12,2)+' M12 10c0-4 2-7 5-7 M14 12c4 0 7 2 7 5 M12 14c0 4-2 7-5 7 M10 12c-4 0-7-2-7-5',
@@ -68,7 +68,7 @@ const IC={
 };
 const FILL=new Set(['play','bolt','star']);
 /* emoji → icon (the codebase writes emojis; the player sees icons) */
-const EMO={'🔦':'laser','⚡':'bolt','🔥':'flame','🔩':'gear','⚙':'gear','🎨':'spray','🔍':'scan','🤖':'robot','🏎':'kart','🛸':'drone','🚁':'drone','🌀':'fan','🛴':'scooter','🐕':'dog','🚗':'car','🛻':'agv','🖥':'monitor','💻':'monitor','🧿':'cube','🚚':'truck','🚜':'forklift',
+const EMO={'🔦':'laser','⚡':'bolt','🔥':'flame','🔩':'gear','⚙':'gear','🎨':'spray','🔍':'scan','🤖':'robot','🏎':'kart','🛸':'drone','🚁':'drone','🌀':'fan','🛴':'scooter','🐕':'dog','🚗':'car','🧺':'washer','✈':'jet','✈️':'jet','🛻':'agv','🖥':'monitor','💻':'monitor','🧿':'cube','🚚':'truck','🚜':'forklift',
   '⚠':'warn','⏰':'clock','⏳':'clock','⏸':'pause','🔧':'wrench','🛠':'wrench','🧰':'wrench','👷':'worker','🧑‍🏭':'worker','🧑':'worker','📄':'contract','📊':'chart','📈':'trend','⬆':'upgrade','🏗':'crane','🏭':'factory','💵':'cash','💰':'cash','📦':'crate','🔒':'lock',
   '👀':'eye','🎯':'target','💡':'bulb','🧲':'magnet','🌋':'molten','🏠':'home','📍':'pin','🤝':'handshake','🔋':'battery','🔌':'plug','🧠':'chip','🛞':'wheel','🪑':'seat','📷':'camera','♻':'recycle','🏆':'trophy','📐':'ruler','🧪':'flask','🗺':'map','🔊':'sound','🔇':'mute','▶':'play','🔩️':'gear','😱':'warn','😵':'x','🕶':'eye','🦾':'robot'};
 const EMO_RE=/(?:\p{Extended_Pictographic}(?:️)?(?:‍\p{Extended_Pictographic}(?:️)?)*)|[▶⬆]️?/gu;

@@ -73,9 +73,9 @@ function buildOutside(){const g=new THREE.Group();OUT.g=g;scene.add(g);const con
   g.traverse(o=>{if(o.isMesh&&o.castShadow===undefined)o.castShadow=false;});}
 
 /* ---------- driving ---------- */
-const PRODNAME={toy:'Toy Bot',kart:'Go-Kart',drone:'Drone',scooter:'E-Scooter',dog:'Robot Dog',ev:'Mini EV'};
+const PRODNAME={toy:'Toy Bot',kart:'Go-Kart',drone:'Drone',scooter:'E-Scooter',dog:'Robot Dog',ev:'Mini EV',washer:'Smart Washer',bracket:'Jet Bracket',etruck:'E-Truck'};
 function startDrive(kind,i){if(OUT.drive)return;let m,p=null,mul=2.4;
-  if(kind==='car'){m=OUT.car.g;}else{p=CX.parked[i];const src=CX.lotG[i];if(!src)return;m=src;const s=CX.lotSlots[i];P.pos.set(s.x,0,s.z);P.ry=s.ry+Math.PI/2;mul={toy:1.4,kart:2.3,drone:2,scooter:1.9,dog:1.5,ev:2.6}[p]||2;}
+  if(kind==='car'){m=OUT.car.g;}else{p=CX.parked[i];const src=CX.lotG[i];if(!src)return;m=src;const s=CX.lotSlots[i];P.pos.set(s.x,0,s.z);P.ry=s.ry+Math.PI/2;mul={toy:1.4,kart:2.3,drone:2,scooter:1.9,dog:1.5,ev:2.6,etruck:2.2,washer:1.2,bracket:1.3}[p]||2;}
   if(kind==='car'){P.pos.set(OUT.car.x,0,OUT.car.z);P.ry=OUT.car.ry+Math.PI/2;}
   OUT.drive={kind,i,p,m,t:0,top:0};P.rig.root.visible=false;P.speedMul=mul;P.target=null;sfx('horn');$('#driveHud').hidden=false;
   toast(kind==='car'?'<b>Plant car</b> — hit the road. Press <b>E</b> to park.':`<b>Road test: ${PRODNAME[p]}</b>. Real plants road-test finished units off the line before they ship. Press <b>E</b> to park.`,'good');}

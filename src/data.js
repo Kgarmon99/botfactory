@@ -38,7 +38,10 @@ const PRODUCTS={
   drone:  {name:'Drone',         icon:'🛸', needs:['cut','weld','asm','paint'],       price:118, mat:34,  stage:1},
   scooter:{name:'E-Scooter',     icon:'🛴', needs:['cut','weld','asm','paint','qa'],  price:175, mat:52,  stage:1},
   dog:    {name:'Robot Dog',     icon:'🐕', needs:['cut','weld','asm','paint','qa'],  price:290, mat:88,  stage:2, robots:1},
-  ev:     {name:'MoneyBot Mini EV', icon:'🚗', needs:['cut','weld','asm','paint','qa'], price:640, mat:210, stage:3, robots:3}
+  ev:     {name:'MoneyBot Mini EV', icon:'🚗', needs:['cut','weld','asm','paint','qa'], price:640, mat:210, stage:3, robots:3},
+  washer: {name:'Smart Washer',  icon:'🧺', needs:['cut','weld','asm','paint','qa'],  price:420, mat:140, stage:3, robots:2, fam:'Appliances'},
+  bracket:{name:'Jet Engine Bracket', icon:'✈', needs:['cut','weld','asm','qa'],      price:560, mat:150, stage:3, robots:2, fam:'Aerospace', cert:'aero', precision:true},
+  etruck: {name:'Electric Box Truck', icon:'🚚', needs:['cut','weld','asm','paint','qa'], price:1250, mat:430, stage:4, robots:4, fam:'Vehicles'}
 };
 
 /* the factory grows. Each stage physically builds out. */
@@ -77,3 +80,23 @@ const TECH=[
 ];
 
 const GATE_X=-11.5;
+
+/* ---------- crew ---------- */
+const XP_LV=[0,30,90,200,380];
+const FIRST_NAMES=['Avery','Jordan','Maya','Luis','Priya','Dante','Keisha','Owen','Rosa','Tariq','Hannah','Mateo','Jada','Caleb','Nia','Wes','Aaliyah','Grant','Imani','Cody','Lena','Marcus','Tess','Andre','Sofia','Ty','Bree','Hector','Kayla','Noah','Zara','Eli','Mina','Reggie','Lucy','Sam'];
+const LAST_INIT='ABCDEFGHJKLMNPRSTVWY';
+const SKILL_NAME={cut:'Laser cutting',weld:'Welding',asm:'Assembly',paint:'Coatings',qa:'Quality'};
+const ROLE_NAME={cut:'Laser Operator',weld:'Welder',asm:'Assembler',paint:'Coatings Tech',qa:'Quality Inspector'};
+
+/* ---------- endgame: certifications + Kentucky plant rankings (all rival plants are made up) ---------- */
+const CERTS=[
+  {id:'oee', name:'World-Class OEE', icon:'📊', desc:'Run a full shift at 85% OEE or better.', reward:1500, learn:'OEE = availability × performance × quality. 85% is what the best plants in the world hit.'},
+  {id:'zero',name:'Zero-Defect Shift', icon:'🔍', desc:'Ship 15+ units in one shift without a single bad one getting out.', reward:1200, learn:'Catching defects before they ship is far cheaper than paying for returns.'},
+  {id:'crew',name:'Skilled Workforce', icon:'👷', desc:'Have 3 workers at Level 4 or higher.', reward:1500, learn:'Training people is an investment. Skilled crews work faster and make fewer mistakes.'},
+  {id:'aero',name:'Aerospace Approved', icon:'✈', desc:'Earn Zero-Defect, then run a Robot Cell QA Scanner. Unlocks Jet Engine Brackets.', reward:3000, learn:'Aerospace parts need special quality certification because a single bad part can ground a plane.'},
+  {id:'lean',name:'High-Volume Plant', icon:'📦', desc:'Ship 1,500 units total.', reward:4000, learn:'Volume spreads your fixed costs over more products. That is economies of scale.'},
+  {id:'top', name:"Kentucky's Top Plant", icon:'🏆', desc:'Reach #1 in the Kentucky plant rankings.', reward:10000, learn:'Top plants win on all three: output, quality and people.'}];
+const RIVALS=[['Riverbend Robotics','Paducah'],['Limestone Laser Co.','Lexington'],['Copperline Motors','Georgetown'],['Iron Owl Works','Louisville'],['Hilltop Hydraulics','Somerset'],
+  ['Redbud Robotics','Bowling Green'],['Thunderbolt Tooling','Owensboro'],['Sparkplug Assembly','Elizabethtown'],['Bluegrass Bolt Works','Frankfort'],['Gearhead Gadgets','Richmond'],
+  ['Cardinal Castings','Ashland'],['Tri-State Titan Fab','Henderson'],['Pennyrile Precision','Hopkinsville'],['Ohio Bend Assembly','Covington'],['Knobs & Knuckles Mfg.','Glasgow'],
+  ['Cumberland Gearworks','Corbin'],['Green River Steelcraft','Madisonville'],['Rolling Fork Robotics','Bardstown'],['Twin Lakes Tooling','Murray']];

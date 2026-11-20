@@ -22,7 +22,7 @@ function renderHUD(){if(!S)return;const st=STAGES[S.stage],nx=STAGES[S.stage+1],
   $('#hStage').textContent=st.name;$('#hNext').textContent=nx?`Next: ${nx.name} · ${short(nx.cost)}`:'MAX SIZE · legend status';$('#hBar').style.width=(prog*100)+'%';$('#hPlant').classList.toggle('ready',!!nx&&S.cash>=nx.cost);
   $$('#speed button').forEach(b=>b.classList.toggle('on',+b.dataset.s===S.speed));$('#speed').style.visibility=S.phase==='day'?'visible':'hidden';
   $('#btnStart').hidden=S.phase!=='board';$('#clockFill').style.width=(S.phase==='day'?S.clock/SHIFT_LEN*100:0)+'%';
-  const dkE=$('#dkExpand');if(dkE)dkE.classList.toggle('ping',!!nx&&S.cash>=nx.cost);}
+  $('#hRankN').textContent='#'+(S.rankPrev||myRank());const em=emptyStations().length,dc=$('#dkCrew');if(dc)dc.classList.toggle('ping',em>0||S.workers.some(w=>w.energy<30&&w.at&&!(w.brk>0)));const dkE=$('#dkExpand');if(dkE)dkE.classList.toggle('ping',!!nx&&S.cash>=nx.cost);}
 function renderRush(){const r=S&&S.rush,el=$('#rush');if(!r){el.hidden=true;return;}el.hidden=false;el.innerHTML=iconize(`<b>🚚 RUSH TRUCK</b> Ship <b>${r.need-r.got}</b> more in <b>${Math.ceil(r.t)}s</b> <span>+${money(r.bonus)} bonus</span>`);}
 
 /* ---------- panels ---------- */
@@ -94,6 +94,14 @@ function updateBeacon(dt,t){const B=UI.beacon,R=UI.ring;if(!B)return;const g=UI.
 function drainEvents(){while(EV.length){const e=EV.shift();const L=W.lines[e.li];
   if(e.ev==='ship'&&L){L.ship++;if(L.ship%4===1)parkProduct(S.lines[e.li].job.product);if(L.ship%10===0)sendTruck(e.li,'ship');if(Math.random()<.4)floatAt(L.sx+1.2,1.8,L.z,'+'+money(e.v),'#39E75F');if(Math.random()<.3)sfx('coin');}
   if(e.ev==='break'){sfx('alarm');camS.shake=.25;tagToday('break');toast(`⚠️ <b>Breakdown on Line ${e.li+1}:</b> ${STATIONS[e.k].name}`,'bad');if(!S.flags.breakTold){S.flags.breakTold=1;advise(TIPS.breakdown,12000);}}
+  if(e.ev==='hired'&&e.w){const f=e.w.name.split(' ')[0];toast(e.k?`👷 <b>${esc(f)}</b> ${e.re?'moved to':'joined the crew at'} ${STATIONS[e.k].name}${e.li!=null&&lineCount()>1?' · Line '+(e.li+1):''}.`:`👷 <b>${esc(e.w.name)}</b> joined your crew. Assign them in <b>Crew</b>.`,'good');sfx('coin');}
+  if(e.ev==='needstaff'){toast(`👷 Your new <b>${STATIONS[e.k].name}</b> needs a worker. Hire one in <b>Crew</b>.`,'warn');if(!S.flags.staffTold){S.flags.staffTold=1;advise(`Machines don't run themselves! Every manual and power-tool station needs a <b>worker</b>. Open <b>Crew</b> to hire and assign people. Robot cells run on their own.`,12000);}}
+  if(e.ev==='newcrew')toast(`👷 Hired <b>${esc(e.w.name)}</b> for the new line's ${STATIONS[e.k].name}. Payroll is now <b>${money(S.workers.reduce((a,w)=>a+w.wage,0))}</b>/shift.`,'good');
+  if(e.ev==='freed'){const n=e.ws.map(w=>esc(w.name.split(' ')[0])).join(' and ');toast(`🤖 The robot took over. <b>${n}</b> ${e.ws.length>1?'are':'is'} free. Reassign or train them in <b>Crew</b>. Idle workers still get paid!`,'warn');if(!S.flags.freedTold){S.flags.freedTold=1;advise(`Automation changes jobs. Your robot cell runs itself, so <b>${n}</b> needs a new spot. Retrain them for another station, because idle workers still cost wages.`,13000);}}
+  if(e.ev==='lvl'){const f=esc(e.w.name.split(' ')[0]);toast(`⭐ <b>${f}</b> ${e.trained?'finished training:':'leveled up:'} <b>Level ${e.lv} ${SKILL_NAME[e.k]}</b>${e.trained?'':' (+$5 wage)'}`,'good');if(e.w.at){const [li,k]=e.w.at,L2=W.lines[li];if(L2)floatAt(SLOT_X[k],2.6,LZ(li)-1.5,'LEVEL UP!','#FACC15',true);}sfx('win');}
+  if(e.ev==='tired'&&!UI.demo){toast(`😵 <b>${esc(e.w.name.split(' ')[0])}</b> is worn out and slowing down. Send them on a break in <b>Crew</b>.`,'warn');if(!S.flags.tiredTold){S.flags.tiredTold=1;advise(`Tired workers slow down. A short <b>break</b> gets them back to full speed. Real plants schedule breaks because they <b>raise</b> output.`,12000);}}
+  if(e.ev==='backToWork')floatAt(...(e.w.at?[SLOT_X[e.w.at[1]],2.4,LZ(e.w.at[0])-1.5]:[0,2,0]),'BACK TO WORK','#39E75F');
+  if(e.ev==='cert'){sfx('big');confetti(120);slam(e.c.name.toUpperCase(),'CERTIFIED · +'+money(e.c.reward),'#FACC15',2600);}
   if(e.ev==='autoprog')toast(`🤖 New ${STATIONS[e.k].name} robot loaded the program you already wrote. Online!`,'good');
   if(e.ev==='tech'){const T=TECH.find(x=>x.id===e.id);buildLife();slam('UNLOCKED',T.icon+' '+T.name,'#38BDF8',2400);sfx('big');confetti(120);renderHUD();save();}
   if(e.ev==='dogCatch'&&Math.random()<.5){const d=CX.dog;if(d)floatAt(d.g.position.x,2.2,d.g.position.z,'🐕 Defect caught!','#FACC15');}
@@ -121,7 +129,7 @@ function shiftReport(T){const gr=grade(T),gc={S:'#FACC15',A:'#39E75F',B:'#38BDF8
       <div class="ph">Variable costs <small>go up with every product</small></div>${row('Steel & parts',-T.mat)}
       <div class="ph">Fixed costs <small>same if you make 0 or 1,000</small></div>${row('Rent',-T.rent)}${T.wages?row('Wages',-T.wages):''}${T.upkeep?row('Machine upkeep',-T.upkeep):''}${T.repairs?row('Repairs & service',-T.repairs,'bad'):''}${T.returns?row(`Refunds (${T.retN} returned)`,-T.returns,'bad'):''}
       ${row('Net profit',T.net,'tot '+(T.net>=0?'g':'r'))}</div>
-    <div class="kpis"><div><em>Cost per product</em><b>${T.unit?money(T.unit):'—'}</b></div><div><em>Cash</em><b>${money(S.cash)}</b></div><div><em>Reputation</em><b class="st">${stars(S.rep)}</b></div></div>
+    <div class="kpis"><div><em>Cost per product</em><b>${T.unit?money(T.unit):'—'}</b></div><div><em>Cash</em><b>${money(S.cash)}</b></div><div><em>Reputation</em><b class="st">${stars(S.rep)}</b></div></div>${reportExtra(T)}
     ${T.late.length?`<div class="note bad">⏰ Missed deadline: ${T.late.map(c=>esc(c.client)).join(', ')}. Reputation dropped.</div>`:''}${T.bailout?'<div class="note bad">You ran out of cash, so the bank gave you $2,000. Reputation took a hit.</div>':''}
     <h4>OEE · the score real plants live by</h4>${oeeHTML(plantOEE(T),'Shift OEE',true)}<div class="lesson">📈 ${oeeLesson(plantOEE(T))}</div>
     <div class="lesson">💡 ${lessonOf(T)}</div>${careerCard(T)}
@@ -138,11 +146,11 @@ function howTo(){const nm=S&&!UI.demo&&S.name;const C=openModal(`<div class="how
   <div><i>🏗</i><b>Grow it huge</b><p>Upgrade to <b>robot cells</b>, then expand: Workshop, Factory, Big Factory, <b>Mega Plant</b>.</p></div></div>
   <p class="ht-arrow">Stuck? Follow the <b>green arrow</b> and the <b>Next up</b> tip.</p></div><div class="mact"><button class="btn pri big" id="ok" data-focus>Let's build!</button></div>`,{cls:'dark panel wide'});
   C.querySelector('#ok').onclick=()=>{closeModal();if(S&&!UI.demo&&S.day===1)advise(TIPS.start,12000);};}
-function bindUI(){$('#btnCont').onclick=()=>{S=load();if(S){S.tech=S.tech||{};S.phase=S.phase==='day'?'board':S.phase==='report'?'board':S.phase;enterGame(false);}};
+function bindUI(){$('#btnCont').onclick=()=>{S=load();if(S){S.tech=S.tech||{};migrateCrew();if(!S.cands||!S.cands.length)makeCands();S.phase=S.phase==='day'?'board':S.phase==='report'?'board':S.phase;enterGame(false);}};
   $('#btnStart').onclick=()=>{if(!S||S.phase!=='board'||MILL.on)return;toggleTwin(false);initAudio();startShift();sfx('horn');S.lines.slice(0,lineCount()).forEach((l,i)=>setTimeout(()=>sendTruck(i,'in'),i*400));renderHUD();if(!PARAMS.has('test')&&SET.motion)shiftShots(()=>{});if(S.day===2&&!S.flags.wTold){S.flags.wTold=1;setTimeout(()=>advise(TIPS.weld,12000),4000);}};
   $$('#speed button').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.s));$('#btnMute').onclick=()=>{initAudio();cycleSound();};soundBtn();addEventListener('pointerdown',()=>initAudio(),{once:true});addEventListener('keydown',()=>initAudio(),{once:true});
   $('#btnView').onclick=toggleOverview;$('#skip').onclick=endShots;$('#btnTwin').onclick=()=>toggleTwin();$('#millExit').onclick=exitMill;$('#act').onclick=doAction;$('#advisor').onclick=()=>$('#advisor').classList.add('hide');
-  $$('#dock [data-p]').forEach(b=>b.onclick=()=>{if(!blocked())openPanel(b.dataset.p);});$('#hPlant').onclick=()=>{if(!blocked())openPanel('expand');};
+  $$('#dock [data-p]').forEach(b=>b.onclick=()=>{if(!blocked())openPanel(b.dataset.p);});$('#hPlant').onclick=()=>{if(!blocked())openPanel('expand');};$('#hRank').onclick=()=>{if(!blocked())openPanel('ranks');};
   $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&UI.panel){UI.panel=null;closeModal();}});
   addEventListener('keydown',e=>{if(e.code==='Escape'&&UI.panel&&modalOpen()){UI.panel=null;closeModal();}});}
 
@@ -153,7 +161,7 @@ async function boot(){bootTips();bootProg(8);['#hud','#dock','#title .chips','#b
   const [h,c]=await Promise.all([parseGLB(MB_ASSETS.hero),parseGLB(MB_ASSETS.crowd)]);const clips=emoteClips();h.animations.push(...clips);c.animations.push(...clips.map(x=>x.clone()));GLTF.hero=h;GLTF.crowd=c;bootProg(70);
   buildOutside();dimOutdoor(scene);P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
   /* a demo factory behind the title */
-  newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
+  newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';staffLine(l,true);});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
   bootProg(88);initInput();bindUI();initFlow();renderer.compile(scene,camera);
   initMenu();bootDone();initPitch();
   camera.position.set(30,30,60);requestAnimationFrame(frame);}

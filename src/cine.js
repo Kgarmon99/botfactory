@@ -23,6 +23,13 @@ function makeProduct(p,painted){const g=new THREE.Group(),M=pmat(p,painted);
     g.userData.legs=[[.16,.08],[.16,-.08],[-.16,.08],[-.16,-.08]].map(([x,z])=>{const L=new THREE.Group();L.position.set(x,.26,z);bx(L,.05,.26,.05,0,-.26,0,M.dark);g.add(L);return L;});const t=bx(g,.03,.03,.16,-.26,.32,0,M.dark);t.rotation.z=.6;}
   else if(p==='ev'){bx(g,.92,.2,.44,0,.08,0,M.body);const cab=bx(g,.5,.17,.4,-.04,.27,0,M.glass);bx(g,.46,.03,.38,-.04,.44,0,M.body);
     [[.3,.23],[.3,-.23],[-.3,.23],[-.3,-.23]].forEach(([x,z])=>wheel(g,.1,.07,x,.1,z,M.tire));bx(g,.02,.04,.1,.46,.17,.15,M.light);bx(g,.02,.04,.1,.46,.17,-.15,M.light);bx(g,.02,.04,.34,-.46,.17,0,mat('#EF4444',{emissive:'#EF4444',emissiveIntensity:1.2}));}
+  else if(p==='washer'){bx(g,.5,.62,.48,0,0,0,M.body);bx(g,.5,.1,.04,0,.52,.24,M.dark);const d=new THREE.Mesh(new THREE.TorusGeometry(.15,.035,8,24),M.dark);d.position.set(0,.27,.245);g.add(d);
+    const gl=new THREE.Mesh(new THREE.CircleGeometry(.13,20),M.glass);gl.position.set(0,.27,.242);g.add(gl);bx(g,.06,.03,.01,-.15,.56,.262,M.led);cy(g,.03,.02,.15,.56,.26,M.dark).rotation.x=Math.PI/2;}
+  else if(p==='bracket'){const ti=mat(painted?'#DCE3EA':'#C3CAD3',{roughness:.35,metalness:.6});bx(g,.6,.06,.34,0,0,0,ti);bx(g,.06,.32,.34,-.27,.06,0,ti);bx(g,.06,.32,.34,.27,.06,0,ti);
+    [[-.27,.28],[.27,.28]].forEach(([x,y])=>{const r=new THREE.Mesh(new THREE.TorusGeometry(.06,.02,6,14),ti);r.position.set(x,y,0);r.rotation.y=Math.PI/2;g.add(r);});
+    const rib=bx(g,.5,.18,.04,0,.06,0,ti);[-.12,0,.12].forEach(z=>cy(g,.022,.04,-.12+z*0,.07,z,M.dark));if(painted)bx(g,.12,.01,.06,.12,.065,.12,M.led);}
+  else if(p==='etruck'){bx(g,.36,.36,.5,.36,.12,0,M.body);bx(g,.04,.16,.42,.55,.3,0,M.glass);bx(g,.8,.5,.54,-.24,.12,0,mat('#F3F4F6',{roughness:.5}));bx(g,.82,.04,.56,-.24,.1,0,M.dark);
+    const lg=bx(g,.6,.2,.01,-.24,.4,.276,M.body);[[.38,.25],[.38,-.25],[-.06,.25],[-.06,-.25],[-.44,.25],[-.44,-.25]].forEach(([x,z])=>wheel(g,.1,.08,x,.1,z,M.tire));bx(g,.02,.05,.1,.55,.18,.17,M.light);bx(g,.02,.05,.1,.55,.18,-.17,M.light);bx(g,.06,.04,.4,.55,.08,0,M.led);}
   g.traverse(o=>{if(o.isMesh)o.castShadow=Q.t>=2;});return g;}
 const PPOOL={};let ppUsed={};
 function prodAt(p,painted,x,y,z,t){const k=p+(painted?'P':'R'),pool=PPOOL[k]||(PPOOL[k]=[]);const i=ppUsed[k]=(ppUsed[k]||0);ppUsed[k]++;

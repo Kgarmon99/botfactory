@@ -8,33 +8,37 @@ let S=null;                 /* the saved game */
 const EV=[];                /* events for the view layer: {k, ...} */
 const emit=(ev,o)=>EV.push(Object.assign({},o||{},{ev}));
 
-function newStation(k,built){return {k,built:!!built,tier:0,crew:1,q:[],cur:null,prog:0,out:null,wear:rand(0,.15),broken:false,crewT:0,boost:0,needsCode:false,util:0,made:0,blocked:false};}
+function newStation(k,built){return {k,built:!!built,tier:0,crew:0,ws:[],ghost:0,q:[],cur:null,prog:0,out:null,wear:rand(0,.15),broken:false,crewT:0,boost:0,needsCode:false,util:0,made:0,blocked:false};}
 function newLine(i){const st={};ST_KEYS.forEach(k=>st[k]=newStation(k,k==='cut'||k==='weld'||k==='asm'));return {i,st,belt:[],job:{product:i===0?'kart':'toy',cid:null},spawnT:0};}
 function newGame(name){
   S={v:2,name:name||'Boss',cash:ECON.startCash,rep:50,day:1,stage:0,phase:'board',clock:0,speed:1,
      lines:[newLine(0)],offers:[],contracts:[],cid:1,flags:{},stats:{shipped:0,rev:0,profit:0,best:0,contracts:0,late:0,fixed:0,games:0,scrap:0,returns:0},
-     today:null,hist:[],combo:0,tech:{},rush:null,returnsQ:[],gameCD:{}};
-  makeOffers();return S;}
+     today:null,hist:[],combo:0,tech:{},rush:null,returnsQ:[],gameCD:{},workers:[],wid:0,cands:[],certs:{},rankPrev:null};
+  migrateCrew();makeCands();makeOffers();return S;}
 const lineCount=()=>STAGES[S.stage].lines;
 const shipX=()=>STAGES[S.stage].wide?16.2:4.6;
 const stationsOn=l=>ST_KEYS.filter(k=>l.st[k].built&&(STAGES[S.stage].wide||!['paint','qa'].includes(k)));
-function canMake(l,p){const P=PRODUCTS[p];if(P.stage>S.stage)return 'Unlocks at '+STAGES[P.stage].name;
+function canMake(l,p){const P=PRODUCTS[p];if(P.stage>S.stage)return 'Unlocks at '+STAGES[P.stage].name;if(P.cert&&!(S.certs&&S.certs[P.cert]))return 'Needs '+CERTS.find(c=>c.id===P.cert).name+' certification';
   const miss=P.needs.filter(k=>!l.st[k].built);if(miss.length)return 'Needs '+miss.map(k=>STATIONS[k].name).join(' + ');
   const bots=ST_KEYS.filter(k=>l.st[k].tier===2).length;if((P.robots||0)>bots)return `Needs ${P.robots} robot cell${P.robots>1?'s':''} on this line`;return '';}
 /* units per shift if nothing breaks: the slowest required station sets the pace */
 function capacity(l,p){const P=PRODUCTS[p||l.job.product];let best=1e9,by='';P.needs.forEach(k=>{const c=stationCap(l.st[k],k);if(c<best){best=c;by=k;}});return {n:Math.floor(best),by};}
 /* the speed of one station, and how many units it can do in a shift */
-const crewMul=s=>s.tier<2&&(s.crew||1)>=2?1.6:1;
-function stationSpeed(s){return TIERS[s.tier].speed*crewMul(s)*techSpeed();}
+function stationSpeed(s){return TIERS[s.tier].speed*workForce(s)*techSpeed();}
+/* how much work the crew at a station gets done: 1 = one rookie, a 2nd worker adds 60%, skill and energy scale it */
+function workForce(s){if(s.tier===2)return 1;const ws=crewOf(s).filter(w=>!(w.brk>0));let f=0;ws.slice(0,2).forEach((w,i)=>f+=(i?.6:1)*skillMul(w,s.k)*energyMul(w));for(let g=0;g<(s.ghost||0)&&ws.length+g<2;g++)f+=ws.length+g?.6:1;return f;}
+const crewMul=s=>workForce(s);
 function stationCap(s,k){return SHIFT_LEN*stationSpeed(s)/STATIONS[k].cycle*.93;}
 /* what the line would make if this station changed (for the fix card) */
-function previewCap(l,k,ch){const s=l.st[k],old={tier:s.tier,crew:s.crew};Object.assign(s,ch);const c=capacity(l);Object.assign(s,old);return c;}
-function hireCrew(li,k){const s=S.lines[li].st[k];if(s.tier===2)return 'Robots don\'t need a crew';if((s.crew||1)>=2)return 'Already has 2 workers';if(S.cash<ECON.hireFee)return 'Need '+money(ECON.hireFee);S.cash-=ECON.hireFee;if(S.today)S.today.capex+=ECON.hireFee;s.crew=2;emit('hired',{li,k});return '';}
+function previewCap(l,k,ch){const s=l.st[k],old={tier:s.tier,crew:s.crew,ghost:s.ghost||0};Object.assign(s,ch);const c=capacity(l);Object.assign(s,old);return c;}
+function hireCrew(li,k){const s=S.lines[li].st[k];if(s.tier===2)return 'Robots don\'t need a crew';if(crewOf(s).length>=2)return 'Already has 2 workers';if(S.cash<ECON.hireFee)return 'Need '+money(ECON.hireFee);
+  const idle=S.workers.find(w=>!w.at);if(idle){assignWorker(idle.id,li,k);emit('hired',{li,k,w:idle,re:true});return '';}
+  S.cash-=ECON.hireFee;const w=newWorker(k,1);S.workers.push(w);assignWorker(w.id,li,k);emit('hired',{li,k,w});return '';}
 function bottleneckOf(l){return capacity(l).by;}
 
 /* ---------- contracts ---------- */
 function makeOffers(){S.offers=S.offers.filter(o=>o.ttl>S.day);
-  const avail=Object.keys(PRODUCTS).filter(p=>PRODUCTS[p].stage<=S.stage);
+  const avail=Object.keys(PRODUCTS).filter(p=>PRODUCTS[p].stage<=S.stage&&(!PRODUCTS[p].cert||S.certs&&S.certs[PRODUCTS[p].cert]));
   while(S.offers.length<3){const p=pick(avail),P=PRODUCTS[p],L=S.lines[0],cap=Math.max(8,capacity(L,p).n||12),
       days=ri(1,3),qty=Math.max(6,Math.round(cap*days*rand(.55,.95)/2)*2),repK=.9+S.rep/500;
     S.offers.push({id:S.cid++,client:pick(CLIENTS),p,qty,price:Math.round(P.price*ECON.contractBonus*repK),days,bonus:Math.round(P.price*qty*.08/10)*10,ttl:S.day+2});}}
@@ -48,12 +52,12 @@ function contractOf(l){return l.job.cid?S.contracts.find(c=>c.id===l.job.cid):nu
 function upgradeCost(l,k){const s=l.st[k];if(!s.built)return STATIONS[k].buildCost;return s.tier<2?UP_COST[k][s.tier+1]:null;}
 function upgrade(li,k){const l=S.lines[li],s=l.st[k],c=upgradeCost(l,k);if(c==null)return 'Already maxed';if(S.cash<c)return 'Need '+money(c);
   if(!s.built&&!STAGES[S.stage].wide)return 'Expand to the Workshop first';
-  S.cash-=c;S.today&&(S.today.capex+=c);if(!s.built){s.built=true;s.tier=0;}else{s.tier++;if(s.tier===2){if(S.flags['prog_'+k])emit('autoprog',{li,k});else s.needsCode=true;}}
+  S.cash-=c;S.today&&(S.today.capex+=c);if(!s.built){s.built=true;s.tier=0;const idle=S.workers.find(w=>!w.at);if(idle)assignWorker(idle.id,li,k);else emit('needstaff',{li,k});}else{s.tier++;if(s.tier===2){const fr=crewOf(s);fr.forEach(w=>unassign(w));if(fr.length)emit('freed',{li,k,ws:fr});if(S.flags['prog_'+k])emit('autoprog',{li,k});else s.needsCode=true;}}
   s.wear=0;emit('upgrade',{li,k,tier:s.tier});return '';}
 function service(li,k){const s=S.lines[li].st[k];if(S.cash<ECON.serviceCost)return 'Not enough cash';S.cash-=ECON.serviceCost;if(S.today)S.today.repairs+=ECON.serviceCost;s.wear=0;emit('serviced',{li,k});return '';}
 function expandCost(){const n=STAGES[S.stage+1];return n?n.cost:null;}
 function expand(){const c=expandCost();if(c==null)return 'Maxed out';if(S.cash<c)return 'Need '+money(c);S.cash-=c;S.stage++;
-  while(S.lines.length<lineCount()){const l=newLine(S.lines.length);l.st.paint.built=l.st.qa.built=S.stage>=2;S.lines.push(l);}
+  while(S.lines.length<lineCount()){const l=newLine(S.lines.length);l.st.paint.built=l.st.qa.built=S.stage>=2;S.lines.push(l);staffLine(l);}
   if(S.today)S.today.capex+=c;makeOffers();emit('expand',{stage:S.stage});return '';}
 function fixStation(li,k,byPlayer){const s=S.lines[li].st[k];if(!s.broken)return;s.broken=false;s.wear=0;const c=byPlayer?ECON.repairParts:Math.round(ECON.repairCrew*(S.tech.drones?.5:1));S.cash-=c;if(S.today)S.today.repairs+=c;if(byPlayer)S.stats.fixed++;emit('fixed',{li,k,byPlayer,c});}
 function boostStation(li,k,secs){const s=S.lines[li].st[k];s.boost=Math.max(s.boost,secs);}
@@ -83,11 +87,11 @@ function stepLine(l,dt){const P=PRODUCTS[l.job.product],need=P.needs,route=ST_KE
     if(s.broken){s.crewT-=dt;if(s.crewT<=0){fixStation(l.i,k,false);emit('crew',{li:l.i,k});}}
     else if(!s.needsCode){
       if(!s.cur&&!s.out&&s.q.length){s.cur=s.q.shift();s.prog=0;}
-      if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*stationSpeed(s)*(s.boost>0?2:1)/STATIONS[k].cycle;
+      if(s.cur){busy=1;const T=TIERS[s.tier];s.prog+=dt*stationSpeed(s)*(s.boost>0?2:1)/STATIONS[k].cycle;if(s.tier<2)crewOf(s).forEach(w=>{if(!(w.brk>0))tire(w,dt*.55);});
         s.wear+=dt*(s.tier===2?.0016:.0028);
-        if(s.prog>=1){const it=s.cur;s.cur=null;s.prog=0;s.made++;
+        if(s.prog>=1){const it=s.cur;s.cur=null;s.prog=0;s.made++;if(s.tier<2)crewOf(s).forEach(w=>gainXP(w,k,1));
           if(k==='qa'){if(it.d){S.today.scrap++;S.stats.scrap++;const O2=S.today.oee&&S.today.oee[l.i];if(O2){O2.made++;O2.bad++;}emit('scrap',{li:l.i});it.dead=true;}}
-          else if(Math.random()<T.defect*(s.boost>0?.2:1))it.d=true;
+          else if(Math.random()<T.defect*defectMul(s)*(s.boost>0?.2:1))it.d=true;
           it.lvl=ST_KEYS.indexOf(k)+1;
           if(!it.dead){const ri2=route.indexOf(k);it.next=route[ri2+1]||'ship';s.out=it;}}
         if(s.wear>.6&&Math.random()<(s.wear-.6)*dt*.05*(S.tech.screens?.7:1)){s.broken=true;s.crewT=S.tech.drones?8:ECON.crewTime;s.cur&&s.q.unshift(s.cur);s.cur=null;emit('break',{li:l.i,k});}}}
@@ -100,19 +104,19 @@ function ship(l,it){const P=PRODUCTS[it.p],c=contractOf(l);let v;
   {const O=S.today.oee&&S.today.oee[l.i];if(O){O.made++;if(it.d)O.bad++;}}
   S.cash+=v;S.today.rev+=v;S.today.shipped++;S.today.byLine[l.i]++;S.stats.shipped++;S.stats.rev+=v;
   if(it.d&&S.tech.dog&&Math.random()<.5){it.d=false;emit('dogCatch',{li:l.i});}
-  if(it.d)S.returnsQ.push({at:S.clock+rand(8,40),v,li:l.i});
+  if(it.d){S.today.badShip=(S.today.badShip||0)+1;S.returnsQ.push({at:S.clock+rand(8,40),v,li:l.i,pre:!!P.precision});}
   if(S.rush&&S.rush.t>0){S.rush.got++;if(S.rush.got>=S.rush.need){S.cash+=S.rush.bonus;S.today.bonus+=S.rush.bonus;emit('rushDone',{b:S.rush.bonus});S.rush=null;}}
   emit('ship',{li:l.i,v});}
-function stepShift(dt){if(S.phase!=='day')return;S.clock+=dt;
+function stepShift(dt){if(S.phase!=='day')return;S.clock+=dt;stepCrew(dt);
   for(const l of S.lines.slice(0,lineCount()))stepLine(l,dt);
   for(let i=S.returnsQ.length-1;i>=0;i--){const r=S.returnsQ[i];if(S.clock<r.at)continue;S.returnsQ.splice(i,1);const c=r.v+ECON.returnFee;S.cash-=c;S.today.returns+=c;S.today.retN++;S.stats.returns++;S.rep=clamp(S.rep-.6,0,100);emit('return',{li:r.li,c});}
   if(!S.rush&&S.clock>S.rushAt*SHIFT_LEN&&S.rushAt<2){S.rushAt=9;const cap=S.lines.reduce((a,l,i)=>a+(i<lineCount()?capacity(l).n:0),0);S.rush={need:Math.max(4,Math.round(cap*.22)),got:0,t:42,bonus:Math.round(cap*12/10)*10+150};emit('rush',{r:S.rush});}
   if(S.rush){S.rush.t-=dt;if(S.rush.t<=0){emit('rushFail');S.rush=null;}}
   if(S.clock>=SHIFT_LEN)endShift();}
 function endShift(){S.phase='report';const T=S.today,st=S.lines.slice(0,lineCount()).flatMap(l=>stationsOn(l).map(k=>l.st[k]));
-  T.wages=st.reduce((a,s)=>a+TIERS[s.tier].wage*(s.tier<2?(s.crew||1):0),0);T.upkeep=st.reduce((a,s)=>a+TIERS[s.tier].upkeep,0);T.rent=STAGES[S.stage].rent;
+  T.wages=S.workers.reduce((a,w)=>a+w.wage,0);T.idleW=S.workers.filter(w=>!w.at).length;T.upkeep=st.reduce((a,s)=>a+TIERS[s.tier].upkeep,0);T.rent=STAGES[S.stage].rent;
   /* anything still out there comes back at the end of the day */
-  S.returnsQ.forEach(r=>{const c=r.v+ECON.returnFee;T.returns+=c;T.retN++;S.stats.returns++;S.rep=clamp(S.rep-.6,0,100);});S.returnsQ=[];
+  S.returnsQ.forEach(r=>{const c=r.v+ECON.returnFee+(r.pre?r.v*2:0);T.returns+=c;T.retN++;S.stats.returns++;S.rep=clamp(S.rep-(r.pre?3:.6),0,100);});S.returnsQ=[];
   if(!T.retN&&T.shipped)S.rep=clamp(S.rep+2,0,100);
   const G2=T.goal;T.stars=G2?(T.shipped>=G2[2]?3:T.shipped>=G2[1]?2:T.shipped>=G2[0]?1:0):0;T.starBonus=T.stars*(60+S.stage*90);T.bonus+=T.starBonus;S.cash+=T.starBonus;S.stats.stars=(S.stats.stars||0)+T.stars;
   T.fixed=T.wages+T.rent+T.upkeep;T.variable=T.mat;T.net=T.rev+T.bonus-T.mat-T.fixed-T.repairs-T.returns;
@@ -123,6 +127,7 @@ function endShift(){S.phase='report';const T=S.today,st=S.lines.slice(0,lineCoun
   T.day=S.day;T.cash=S.cash;T.stage=S.stage;S.stats.profit+=T.net;S.stats.best=Math.max(S.stats.best,T.net);S.hist.push(T);if(S.hist.length>40)S.hist.shift();
   S.lines.forEach(l=>{l.belt=[];ST_KEYS.forEach(k=>{const s=l.st[k];s.q=[];s.cur=null;s.out=null;s.prog=0;s.boost=0;if(s.broken){s.broken=false;s.wear=0;T.repairs+=ECON.repairCrew;S.cash-=ECON.repairCrew;}});});
   if(S.cash<0){S.cash+=2000;T.bailout=true;S.rep=clamp(S.rep-5,0,100);}
+  crewEndShift(T);endgameEndShift(T);
   emit('report',{T});}
 const techSpeed=()=>S&&S.tech&&S.tech.agv?1.1:1;
 function buyTech(id){const T=TECH.find(x=>x.id===id);if(!T)return 'Unknown';S.tech=S.tech||{};if(S.tech[id])return 'Already yours';if(T.stage>S.stage)return 'Unlocks at '+STAGES[T.stage].name;if(S.cash<T.cost)return 'Need '+money(T.cost);S.cash-=T.cost;if(S.today)S.today.capex+=T.cost;S.tech[id]=1;emit('tech',{id});return '';}
@@ -131,7 +136,7 @@ function oeeOf(o){if(!o||o.plan<1)return null;const run=Math.max(.001,o.plan-o.d
 function plantOEE(T){T=T||S.today;if(!T||!T.oee)return null;const tot=T.oee.slice(0,lineCount()).reduce((a,o)=>({plan:a.plan+o.plan,down:a.down+o.down,made:a.made+o.made,bad:a.bad+o.bad,ideal:a.ideal+o.ideal*o.plan}),{plan:0,down:0,made:0,bad:0,ideal:0});if(tot.plan<1)return null;tot.ideal/=tot.plan;return oeeOf(tot);}
 /* each shift's mission: ship targets for 1, 2 and 3 stars */
 function missionFor(){const cap=S.lines.slice(0,lineCount()).reduce((a,l)=>a+capacity(l).n,0);return [Math.max(3,Math.round(cap*.72)),Math.max(4,Math.round(cap*.9)),Math.max(5,Math.round(cap*1.06))];}
-function nextDay(){S.day++;S.phase='board';makeOffers();}
+function nextDay(){S.day++;S.phase='board';makeCands();makeOffers();}
 function grade(T){const pts=T.net+T.shipped*6-T.retN*30-T.late.length*200+T.games*40;const base=120+S.stage*260+S.lines.length*80;
   return pts>=base*3?'S':pts>=base*2?'A':pts>=base?'B':pts>=0?'C':'D';}
 function plantValue(){let v=S.cash;S.lines.forEach(l=>ST_KEYS.forEach(k=>{const s=l.st[k];if(!s.built)return;v+=(STATIONS[k].buildCost||300)*.5;for(let t=1;t<=s.tier;t++)v+=UP_COST[k][t]*.6;}));for(let i=1;i<=S.stage;i++)v+=STAGES[i].cost*.7;return v;}
