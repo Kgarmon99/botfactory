@@ -162,7 +162,7 @@ async function boot(){bootTips();bootProg(8);['#hud','#dock','#title .chips','#b
   buildOutside();dimOutdoor(scene);P.rig=makeRig(GLTF.hero,MB.hero,1.72);hardHat(P.rig,MB.hatW);vest(P.rig);scene.add(P.rig.root);P.rig.root.visible=false;
   /* a demo factory behind the title */
   newGame('');S.stage=2;S.tech={screens:1,agv:1,drones:1,dog:1};S.lines.push(newLine(1));S.lines.forEach(l=>{l.st.paint.built=l.st.qa.built=true;ST_KEYS.forEach((k,i)=>l.st[k].tier=(i+l.i)%3);l.job.product=l.i?'drone':'scooter';staffLine(l,true);});startShift();for(let i=0;i<300;i++)stepShift(.1);rebuildWorld();UI.demo=true;
-  bootProg(88);initInput();bindUI();initFlow();renderer.compile(scene,camera);
+  bootProg(88);initInput();bindUI();initFlow();initPlanner();renderer.compile(scene,camera);
   initMenu();bootDone();initPitch();
   camera.position.set(30,30,60);requestAnimationFrame(frame);}
 let last=performance.now();
